@@ -2,7 +2,7 @@ package com.ipvc.prodtextil.services;
 
 import com.ipvc.prodtextil.dto.*;
 import com.ipvc.prodtextil.models.Cliente;
-import com.ipvc.prodtextil.models.CodigoPostal;
+import com.ipvc.prodtextil.models.CodigosPostai;
 import com.ipvc.prodtextil.repos.ClienteRepo;
 import com.ipvc.prodtextil.repos.CodPostalRepo;
 import org.springframework.stereotype.Service;
@@ -48,7 +48,7 @@ public class ClienteService {
     }
 
     public ClienteDTO.ClienteResponseDTO saveCliente(ClienteDTO.ClienteCreateDTO clienteDTO) {
-        CodigoPostal codpostal = codpostalRepo.findByCodigo(clienteDTO.codpostalId())
+        CodigosPostai codpostal = codpostalRepo.findByCodigo(clienteDTO.codpostalId())
                 .orElseThrow(() -> new RuntimeException("Código postal não encontrado"));
 
         Cliente cliente = new Cliente();
@@ -64,7 +64,7 @@ public class ClienteService {
 
     public Optional<ClienteDTO.ClienteResponseDTO> updateCliente(Integer id, ClienteDTO.ClienteUpdateDTO clienteDTO) {
         return clienteRepo.findById(id).map(cliente -> {
-            CodigoPostal codpostal = codpostalRepo.findByCodigo(clienteDTO.codpostalId())
+            CodigosPostai codpostal = codpostalRepo.findByCodigo(clienteDTO.codpostalId())
                     .orElseThrow(() -> new RuntimeException("Código postal não encontrado"));
 
             cliente.setNome(clienteDTO.nome());

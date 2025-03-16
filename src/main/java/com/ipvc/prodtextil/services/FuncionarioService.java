@@ -1,7 +1,6 @@
 package com.ipvc.prodtextil.services;
 
 import com.ipvc.prodtextil.dto.FuncionarioDTO;
-import com.ipvc.prodtextil.models.Cliente;
 import com.ipvc.prodtextil.models.Funcionario;
 import com.ipvc.prodtextil.repos.FuncionarioRepo;
 import org.springframework.stereotype.Service;

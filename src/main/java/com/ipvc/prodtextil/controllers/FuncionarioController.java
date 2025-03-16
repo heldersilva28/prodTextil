@@ -1,10 +1,7 @@
 package com.ipvc.prodtextil.controllers;
 
-import com.ipvc.prodtextil.dto.ClienteDTO;
 import com.ipvc.prodtextil.dto.FuncionarioDTO;
-import com.ipvc.prodtextil.models.Cliente;
 import com.ipvc.prodtextil.models.Funcionario;
-import com.ipvc.prodtextil.services.ClienteService;
 import com.ipvc.prodtextil.services.FuncionarioService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

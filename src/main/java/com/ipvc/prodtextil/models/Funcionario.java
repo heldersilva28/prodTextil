@@ -46,7 +46,7 @@ public class Funcionario {
     private Set<com.ipvc.prodtextil.models.TarefasProducao> tarefasProducaos = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "funcionario")
-    private Set<Utilizador> utilizadors = new LinkedHashSet<>();
+    private Set<com.ipvc.prodtextil.models.Utilizadore> utilizadores = new LinkedHashSet<>();
 
     public Integer getId() {
         return id;
@@ -104,12 +104,12 @@ public class Funcionario {
         this.tarefasProducaos = tarefasProducaos;
     }
 
-    public Set<Utilizador> getUtilizadores() {
-        return utilizadors;
+    public Set<com.ipvc.prodtextil.models.Utilizadore> getUtilizadores() {
+        return utilizadores;
     }
 
-    public void setUtilizadores(Set<Utilizador> utilizadors) {
-        this.utilizadors = utilizadors;
+    public void setUtilizadores(Set<com.ipvc.prodtextil.models.Utilizadore> utilizadores) {
+        this.utilizadores = utilizadores;
     }
 
 }

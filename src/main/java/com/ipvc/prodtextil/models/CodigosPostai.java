@@ -10,7 +10,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "codigos_postais", schema = "public")
-public class CodigoPostal {
+public class CodigosPostai {
     @Id
     @Size(max = 10)
     @SequenceGenerator(name = "codigos_postais_id_gen", sequenceName = "clientes_id_seq", allocationSize = 1)
@@ -37,7 +37,7 @@ public class CodigoPostal {
     private Set<Cliente> clientes = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "codigoPostal")
-    private Set<Fornecedor> fornecedors = new LinkedHashSet<>();
+    private Set<com.ipvc.prodtextil.models.Fornecedore> fornecedores = new LinkedHashSet<>();
 
     public String getCodigo() {
         return codigo;
@@ -79,12 +79,12 @@ public class CodigoPostal {
         this.clientes = clientes;
     }
 
-    public Set<Fornecedor> getFornecedores() {
-        return fornecedors;
+    public Set<com.ipvc.prodtextil.models.Fornecedore> getFornecedores() {
+        return fornecedores;
     }
 
-    public void setFornecedores(Set<Fornecedor> fornecedors) {
-        this.fornecedors = fornecedors;
+    public void setFornecedores(Set<com.ipvc.prodtextil.models.Fornecedore> fornecedores) {
+        this.fornecedores = fornecedores;
     }
 
 }

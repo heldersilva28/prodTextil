@@ -10,7 +10,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "materiais", schema = "public")
-public class Materiais {
+public class Materiai {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "materiais_id_gen")
     @SequenceGenerator(name = "materiais_id_gen", sequenceName = "materiais_id_seq", allocationSize = 1)
@@ -25,7 +25,7 @@ public class Materiais {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "tipo_id", nullable = false)
-    private TiposMateriais tipo;
+    private com.ipvc.prodtextil.models.TiposMateriai tipo;
 
     @NotNull
     @Column(name = "preco_unidade", nullable = false, precision = 10, scale = 2)
@@ -36,10 +36,10 @@ public class Materiais {
     private BigDecimal stockDisponivel;
 
     @OneToMany(mappedBy = "material")
-    private Set<ConsumoMateriais> consumoMateriais = new LinkedHashSet<>();
+    private Set<ConsumoMateriai> consumoMateriais = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "material")
-    private Set<ItemEncomendaFornecedor> itemEncomendaFornecedors = new LinkedHashSet<>();
+    private Set<ItensEncomendaFornecedor> itensEncomendaFornecedors = new LinkedHashSet<>();
 
     public Integer getId() {
         return id;
@@ -57,11 +57,11 @@ public class Materiais {
         this.nome = nome;
     }
 
-    public TiposMateriais getTipo() {
+    public com.ipvc.prodtextil.models.TiposMateriai getTipo() {
         return tipo;
     }
 
-    public void setTipo(TiposMateriais tipo) {
+    public void setTipo(com.ipvc.prodtextil.models.TiposMateriai tipo) {
         this.tipo = tipo;
     }
 
@@ -81,20 +81,20 @@ public class Materiais {
         this.stockDisponivel = stockDisponivel;
     }
 
-    public Set<ConsumoMateriais> getConsumoMateriais() {
+    public Set<ConsumoMateriai> getConsumoMateriais() {
         return consumoMateriais;
     }
 
-    public void setConsumoMateriais(Set<ConsumoMateriais> consumoMateriais) {
+    public void setConsumoMateriais(Set<ConsumoMateriai> consumoMateriais) {
         this.consumoMateriais = consumoMateriais;
     }
 
-    public Set<ItemEncomendaFornecedor> getItensEncomendaFornecedors() {
-        return itemEncomendaFornecedors;
+    public Set<ItensEncomendaFornecedor> getItensEncomendaFornecedors() {
+        return itensEncomendaFornecedors;
     }
 
-    public void setItensEncomendaFornecedors(Set<ItemEncomendaFornecedor> itemEncomendaFornecedors) {
-        this.itemEncomendaFornecedors = itemEncomendaFornecedors;
+    public void setItensEncomendaFornecedors(Set<ItensEncomendaFornecedor> itensEncomendaFornecedors) {
+        this.itensEncomendaFornecedors = itensEncomendaFornecedors;
     }
 
 }

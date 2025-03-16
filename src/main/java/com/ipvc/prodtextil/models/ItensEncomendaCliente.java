@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 
 @Entity
 @Table(name = "itens_encomenda_cliente", schema = "public")
-public class ItemEncomendaCliente {
+public class ItensEncomendaCliente {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "itens_encomenda_cliente_id_gen")
     @SequenceGenerator(name = "itens_encomenda_cliente_id_gen", sequenceName = "itens_encomenda_cliente_id_seq", allocationSize = 1)
@@ -18,7 +18,7 @@ public class ItemEncomendaCliente {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "encomenda_id", nullable = false)
-    private EncomendaCliente encomenda;
+    private EncomendasCliente encomenda;
 
     @Size(max = 255)
     @NotNull
@@ -41,11 +41,11 @@ public class ItemEncomendaCliente {
         this.id = id;
     }
 
-    public EncomendaCliente getEncomenda() {
+    public EncomendasCliente getEncomenda() {
         return encomenda;
     }
 
-    public void setEncomenda(EncomendaCliente encomenda) {
+    public void setEncomenda(EncomendasCliente encomenda) {
         this.encomenda = encomenda;
     }
 

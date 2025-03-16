@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "utilizadores", schema = "public")
-public class Utilizador {
+public class Utilizadore {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "utilizadores_id_gen")
     @SequenceGenerator(name = "utilizadores_id_gen", sequenceName = "utilizadores_id_seq", allocationSize = 1)

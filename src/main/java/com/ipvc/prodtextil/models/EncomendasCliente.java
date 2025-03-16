@@ -10,7 +10,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "encomendas_clientes", schema = "public")
-public class EncomendaCliente {
+public class EncomendasCliente {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "encomendas_clientes_id_gen")
     @SequenceGenerator(name = "encomendas_clientes_id_gen", sequenceName = "encomendas_clientes_id_seq", allocationSize = 1)
@@ -29,14 +29,14 @@ public class EncomendaCliente {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "estado_id", nullable = false)
-    private EstadosEncomenda estado;
+    private com.ipvc.prodtextil.models.EstadosEncomenda estado;
 
     @NotNull
     @Column(name = "valor_total", nullable = false, precision = 10, scale = 2)
     private BigDecimal valorTotal;
 
     @OneToMany(mappedBy = "encomenda")
-    private Set<ItemEncomendaCliente> itemEncomendaClientes = new LinkedHashSet<>();
+    private Set<com.ipvc.prodtextil.models.ItensEncomendaCliente> itensEncomendaClientes = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "encomenda")
     private Set<com.ipvc.prodtextil.models.RecebimentosCliente> recebimentosClientes = new LinkedHashSet<>();
@@ -68,11 +68,11 @@ public class EncomendaCliente {
         this.dataEncomenda = dataEncomenda;
     }
 
-    public EstadosEncomenda getEstado() {
+    public com.ipvc.prodtextil.models.EstadosEncomenda getEstado() {
         return estado;
     }
 
-    public void setEstado(EstadosEncomenda estado) {
+    public void setEstado(com.ipvc.prodtextil.models.EstadosEncomenda estado) {
         this.estado = estado;
     }
 
@@ -84,12 +84,12 @@ public class EncomendaCliente {
         this.valorTotal = valorTotal;
     }
 
-    public Set<ItemEncomendaCliente> getItensEncomendaClientes() {
-        return itemEncomendaClientes;
+    public Set<com.ipvc.prodtextil.models.ItensEncomendaCliente> getItensEncomendaClientes() {
+        return itensEncomendaClientes;
     }
 
-    public void setItensEncomendaClientes(Set<ItemEncomendaCliente> itemEncomendaClientes) {
-        this.itemEncomendaClientes = itemEncomendaClientes;
+    public void setItensEncomendaClientes(Set<com.ipvc.prodtextil.models.ItensEncomendaCliente> itensEncomendaClientes) {
+        this.itensEncomendaClientes = itensEncomendaClientes;
     }
 
     public Set<com.ipvc.prodtextil.models.RecebimentosCliente> getRecebimentosClientes() {

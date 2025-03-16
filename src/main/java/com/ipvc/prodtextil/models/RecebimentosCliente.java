@@ -18,7 +18,7 @@ public class RecebimentosCliente {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "encomenda_id", nullable = false)
-    private EncomendaCliente encomenda;
+    private EncomendasCliente encomenda;
 
     @NotNull
     @Column(name = "valor_recebido", nullable = false, precision = 10, scale = 2)
@@ -41,11 +41,11 @@ public class RecebimentosCliente {
         this.id = id;
     }
 
-    public EncomendaCliente getEncomenda() {
+    public EncomendasCliente getEncomenda() {
         return encomenda;
     }
 
-    public void setEncomenda(EncomendaCliente encomenda) {
+    public void setEncomenda(EncomendasCliente encomenda) {
         this.encomenda = encomenda;
     }
 

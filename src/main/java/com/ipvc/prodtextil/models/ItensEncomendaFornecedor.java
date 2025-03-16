@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 
 @Entity
 @Table(name = "itens_encomenda_fornecedor", schema = "public")
-public class ItemEncomendaFornecedor {
+public class ItensEncomendaFornecedor {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "itens_encomenda_fornecedor_id_gen")
     @SequenceGenerator(name = "itens_encomenda_fornecedor_id_gen", sequenceName = "itens_encomenda_fornecedor_id_seq", allocationSize = 1)
@@ -17,12 +17,12 @@ public class ItemEncomendaFornecedor {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "encomenda_id", nullable = false)
-    private EncomendaFornecedor encomenda;
+    private EncomendasFornecedore encomenda;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "material_id", nullable = false)
-    private Materiais materiais;
+    private com.ipvc.prodtextil.models.Materiai material;
 
     @NotNull
     @Column(name = "quantidade", nullable = false, precision = 10, scale = 2)
@@ -40,20 +40,20 @@ public class ItemEncomendaFornecedor {
         this.id = id;
     }
 
-    public EncomendaFornecedor getEncomenda() {
+    public EncomendasFornecedore getEncomenda() {
         return encomenda;
     }
 
-    public void setEncomenda(EncomendaFornecedor encomenda) {
+    public void setEncomenda(EncomendasFornecedore encomenda) {
         this.encomenda = encomenda;
     }
 
-    public Materiais getMaterial() {
-        return materiais;
+    public com.ipvc.prodtextil.models.Materiai getMaterial() {
+        return material;
     }
 
-    public void setMaterial(Materiais materiais) {
-        this.materiais = materiais;
+    public void setMaterial(com.ipvc.prodtextil.models.Materiai material) {
+        this.material = material;
     }
 
     public BigDecimal getQuantidade() {

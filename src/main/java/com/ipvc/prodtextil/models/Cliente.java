@@ -39,10 +39,10 @@ public class Cliente {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "codigo_postal", nullable = false)
-    private CodigoPostal codigoPostal;
+    private com.ipvc.prodtextil.models.CodigosPostai codigoPostal;
 
     @OneToMany(mappedBy = "cliente")
-    private Set<EncomendaCliente> encomendaClientes = new LinkedHashSet<>();
+    private Set<com.ipvc.prodtextil.models.EncomendasCliente> encomendasClientes = new LinkedHashSet<>();
 
     public Integer getId() {
         return id;
@@ -84,20 +84,20 @@ public class Cliente {
         this.morada = morada;
     }
 
-    public CodigoPostal getCodigoPostal() {
+    public com.ipvc.prodtextil.models.CodigosPostai getCodigoPostal() {
         return codigoPostal;
     }
 
-    public void setCodigoPostal(CodigoPostal codigoPostal) {
+    public void setCodigoPostal(com.ipvc.prodtextil.models.CodigosPostai codigoPostal) {
         this.codigoPostal = codigoPostal;
     }
 
-    public Set<EncomendaCliente> getEncomendasClientes() {
-        return encomendaClientes;
+    public Set<com.ipvc.prodtextil.models.EncomendasCliente> getEncomendasClientes() {
+        return encomendasClientes;
     }
 
-    public void setEncomendasClientes(Set<EncomendaCliente> encomendaClientes) {
-        this.encomendaClientes = encomendaClientes;
+    public void setEncomendasClientes(Set<com.ipvc.prodtextil.models.EncomendasCliente> encomendasClientes) {
+        this.encomendasClientes = encomendasClientes;
     }
 
 }

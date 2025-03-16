@@ -24,10 +24,10 @@ public class EstadosEncomenda {
     private String nome;
 
     @OneToMany(mappedBy = "estado")
-    private Set<EncomendaCliente> encomendaClientes = new LinkedHashSet<>();
+    private Set<EncomendasCliente> encomendasClientes = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "estado")
-    private Set<EncomendaFornecedor> encomendaFornecedors = new LinkedHashSet<>();
+    private Set<EncomendasFornecedore> encomendasFornecedores = new LinkedHashSet<>();
 
     public Integer getId() {
         return id;
@@ -45,20 +45,20 @@ public class EstadosEncomenda {
         this.nome = nome;
     }
 
-    public Set<EncomendaCliente> getEncomendasClientes() {
-        return encomendaClientes;
+    public Set<EncomendasCliente> getEncomendasClientes() {
+        return encomendasClientes;
     }
 
-    public void setEncomendasClientes(Set<EncomendaCliente> encomendaClientes) {
-        this.encomendaClientes = encomendaClientes;
+    public void setEncomendasClientes(Set<EncomendasCliente> encomendasClientes) {
+        this.encomendasClientes = encomendasClientes;
     }
 
-    public Set<EncomendaFornecedor> getEncomendasFornecedores() {
-        return encomendaFornecedors;
+    public Set<EncomendasFornecedore> getEncomendasFornecedores() {
+        return encomendasFornecedores;
     }
 
-    public void setEncomendasFornecedores(Set<EncomendaFornecedor> encomendaFornecedors) {
-        this.encomendaFornecedors = encomendaFornecedors;
+    public void setEncomendasFornecedores(Set<EncomendasFornecedore> encomendasFornecedores) {
+        this.encomendasFornecedores = encomendasFornecedores;
     }
 
 }
