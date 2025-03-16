@@ -68,6 +68,7 @@ public class FornecedorService {
                 fornecedor.getEmail(),
                 fornecedor.getTelefone(),
                 fornecedor.getMorada(),
+
                 fornecedor.getCodigoPostal().getCodigo()
         );
     }
