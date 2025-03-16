@@ -1,4 +1,4 @@
-package com.ipvc.prodtextil.services;
+/*package com.ipvc.prodtextil.services;
 
 import com.ipvc.prodtextil.dto.FornecedorDTO;
 import com.ipvc.prodtextil.models.Fornecedor;
@@ -68,8 +68,7 @@ public class FornecedorService {
                 fornecedor.getEmail(),
                 fornecedor.getTelefone(),
                 fornecedor.getMorada(),
-
                 fornecedor.getCodigoPostal().getCodigo()
         );
     }
-}
+}*/
