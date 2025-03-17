@@ -8,7 +8,7 @@ import java.time.LocalDate;
 
 @Entity
 @Table(name = "pagamentos_fornecedores", schema = "public")
-public class PagamentosFornecedore {
+public class PagamentosFornecedor {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "pagamentos_fornecedores_id_gen")
     @SequenceGenerator(name = "pagamentos_fornecedores_id_gen", sequenceName = "pagamentos_fornecedores_id_seq", allocationSize = 1)
@@ -18,7 +18,7 @@ public class PagamentosFornecedore {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "encomenda_id", nullable = false)
-    private EncomendasFornecedore encomenda;
+    private EncomendasFornecedor encomenda;
 
     @NotNull
     @Column(name = "valor_pago", nullable = false, precision = 10, scale = 2)
@@ -41,11 +41,11 @@ public class PagamentosFornecedore {
         this.id = id;
     }
 
-    public EncomendasFornecedore getEncomenda() {
+    public EncomendasFornecedor getEncomenda() {
         return encomenda;
     }
 
-    public void setEncomenda(EncomendasFornecedore encomenda) {
+    public void setEncomenda(EncomendasFornecedor encomenda) {
         this.encomenda = encomenda;
     }
 

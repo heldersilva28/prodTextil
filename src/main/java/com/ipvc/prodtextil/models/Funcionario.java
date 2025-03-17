@@ -9,34 +9,27 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "funcionarios", schema = "public", uniqueConstraints = {
-        @UniqueConstraint(name = "funcionarios_email_key", columnNames = {"email"})
-})
+@Table(name = "funcionarios", schema = "public")
 public class Funcionario {
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "funcionarios_id_gen")
     @SequenceGenerator(name = "funcionarios_id_gen", sequenceName = "funcionarios_id_seq", allocationSize = 1)
     @Column(name = "id", nullable = false)
     private Integer id;
 
-    @Size(max = 255)
-    @NotNull
-    @Column(name = "nome", nullable = false)
-    private String nome;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "utilizador_id")
+    private Utilizador utilizador;
 
-    @Size(max = 255)
     @NotNull
-    @Column(name = "email", nullable = false)
-    private String email;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)  // Alteração para criar FK com a tabela Utilizadores
+    @JoinColumn(name = "cargo", referencedColumnName = "id", nullable = false)  // A FK agora aponta para o id de Utilizadores
+    private Utilizador cargo;  // Cargo agora é uma chave estrangeira para Utilizador
 
     @Size(max = 20)
     @Column(name = "telefone", length = 20)
     private String telefone;
-
-    @Size(max = 100)
-    @NotNull
-    @Column(name = "cargo", nullable = false, length = 100)
-    private String cargo;
 
     @NotNull
     @Column(name = "data_admissao", nullable = false)
@@ -45,9 +38,7 @@ public class Funcionario {
     @OneToMany(mappedBy = "funcionario")
     private Set<com.ipvc.prodtextil.models.TarefasProducao> tarefasProducaos = new LinkedHashSet<>();
 
-    @OneToMany(mappedBy = "funcionario")
-    private Set<com.ipvc.prodtextil.models.Utilizadore> utilizadores = new LinkedHashSet<>();
-
+    // Getters e Setters
     public Integer getId() {
         return id;
     }
@@ -56,20 +47,28 @@ public class Funcionario {
         this.id = id;
     }
 
-    public String getNome() {
-        return nome;
+    public Utilizador getUtilizador() {
+        return utilizador;
+    }
+
+    public void setUtilizador(Utilizador utilizador) {
+        this.utilizador = utilizador;
+    }
+
+    public String getNome(){
+        return utilizador.getUsername();
     }
 
     public void setNome(String nome) {
-        this.nome = nome;
+        this.utilizador.setUsername(nome);
     }
 
-    public String getEmail() {
-        return email;
+    public int getCargo() {
+        return utilizador.getTipoUtilizador().getId();
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setCargo(Utilizador cargo) {
+        this.cargo = cargo;
     }
 
     public String getTelefone() {
@@ -78,14 +77,6 @@ public class Funcionario {
 
     public void setTelefone(String telefone) {
         this.telefone = telefone;
-    }
-
-    public String getCargo() {
-        return cargo;
-    }
-
-    public void setCargo(String cargo) {
-        this.cargo = cargo;
     }
 
     public LocalDate getDataAdmissao() {
@@ -103,13 +94,4 @@ public class Funcionario {
     public void setTarefasProducaos(Set<com.ipvc.prodtextil.models.TarefasProducao> tarefasProducaos) {
         this.tarefasProducaos = tarefasProducaos;
     }
-
-    public Set<com.ipvc.prodtextil.models.Utilizadore> getUtilizadores() {
-        return utilizadores;
-    }
-
-    public void setUtilizadores(Set<com.ipvc.prodtextil.models.Utilizadore> utilizadores) {
-        this.utilizadores = utilizadores;
-    }
-
 }

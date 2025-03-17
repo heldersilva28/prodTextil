@@ -10,7 +10,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "materiais", schema = "public")
-public class Materiai {
+public class Materiais {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "materiais_id_gen")
     @SequenceGenerator(name = "materiais_id_gen", sequenceName = "materiais_id_seq", allocationSize = 1)
@@ -25,7 +25,7 @@ public class Materiai {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "tipo_id", nullable = false)
-    private com.ipvc.prodtextil.models.TiposMateriai tipo;
+    private TiposMateriais tipo;
 
     @NotNull
     @Column(name = "preco_unidade", nullable = false, precision = 10, scale = 2)
@@ -36,7 +36,7 @@ public class Materiai {
     private BigDecimal stockDisponivel;
 
     @OneToMany(mappedBy = "material")
-    private Set<ConsumoMateriai> consumoMateriais = new LinkedHashSet<>();
+    private Set<ConsumoMateriais> consumoMateriais = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "material")
     private Set<ItensEncomendaFornecedor> itensEncomendaFornecedors = new LinkedHashSet<>();
@@ -57,11 +57,11 @@ public class Materiai {
         this.nome = nome;
     }
 
-    public com.ipvc.prodtextil.models.TiposMateriai getTipo() {
+    public TiposMateriais getTipo() {
         return tipo;
     }
 
-    public void setTipo(com.ipvc.prodtextil.models.TiposMateriai tipo) {
+    public void setTipo(TiposMateriais tipo) {
         this.tipo = tipo;
     }
 
@@ -81,11 +81,11 @@ public class Materiai {
         this.stockDisponivel = stockDisponivel;
     }
 
-    public Set<ConsumoMateriai> getConsumoMateriais() {
+    public Set<ConsumoMateriais> getConsumoMateriais() {
         return consumoMateriais;
     }
 
-    public void setConsumoMateriais(Set<ConsumoMateriai> consumoMateriais) {
+    public void setConsumoMateriais(Set<ConsumoMateriais> consumoMateriais) {
         this.consumoMateriais = consumoMateriais;
     }
 

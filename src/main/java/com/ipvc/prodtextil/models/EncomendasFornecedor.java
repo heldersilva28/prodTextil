@@ -10,7 +10,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "encomendas_fornecedores", schema = "public")
-public class EncomendasFornecedore {
+public class EncomendasFornecedor {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "encomendas_fornecedores_id_gen")
     @SequenceGenerator(name = "encomendas_fornecedores_id_gen", sequenceName = "encomendas_fornecedores_id_seq", allocationSize = 1)
@@ -20,7 +20,7 @@ public class EncomendasFornecedore {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "fornecedor_id", nullable = false)
-    private com.ipvc.prodtextil.models.Fornecedore fornecedor;
+    private Fornecedor fornecedor;
 
     @NotNull
     @Column(name = "data_pedido", nullable = false)
@@ -39,7 +39,7 @@ public class EncomendasFornecedore {
     private Set<com.ipvc.prodtextil.models.ItensEncomendaFornecedor> itensEncomendaFornecedors = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "encomenda")
-    private Set<com.ipvc.prodtextil.models.PagamentosFornecedore> pagamentosFornecedores = new LinkedHashSet<>();
+    private Set<PagamentosFornecedor> pagamentosFornecedors = new LinkedHashSet<>();
 
     public Integer getId() {
         return id;
@@ -49,11 +49,11 @@ public class EncomendasFornecedore {
         this.id = id;
     }
 
-    public com.ipvc.prodtextil.models.Fornecedore getFornecedor() {
+    public Fornecedor getFornecedor() {
         return fornecedor;
     }
 
-    public void setFornecedor(com.ipvc.prodtextil.models.Fornecedore fornecedor) {
+    public void setFornecedor(Fornecedor fornecedor) {
         this.fornecedor = fornecedor;
     }
 
@@ -89,12 +89,12 @@ public class EncomendasFornecedore {
         this.itensEncomendaFornecedors = itensEncomendaFornecedors;
     }
 
-    public Set<com.ipvc.prodtextil.models.PagamentosFornecedore> getPagamentosFornecedores() {
-        return pagamentosFornecedores;
+    public Set<PagamentosFornecedor> getPagamentosFornecedores() {
+        return pagamentosFornecedors;
     }
 
-    public void setPagamentosFornecedores(Set<com.ipvc.prodtextil.models.PagamentosFornecedore> pagamentosFornecedores) {
-        this.pagamentosFornecedores = pagamentosFornecedores;
+    public void setPagamentosFornecedores(Set<PagamentosFornecedor> pagamentosFornecedors) {
+        this.pagamentosFornecedors = pagamentosFornecedors;
     }
 
 }

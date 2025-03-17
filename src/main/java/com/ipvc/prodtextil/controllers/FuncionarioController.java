@@ -31,7 +31,6 @@ public class FuncionarioController {
                 .map(funcionario -> new FuncionarioDTO.FuncionarioResponseDTO(
                         funcionario.getId(),
                         funcionario.getNome(),
-                        funcionario.getEmail(),
                         funcionario.getTelefone(),
                         funcionario.getCargo(),
                         funcionario.getDataAdmissao()// Acesse o campo correto do código postal

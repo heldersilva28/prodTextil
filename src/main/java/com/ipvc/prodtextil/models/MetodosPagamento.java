@@ -24,7 +24,7 @@ public class MetodosPagamento {
     private String nome;
 
     @OneToMany(mappedBy = "metodoPagamento")
-    private Set<com.ipvc.prodtextil.models.PagamentosFornecedore> pagamentosFornecedores = new LinkedHashSet<>();
+    private Set<PagamentosFornecedor> pagamentosFornecedors = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "metodoPagamento")
     private Set<com.ipvc.prodtextil.models.RecebimentosCliente> recebimentosClientes = new LinkedHashSet<>();
@@ -45,12 +45,12 @@ public class MetodosPagamento {
         this.nome = nome;
     }
 
-    public Set<com.ipvc.prodtextil.models.PagamentosFornecedore> getPagamentosFornecedores() {
-        return pagamentosFornecedores;
+    public Set<PagamentosFornecedor> getPagamentosFornecedores() {
+        return pagamentosFornecedors;
     }
 
-    public void setPagamentosFornecedores(Set<com.ipvc.prodtextil.models.PagamentosFornecedore> pagamentosFornecedores) {
-        this.pagamentosFornecedores = pagamentosFornecedores;
+    public void setPagamentosFornecedores(Set<PagamentosFornecedor> pagamentosFornecedors) {
+        this.pagamentosFornecedors = pagamentosFornecedors;
     }
 
     public Set<com.ipvc.prodtextil.models.RecebimentosCliente> getRecebimentosClientes() {

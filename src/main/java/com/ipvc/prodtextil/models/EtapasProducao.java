@@ -20,8 +20,9 @@ public class EtapasProducao {
     private com.ipvc.prodtextil.models.TarefasProducao tarefa;
 
     @NotNull
-    @Column(name = "descricao", nullable = false, length = Integer.MAX_VALUE)
-    private String descricao;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "tipo_etapa_id", nullable = false)
+    private com.ipvc.prodtextil.models.TiposEtapasProducao tipoEtapa;
 
     @NotNull
     @Column(name = "data_inicio", nullable = false)
@@ -46,12 +47,12 @@ public class EtapasProducao {
         this.tarefa = tarefa;
     }
 
-    public String getDescricao() {
-        return descricao;
+    public com.ipvc.prodtextil.models.TiposEtapasProducao getTipoEtapa() {
+        return tipoEtapa;
     }
 
-    public void setDescricao(String descricao) {
-        this.descricao = descricao;
+    public void setTipoEtapa(com.ipvc.prodtextil.models.TiposEtapasProducao tipoEtapa) {
+        this.tipoEtapa = tipoEtapa;
     }
 
     public Instant getDataInicio() {

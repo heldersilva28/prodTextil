@@ -37,7 +37,6 @@ public class ClienteController {
                         cliente.getCodigoPostal().getCodigo() // Acesse o campo correto do código postal
                 ))
                 .collect(Collectors.toList());
-
         return ResponseEntity.ok(response);
     }
 

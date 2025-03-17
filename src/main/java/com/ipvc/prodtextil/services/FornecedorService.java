@@ -1,8 +1,8 @@
 package com.ipvc.prodtextil.services;
 
 import com.ipvc.prodtextil.dto.FornecedorDTO;
-import com.ipvc.prodtextil.models.CodigosPostai;
-import com.ipvc.prodtextil.models.Fornecedore;
+import com.ipvc.prodtextil.models.CodigosPostais;
+import com.ipvc.prodtextil.models.Fornecedor;
 import com.ipvc.prodtextil.repos.FornecedorRepo;
 import com.ipvc.prodtextil.repos.CodPostalRepo;
 import org.springframework.stereotype.Service;
@@ -30,10 +30,10 @@ public class FornecedorService {
     }
 
     public FornecedorDTO.FornecedorResponseDTO saveFornecedor(FornecedorDTO.FornecedorCreateDTO fornecedorDTO) {
-        CodigosPostai codigoPostal = codigoPostalRepo.findById(Integer.valueOf(fornecedorDTO.codigoPostalId()))
+        CodigosPostais codigoPostal = codigoPostalRepo.findById(Integer.valueOf(fornecedorDTO.codigoPostalId()))
                 .orElseThrow(() -> new RuntimeException("Código postal não encontrado"));
 
-        Fornecedore fornecedor = new Fornecedore();
+        Fornecedor fornecedor = new Fornecedor();
         fornecedor.setNome(fornecedorDTO.nome());
         fornecedor.setEmail(fornecedorDTO.email());
         fornecedor.setTelefone(fornecedorDTO.telefone());
@@ -45,7 +45,7 @@ public class FornecedorService {
 
     public Optional<FornecedorDTO.FornecedorResponseDTO> updateFornecedor(Integer id, FornecedorDTO.FornecedorUpdateDTO fornecedorDTO) {
         return fornecedorRepo.findById(id).map(fornecedor -> {
-            CodigosPostai codigoPostal = codigoPostalRepo.findById(Integer.valueOf(fornecedorDTO.codigoPostalId()))
+            CodigosPostais codigoPostal = codigoPostalRepo.findById(Integer.valueOf(fornecedorDTO.codigoPostalId()))
                     .orElseThrow(() -> new RuntimeException("Código postal não encontrado"));
 
             fornecedor.setNome(fornecedorDTO.nome());
@@ -61,7 +61,7 @@ public class FornecedorService {
         fornecedorRepo.deleteById(id);
     }
 
-    private FornecedorDTO.FornecedorResponseDTO convertToDTO(Fornecedore fornecedor) {
+    private FornecedorDTO.FornecedorResponseDTO convertToDTO(Fornecedor fornecedor) {
         return new FornecedorDTO.FornecedorResponseDTO(
                 fornecedor.getId(),
                 fornecedor.getNome(),

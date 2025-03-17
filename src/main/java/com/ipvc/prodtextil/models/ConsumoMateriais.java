@@ -9,7 +9,7 @@ import java.time.Instant;
 
 @Entity
 @Table(name = "consumo_materiais", schema = "public")
-public class ConsumoMateriai {
+public class ConsumoMateriais {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "consumo_materiais_id_gen")
     @SequenceGenerator(name = "consumo_materiais_id_gen", sequenceName = "consumo_materiais_id_seq", allocationSize = 1)
@@ -19,7 +19,7 @@ public class ConsumoMateriai {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "material_id", nullable = false)
-    private com.ipvc.prodtextil.models.Materiai material;
+    private Materiais material;
 
     @NotNull
     @Column(name = "quantidade_consumida", nullable = false, precision = 10, scale = 2)
@@ -37,11 +37,11 @@ public class ConsumoMateriai {
         this.id = id;
     }
 
-    public com.ipvc.prodtextil.models.Materiai getMaterial() {
+    public Materiais getMaterial() {
         return material;
     }
 
-    public void setMaterial(com.ipvc.prodtextil.models.Materiai material) {
+    public void setMaterial(Materiais material) {
         this.material = material;
     }
 

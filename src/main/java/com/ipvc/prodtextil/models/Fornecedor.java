@@ -11,7 +11,7 @@ import java.util.Set;
 @Table(name = "fornecedores", schema = "public", uniqueConstraints = {
         @UniqueConstraint(name = "fornecedores_email_key", columnNames = {"email"})
 })
-public class Fornecedore {
+public class Fornecedor {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "fornecedores_id_gen")
     @SequenceGenerator(name = "fornecedores_id_gen", sequenceName = "fornecedores_id_seq", allocationSize = 1)
@@ -39,10 +39,10 @@ public class Fornecedore {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "codigo_postal", nullable = false)
-    private CodigosPostai codigoPostal;
+    private CodigosPostais codigoPostal;
 
     @OneToMany(mappedBy = "fornecedor")
-    private Set<EncomendasFornecedore> encomendasFornecedores = new LinkedHashSet<>();
+    private Set<EncomendasFornecedor> encomendasFornecedors = new LinkedHashSet<>();
 
     public Integer getId() {
         return id;
@@ -84,20 +84,20 @@ public class Fornecedore {
         this.morada = morada;
     }
 
-    public CodigosPostai getCodigoPostal() {
+    public CodigosPostais getCodigoPostal() {
         return codigoPostal;
     }
 
-    public void setCodigoPostal(CodigosPostai codigoPostal) {
+    public void setCodigoPostal(CodigosPostais codigoPostal) {
         this.codigoPostal = codigoPostal;
     }
 
-    public Set<EncomendasFornecedore> getEncomendasFornecedores() {
-        return encomendasFornecedores;
+    public Set<EncomendasFornecedor> getEncomendasFornecedores() {
+        return encomendasFornecedors;
     }
 
-    public void setEncomendasFornecedores(Set<EncomendasFornecedore> encomendasFornecedores) {
-        this.encomendasFornecedores = encomendasFornecedores;
+    public void setEncomendasFornecedores(Set<EncomendasFornecedor> encomendasFornecedors) {
+        this.encomendasFornecedors = encomendasFornecedors;
     }
 
 }

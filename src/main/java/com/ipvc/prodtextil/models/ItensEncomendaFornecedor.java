@@ -2,27 +2,25 @@ package com.ipvc.prodtextil.models;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 @Entity
 @Table(name = "itens_encomenda_fornecedor", schema = "public")
-public class ItensEncomendaFornecedor {
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "itens_encomenda_fornecedor_id_gen")
-    @SequenceGenerator(name = "itens_encomenda_fornecedor_id_gen", sequenceName = "itens_encomenda_fornecedor_id_seq", allocationSize = 1)
-    @Column(name = "id", nullable = false)
-    private Integer id;
+@IdClass(ItensEncomendaFornecedorPK.class)
+public class ItensEncomendaFornecedor implements Serializable {
 
+    @Id
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "encomenda_id", nullable = false)
-    private EncomendasFornecedore encomenda;
+    private EncomendasFornecedor encomenda;
 
+    @Id
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "material_id", nullable = false)
-    private com.ipvc.prodtextil.models.Materiai material;
+    private Materiais material;
 
     @NotNull
     @Column(name = "quantidade", nullable = false, precision = 10, scale = 2)
@@ -32,27 +30,19 @@ public class ItensEncomendaFornecedor {
     @Column(name = "preco_unitario", nullable = false, precision = 10, scale = 2)
     private BigDecimal precoUnitario;
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public EncomendasFornecedore getEncomenda() {
+    public EncomendasFornecedor getEncomenda() {
         return encomenda;
     }
 
-    public void setEncomenda(EncomendasFornecedore encomenda) {
+    public void setEncomenda(EncomendasFornecedor encomenda) {
         this.encomenda = encomenda;
     }
 
-    public com.ipvc.prodtextil.models.Materiai getMaterial() {
+    public Materiais getMaterial() {
         return material;
     }
 
-    public void setMaterial(com.ipvc.prodtextil.models.Materiai material) {
+    public void setMaterial(Materiais material) {
         this.material = material;
     }
 
@@ -71,5 +61,4 @@ public class ItensEncomendaFornecedor {
     public void setPrecoUnitario(BigDecimal precoUnitario) {
         this.precoUnitario = precoUnitario;
     }
-
 }

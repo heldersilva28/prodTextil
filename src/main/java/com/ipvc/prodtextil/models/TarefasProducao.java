@@ -11,6 +11,7 @@ import java.util.Set;
 @Entity
 @Table(name = "tarefas_producao", schema = "public")
 public class TarefasProducao {
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "tarefas_producao_id_gen")
     @SequenceGenerator(name = "tarefas_producao_id_gen", sequenceName = "tarefas_producao_id_seq", allocationSize = 1)
@@ -22,9 +23,11 @@ public class TarefasProducao {
     @JoinColumn(name = "encomenda_id", nullable = false)
     private EncomendasCliente encomenda;
 
+    // A coluna descricao agora será uma chave estrangeira para TiposEvento
     @NotNull
-    @Column(name = "descricao", nullable = false, length = Integer.MAX_VALUE)
-    private String descricao;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "descricao", referencedColumnName = "id", nullable = false)
+    private TiposEvento tipoEvento;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -46,6 +49,7 @@ public class TarefasProducao {
     @OneToMany(mappedBy = "tarefa")
     private Set<EtapasProducao> etapasProducaos = new LinkedHashSet<>();
 
+    // Getters e Setters
     public Integer getId() {
         return id;
     }
@@ -62,12 +66,12 @@ public class TarefasProducao {
         this.encomenda = encomenda;
     }
 
-    public String getDescricao() {
-        return descricao;
+    public TiposEvento getTipoEvento() {
+        return tipoEvento;
     }
 
-    public void setDescricao(String descricao) {
-        this.descricao = descricao;
+    public void setTipoEvento(TiposEvento tipoEvento) {
+        this.tipoEvento = tipoEvento;
     }
 
     public Funcionario getFuncionario() {
@@ -109,5 +113,4 @@ public class TarefasProducao {
     public void setEtapasProducaos(Set<EtapasProducao> etapasProducaos) {
         this.etapasProducaos = etapasProducaos;
     }
-
 }
