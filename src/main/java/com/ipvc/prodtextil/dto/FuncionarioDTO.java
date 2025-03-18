@@ -7,9 +7,7 @@ public class FuncionarioDTO {
 
     // DTO para Criar Funcionario
     public record FuncionarioCreateDTO(
-            String nome,
-            String telefone,
-            Integer cargo,  // Agora é Integer, representando o id do Utilizador
+            String telefone,  // Agora é Integer, representando o id do Utilizador
             LocalDate dataAdmissao,
             Integer utilizadorId
     ) implements Serializable {}

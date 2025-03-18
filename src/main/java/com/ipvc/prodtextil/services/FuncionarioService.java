@@ -44,9 +44,7 @@ public class FuncionarioService {
         Utilizador utilizador = utilizadorRepo.findById(funcionarioDTO.utilizadorId())
                 .orElseThrow(() -> new RuntimeException("Utilizador não encontrado"));
 
-        // Carregar o cargo (utilizador) baseado no ID do cargo
-        Utilizador cargo = utilizadorRepo.findById(funcionarioDTO.cargo())
-                .orElseThrow(() -> new RuntimeException("Cargo (Utilizador) não encontrado"));
+        Utilizador cargo = utilizadorRepo.findCargoUtilizadorById(utilizador.getId());
 
         // Criar o novo funcionário
         Funcionario funcionario = new Funcionario();
@@ -100,7 +98,7 @@ public class FuncionarioService {
                 funcionario.getId(),
                 funcionario.getUtilizador().getUsername(),
                 funcionario.getTelefone(),
-                funcionario.getCargo(),
+                funcionario.getTipoUtilizadorId(),
                 funcionario.getDataAdmissao()
         );
     }

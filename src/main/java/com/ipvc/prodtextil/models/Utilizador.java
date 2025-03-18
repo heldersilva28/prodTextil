@@ -36,7 +36,7 @@ public class Utilizador {
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "tipo_utilizador_id", nullable = false)
+    @JoinColumn(name = "tipo_utilizador_id", nullable = false,unique = false)
     private TiposUtilizador tipoUtilizador;
 
     @OneToMany(mappedBy = "utilizador")

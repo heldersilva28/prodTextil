@@ -8,9 +8,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "tipos_utilizadores", schema = "public", uniqueConstraints = {
-        @UniqueConstraint(name = "tipos_utilizadores_nome_key", columnNames = {"nome"})
-})
+@Table(name = "tipos_utilizadores", schema = "public") // Sem UniqueConstraint
 public class TiposUtilizador {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "tipos_utilizadores_id_gen")
@@ -49,5 +47,4 @@ public class TiposUtilizador {
     public void setUtilizadores(Set<Utilizador> utilizadors) {
         this.utilizadors = utilizadors;
     }
-
 }

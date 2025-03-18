@@ -24,7 +24,7 @@ public class Funcionario {
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)  // Alteração para criar FK com a tabela Utilizadores
-    @JoinColumn(name = "cargo", referencedColumnName = "id", nullable = false)  // A FK agora aponta para o id de Utilizadores
+    @JoinColumn(name = "cargo", referencedColumnName = "tipo_utilizador_id", nullable = false)  // A FK agora aponta para o id de Utilizadores
     private Utilizador cargo;  // Cargo agora é uma chave estrangeira para Utilizador
 
     @Size(max = 20)
@@ -63,8 +63,12 @@ public class Funcionario {
         this.utilizador.setUsername(nome);
     }
 
-    public int getCargo() {
+    public int getTipoUtilizadorId() {
         return utilizador.getTipoUtilizador().getId();
+    }
+
+    public Utilizador getCargo(){
+        return cargo;
     }
 
     public void setCargo(Utilizador cargo) {

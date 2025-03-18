@@ -8,4 +8,5 @@ import java.util.Optional;
 public interface CodPostalRepo extends JpaRepository<CodigosPostais,Integer> {
 
     Optional<CodigosPostais> findByCodigo(String postalCode);
+
 }

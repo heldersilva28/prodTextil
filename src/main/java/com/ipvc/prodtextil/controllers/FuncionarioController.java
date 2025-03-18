@@ -32,7 +32,7 @@ public class FuncionarioController {
                         funcionario.getId(),
                         funcionario.getNome(),
                         funcionario.getTelefone(),
-                        funcionario.getCargo(),
+                        funcionario.getTipoUtilizadorId(),
                         funcionario.getDataAdmissao()// Acesse o campo correto do código postal
                 ))
                 .collect(Collectors.toList());
