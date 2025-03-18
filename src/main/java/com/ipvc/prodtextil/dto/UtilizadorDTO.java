@@ -14,9 +14,6 @@ public class UtilizadorDTO {
 
     // DTO para Atualizar um Utilizador
     public record UtilizadorUpdateDTO(
-            String username,
-            String email,
-            String hash,
             Integer tipoUtilizadorId
     ) implements Serializable {}
 

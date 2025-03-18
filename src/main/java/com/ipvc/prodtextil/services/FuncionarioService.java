@@ -11,6 +11,7 @@ import com.ipvc.prodtextil.repos.TipoUtilizadorRepo;
 import com.ipvc.prodtextil.repos.UtilizadorRepo;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -60,32 +61,64 @@ public class FuncionarioService {
     }
 
 
-    public Optional<FuncionarioDTO.FuncionarioResponseDTO> updateFuncionario(Integer id, FuncionarioDTO.FuncionarioUpdateDTO funcionarioDTO) {
-        return funcionarioRepo.findById(id).map(funcionario -> {
-            // Atualizar o utilizador (se necessário)
-                Utilizador utilizador = utilizadorRepo.findById(id)
-                        .orElseThrow(() -> new RuntimeException("Utilizador não encontrado"));
-                funcionario.setUtilizador(utilizador);
+    public Optional<FuncionarioDTO.FuncionarioResponseDTO> updateFuncionario(Integer utilizadorId, FuncionarioDTO.FuncionarioUpdateDTO funcionarioDTO) {
+        System.out.println("🔍 Buscando funcionário para o utilizador com ID: " + utilizadorId);
 
-                Utilizador cargo = utilizadorRepo.findById(funcionarioDTO.cargo())
-                        .orElseThrow(() -> new RuntimeException("Cargo (Utilizador) não encontrado"));
-                funcionario.setCargo(cargo);
+        return funcionarioRepo.findFuncionariosByUtilizadorId(utilizadorId).map(funcionario -> {
+            System.out.println("✅ Funcionário encontrado: " + funcionario.getId());
 
+            // Buscar o novo cargo corretamente
+            Utilizador novoCargo = utilizadorRepo.findById(funcionarioDTO.cargo())
+                    .orElseThrow(() -> new RuntimeException("❌ Cargo (Utilizador) não encontrado"));
 
-            // Atualizar os outros campos
+            // Atualizar cargo
+            System.out.println("🔄 Cargo antes: " + funcionario.getCargo().getId());
+            funcionario.setCargo(novoCargo);
+            System.out.println("✅ Cargo atualizado para: " + novoCargo.getId());
+
+            // Atualizar telefone, se necessário
             if (funcionarioDTO.telefone() != null) {
                 funcionario.setTelefone(funcionarioDTO.telefone());
-            }
-            if (funcionarioDTO.dataAdmissao() != null) {
-                funcionario.setDataAdmissao(funcionarioDTO.dataAdmissao());
             }
 
             // Salvar as alterações
             Funcionario updatedFuncionario = funcionarioRepo.save(funcionario);
+            System.out.println("✅ Funcionário atualizado com sucesso: " + updatedFuncionario.getId());
 
             return convertToDTO(updatedFuncionario);
         });
     }
+
+
+
+
+    public Optional<FuncionarioDTO.FuncionarioResponseDTO> updateFuncionarioCargo(Integer utilizadorId, Integer novoCargoId) {
+        return funcionarioRepo.findByUtilizadorId(utilizadorId).map(funcionario -> {
+            // Verifica se o funcionário tem um cargo antes da alteração
+            if (funcionario.getCargo() != null) {
+                System.out.println("Cargo antes: " + funcionario.getCargo().getId());
+            } else {
+                System.out.println("Funcionário sem cargo definido.");
+            }
+
+            // Buscar o novo cargo do utilizador
+            Utilizador novoCargo = utilizadorRepo.findById(novoCargoId)
+                    .orElseThrow(() -> new RuntimeException("Cargo (Utilizador) não encontrado"));
+
+            // Atualizar o cargo do funcionário
+            funcionario.setCargo(novoCargo);
+
+            // Salvar a atualização no banco de dados
+            Funcionario funcionarioAtualizado = funcionarioRepo.save(funcionario);
+
+            // Exibir o cargo após a atualização
+            System.out.println("Cargo depois: " + funcionarioAtualizado.getCargo().getId());
+
+            return convertToDTO(funcionarioAtualizado);
+        });
+    }
+
+
 
 
 

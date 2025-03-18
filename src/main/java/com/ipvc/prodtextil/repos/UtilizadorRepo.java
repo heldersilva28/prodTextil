@@ -10,4 +10,6 @@ public interface UtilizadorRepo extends JpaRepository<Utilizador, Integer> {
     List<Utilizador> findAllByTipoUtilizador_Nome(String nome);
     Utilizador findTipoUtilizadorById(Integer id);
     Utilizador findCargoUtilizadorById(Integer id);
+    boolean existsByUsername(String username);
+    boolean existsByEmail(String email);
 }
