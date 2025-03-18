@@ -43,7 +43,7 @@ public class FuncionarioController {
 
 
     @GetMapping("/{id}")
-    @Operation(summary = "Buscar funcionario por ID", description = "Retorna um funcioanrio específico pelo ID")
+    @Operation(summary = "Buscar funcionario por ID", description = "Retorna um funcionario específico pelo ID")
     public ResponseEntity<FuncionarioDTO.FuncionarioResponseDTO> getFuncionarioById(@PathVariable Integer id) {
         Optional<FuncionarioDTO.FuncionarioResponseDTO> funcionario = funcionarioService.getFuncionarioById(id);
         return funcionario.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
