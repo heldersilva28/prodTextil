@@ -16,5 +16,5 @@ public interface FuncionarioRepo extends JpaRepository<Funcionario, Integer> {
     Optional<Funcionario> findById(Integer id);
     Optional<Funcionario> findByUtilizadorId(Integer utilizadorId);
     Optional<Funcionario> findFuncionariosByUtilizadorId(Integer utilizadorId);
-
+    Optional<Funcionario> findByUtilizador_Id(Integer utilizadorId);
 }
