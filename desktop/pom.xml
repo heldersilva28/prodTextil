@@ -30,6 +30,12 @@
       <artifactId>javafx-fxml</artifactId>
       <version>21.0.2</version>
     </dependency>
+    <!-- Jackson -->
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>2.15.3</version>
+    </dependency>
 
     <!-- JUnit -->
     <dependency>
@@ -75,7 +81,7 @@
           <execution>
             <id>default-cli</id>
             <configuration>
-              <mainClass>com.ipvc.desktop.HelloApplication</mainClass>
+              <mainClass>com.ipvc.desktop.Main</mainClass>
             </configuration>
             <goals>
               <goal>run</goal>

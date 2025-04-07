@@ -33,25 +33,27 @@ public class AuthController {
             return ResponseEntity.badRequest().body(new AuthResponse("Email já existe", false));
         }
 
-        if (userRepo.existsByUsername(request.nome())) {
-            return ResponseEntity.badRequest().body(new AuthResponse("Username já existe", false));
-        }
+        boolean primeirosRegisto = userRepo.count() == 0;
 
-        Optional<TiposUtilizador> tipo = tipoRepo.findById(request.tipoUtilizadorId());
-        if (tipo.isEmpty()) {
-            return ResponseEntity.badRequest().body(new AuthResponse("Tipo de utilizador inválido", false));
+        // Só permitir criar admin no 1º registo
+        if (!primeirosRegisto && request.tipoUtilizadorId() == 1) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(new AuthResponse("Só é possível criar administradores na primeira utilização.", false));
         }
 
         Utilizador user = new Utilizador();
         user.setUsername(request.nome());
         user.setEmail(request.email());
         user.setHash(authService.hashPassword(request.password()));
-        user.setTipoUtilizador(tipo.get());
+
+        TiposUtilizador tipo = new TiposUtilizador();
+        tipo.setId(request.tipoUtilizadorId());
+        user.setTipoUtilizador(tipo);
 
         userRepo.save(user);
-
         return ResponseEntity.ok(new AuthResponse("Registo feito com sucesso", true));
     }
+
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) {
@@ -62,4 +64,10 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new AuthResponse("Credenciais inválidas", false));
         }
     }
+
+    @GetMapping("/existem-utilizadores")
+    public boolean existemUtilizadores() {
+        return userRepo.count() > 0;
+    }
+
 }
