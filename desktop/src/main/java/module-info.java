@@ -9,4 +9,6 @@ module com.ipvc.desktop {
     exports com.ipvc.desktop;
     exports com.ipvc.desktop.models;
     opens com.ipvc.desktop.models to com.fasterxml.jackson.databind, javafx.fxml;
+    exports com.ipvc.desktop.controller;
+    opens com.ipvc.desktop.controller to javafx.fxml;
 }

@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class TiposUtilizadorService {
+
     private final TipoUtilizadorRepo tiposUtilizadorRepo;
 
     public TiposUtilizadorService(TipoUtilizadorRepo tiposUtilizadorRepo) {
@@ -23,6 +24,11 @@ public class TiposUtilizadorService {
 
     public Optional<TiposUtilizadorResponseDTO> getTipoUtilizadorById(Integer id) {
         return tiposUtilizadorRepo.findById(id).map(this::convertToDTO);
+    }
+
+    // Novo método para retornar apenas o nome do tipo de utilizador
+    public Optional<String> getTipoUtilizadorNomeById(Integer id) {
+        return tiposUtilizadorRepo.findById(id).map(TiposUtilizador::getNome);
     }
 
     public TiposUtilizadorResponseDTO saveTipoUtilizador(TiposUtilizadorCreateDTO tipoUtilizadorDTO) {

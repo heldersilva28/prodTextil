@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+
+<VBox spacing="10" alignment="CENTER" xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.ipvc.desktop.controller.RegistoController"
+      style="-fx-padding: 20;">
+
+    <Label text="Novo Utilizador" style="-fx-font-size: 20px;"/>
+
+    <TextField fx:id="inputNome" promptText="Nome de utilizador" />
+    <TextField fx:id="inputEmail" promptText="Email" />
+    <PasswordField fx:id="inputPassword" promptText="Palavra-passe" />
+
+    <ComboBox fx:id="tipoComboBox" promptText="Tipo de utilizador" />
+
+    <Button text="Criar" onAction="#criarUtilizador" />
+</VBox>

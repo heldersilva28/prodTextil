@@ -3,8 +3,11 @@ package com.ipvc.desktop;
 import com.ipvc.desktop.models.AuthService;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+
+import java.util.Objects;
 
 public class Main extends Application {
     @Override
@@ -12,15 +15,19 @@ public class Main extends Application {
         AuthService authService = new AuthService();
         FXMLLoader fxmlLoader;
 
-        if (authService.existemUtilizadores()) {
-            fxmlLoader = new FXMLLoader(Main.class.getResource("login.fxml"));
-        } else {
-            fxmlLoader = new FXMLLoader(Main.class.getResource("registo.fxml"));
-        }
+        String fxmlPath = authService.existemUtilizadores()
+                ? "/com/ipvc/desktop/login.fxml"
+                : "/com/ipvc/desktop/registo.fxml";
 
-        Scene scene = new Scene(fxmlLoader.load(), 320, 300);
-        stage.setTitle("Autenticação");
+        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(fxmlPath)));
+        Scene scene = new Scene(root, 1000, 600); // largura maior para o layout em HBox
+
+        scene.getStylesheets().add(Objects.requireNonNull(
+                getClass().getResource("/com/ipvc/desktop/style/login.css")).toExternalForm());
+
+        stage.setTitle("Gestão Têxtil - Autenticação");
         stage.setScene(scene);
+        stage.setResizable(false);
         stage.show();
     }
 

@@ -1,19 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.control.*?>
 <?import javafx.geometry.Pos?>
 
-<VBox xmlns="http://javafx.com/javafx"
+<HBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.ipvc.desktop.LoginController"
-      spacing="20" alignment="CENTER" prefWidth="400" prefHeight="350"
-      style="-fx-background-color: #fafafa; -fx-padding: 40; -fx-border-radius: 15; -fx-background-radius: 15; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0, 0, 5);">
+      fx:controller="com.ipvc.desktop.controller.LoginController"
+      prefWidth="800" prefHeight="500"
+      styleClass="login-root">
 
-  <Label text="Welcome Back!" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #333333;"/>
-  <TextField fx:id="emailField" promptText="Email"
-             style="-fx-font-size: 16px; -fx-background-radius: 10; -fx-padding: 12; -fx-background-color: #ffffff; -fx-border-color: #e0e0e0; -fx-border-width: 2; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0, 0, 3);"/>
-  <PasswordField fx:id="passwordField" promptText="Password"
-                 style="-fx-font-size: 16px; -fx-background-radius: 10; -fx-padding: 12; -fx-background-color: #ffffff; -fx-border-color: #e0e0e0; -fx-border-width: 2; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0, 0, 3);"/>
-  <Button text="Login" onAction="#onLoginClick"
-          style="-fx-font-size: 18px; -fx-background-color: #0066cc; -fx-text-fill: white; -fx-padding: 12 30; -fx-background-radius: 20; -fx-font-weight: bold; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 8, 0, 0, 4);"/>
-</VBox>
+  <!-- Lado esquerdo: Formulário -->
+  <VBox fx:id="loginVBox" alignment="CENTER" spacing="20" styleClass="login-form" prefWidth="400">
+    <Label text="Gestão Têxtil" styleClass="login-title"/>
+    <TextField fx:id="emailField" promptText="Email" styleClass="login-field"/>
+    <PasswordField fx:id="passwordField" promptText="Password" styleClass="login-field"/>
+    <Button text="Entrar" onAction="#onLoginClick" styleClass="login-button"/>
+    <Label fx:id="errorLabel" text="Credenciais inválidas" visible="false" styleClass="error-label"/>
+  </VBox>
+
+  <!-- Lado direito: Imagem de fundo com efeito -->
+  <StackPane styleClass="image-pane" prefWidth="400">
+    <ImageView fx:id="sideImage" fitWidth="400" fitHeight="500" preserveRatio="false" styleClass="side-image"/>
+    <VBox alignment="CENTER" styleClass="overlay-text">
+      <Label text="Bem-vindo!" styleClass="welcome-text"/>
+      <Label text="Gerencie sua produção com estilo." styleClass="subtitle-text"/>
+    </VBox>
+  </StackPane>
+</HBox>

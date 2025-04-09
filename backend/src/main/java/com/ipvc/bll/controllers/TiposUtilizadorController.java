@@ -34,6 +34,14 @@ public class TiposUtilizadorController {
         return tipoUtilizador.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    // Novo endpoint para retornar apenas o nome do tipo de utilizador
+    @GetMapping("/{id}/nome")
+    @Operation(summary = "Buscar nome de um tipo de utilizador", description = "Retorna o nome de um tipo de utilizador específico")
+    public ResponseEntity<String> getTipoUtilizadorNomeById(@PathVariable Integer id) {
+        Optional<String> nome = tiposUtilizadorService.getTipoUtilizadorNomeById(id);
+        return nome.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
     @PostMapping
     @Operation(summary = "Criar um novo tipo de utilizador", description = "Registra um novo tipo de utilizador")
     public ResponseEntity<TiposUtilizadorResponseDTO> createTipoUtilizador(@RequestBody TiposUtilizadorCreateDTO tipoUtilizadorDTO) {

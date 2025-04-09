@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Pos?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.ipvc.desktop.controller.PainelAdminController"
+      spacing="20" alignment="TOP_CENTER" prefWidth="800" prefHeight="600"
+      style="-fx-background-color: #f4f4f4; -fx-padding: 20; -fx-border-radius: 15; -fx-background-radius: 15;">
+
+    <!-- Header with Title -->
+    <Label text="Painel de Administração" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #333333;" />
+
+    <!-- Table to display users -->
+    <TableView fx:id="tabelaUtilizadores" prefWidth="750">
+        <columns>
+            <TableColumn fx:id="colNome" text="Nome" prefWidth="200"/>
+            <TableColumn fx:id="colEmail" text="Email" prefWidth="250"/>
+            <TableColumn fx:id="colTipo" text="Tipo" prefWidth="150"/>
+        </columns>
+    </TableView>
+
+    <!-- Actions Section -->
+    <HBox spacing="15" alignment="CENTER">
+        <Button text="Adicionar Utilizador" onAction="#abrirFormularioNovoUtilizador" style="-fx-font-size: 16px; -fx-background-color: #4CAF50; -fx-text-fill: white; -fx-padding: 10 20; -fx-border-radius: 10;"/>
+   </HBox>
+
+</VBox>
