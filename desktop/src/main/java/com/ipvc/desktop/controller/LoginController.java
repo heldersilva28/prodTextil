@@ -18,6 +18,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.net.URL;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class LoginController implements Initializable {
@@ -49,10 +50,13 @@ public class LoginController implements Initializable {
                         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/ipvc/desktop/painel-admin.fxml"));
                         Parent root = fxmlLoader.load();
 
-                        Scene scene = new Scene(root, 900, 600);
+                        Scene scene = new Scene(root, 1000, 650);
+                        scene.getStylesheets().add(Objects.requireNonNull(
+                                getClass().getResource("/com/ipvc/desktop/style/painel-admin.css")).toExternalForm());
                         Stage stage = new Stage();
                         stage.setTitle("Painel do Administrador");
                         stage.setScene(scene);
+                        stage.setResizable(false);
                         stage.show();
 
                         // Fecha a janela atual

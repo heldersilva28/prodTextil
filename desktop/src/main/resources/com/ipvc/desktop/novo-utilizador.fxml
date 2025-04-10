@@ -1,20 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.geometry.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Pos?>
 
-<VBox spacing="10" alignment="CENTER" xmlns="http://javafx.com/javafx"
+<HBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.ipvc.desktop.controller.RegistoController"
-      style="-fx-padding: 20;">
+      prefWidth="800" prefHeight="500"
+      styleClass="login-root">
 
-    <Label text="Novo Utilizador" style="-fx-font-size: 20px;"/>
+    <!-- Lado esquerdo: Formulário de Registo -->
+    <VBox fx:id="registoVBox" alignment="CENTER" spacing="20" styleClass="login-form" prefWidth="450" HBox.hgrow="ALWAYS">
+        <Label text="Criar Conta" styleClass="login-title"/>
+        <TextField fx:id="inputNome" promptText="Nome de utilizador" styleClass="login-field"/>
+        <TextField fx:id="inputEmail" promptText="Email" styleClass="login-field"/>
+        <PasswordField fx:id="inputPassword" promptText="Palavra-passe" styleClass="login-field"/>
+        <ComboBox fx:id="tipoComboBox" promptText="Tipo de utilizador" styleClass="login-field"/>
+        <Button text="Registar" onAction="#criarUtilizador" styleClass="login-button"/>
+        <Label fx:id="errorLabel" text="Erro ao registar" visible="false" styleClass="error-label"/>
+    </VBox>
 
-    <TextField fx:id="inputNome" promptText="Nome de utilizador" />
-    <TextField fx:id="inputEmail" promptText="Email" />
-    <PasswordField fx:id="inputPassword" promptText="Palavra-passe" />
+    <!-- Lado direito: Imagem motivacional -->
+    <StackPane styleClass="image-pane" prefWidth="350"> <!-- Largura menor para a imagem -->
+        <ImageView fx:id="sideImage" fitWidth="300" fitHeight="500" preserveRatio="false" styleClass="side-image"/>
+        <VBox alignment="CENTER" styleClass="overlay-text">
+            <Label text="Adicionar Utilizador!" styleClass="welcome-text"/>
+            <Label text="Adicione um utiliador à plataforma!" styleClass="subtitle-text"/>
+        </VBox>
+    </StackPane>
 
-    <ComboBox fx:id="tipoComboBox" promptText="Tipo de utilizador" />
-
-    <Button text="Criar" onAction="#criarUtilizador" />
-</VBox>
+</HBox>

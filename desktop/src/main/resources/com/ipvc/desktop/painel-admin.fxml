@@ -2,28 +2,37 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Pos?>
+<?import javafx.scene.text.Font?>
 
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.ipvc.desktop.controller.PainelAdminController"
-      spacing="20" alignment="TOP_CENTER" prefWidth="800" prefHeight="600"
-      style="-fx-background-color: #f4f4f4; -fx-padding: 20; -fx-border-radius: 15; -fx-background-radius: 15;">
+      spacing="20" alignment="TOP_CENTER" prefWidth="1000" prefHeight="650"
+      styleClass="root-container">
 
-    <!-- Header with Title -->
-    <Label text="Painel de Administração" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #333333;" />
+    <!-- Cabeçalho -->
+    <HBox alignment="CENTER" spacing="10" styleClass="header">
+        <Label text="Painel de Administração" styleClass="header-label"/>
+        <Button text="Logout" onAction="#onLogout" styleClass="logout-button"/>
+    </HBox>
 
-    <!-- Table to display users -->
-    <TableView fx:id="tabelaUtilizadores" prefWidth="750">
-        <columns>
-            <TableColumn fx:id="colNome" text="Nome" prefWidth="200"/>
-            <TableColumn fx:id="colEmail" text="Email" prefWidth="250"/>
-            <TableColumn fx:id="colTipo" text="Tipo" prefWidth="150"/>
-        </columns>
-    </TableView>
+    <!-- Área Principal (Menu + Conteúdo) -->
+    <HBox styleClass="main-container" spacing="0" prefHeight="650">
+        <!-- Menu Lateral -->
+        <VBox spacing="10" alignment="TOP_LEFT" styleClass="sidebar" prefWidth="400">
+            <Button text="Dashboard" styleClass="menu-item"/>
+            <Button text="Gestão de Utilizadores" styleClass="menu-item" onAction="#abrirGestaoUtilizadores"/>
+            <Button text="Encomendas Clientes" styleClass="menu-item"/>
+            <Button text="Encomendas Fornecedores" styleClass="menu-item"/>
+            <Button text="Gestão de Materiais" styleClass="menu-item"/>
+            <Button text="Gestão de Funcionários" styleClass="menu-item"/>
+            <Button text="Histórico de Eventos" styleClass="menu-item"/>
+        </VBox>
 
-    <!-- Actions Section -->
-    <HBox spacing="15" alignment="CENTER">
-        <Button text="Adicionar Utilizador" onAction="#abrirFormularioNovoUtilizador" style="-fx-font-size: 16px; -fx-background-color: #4CAF50; -fx-text-fill: white; -fx-padding: 10 20; -fx-border-radius: 10;"/>
-   </HBox>
+        <!-- Conteúdo Principal (que ocupa o restante da tela) -->
+        <StackPane fx:id="contentPane" alignment="TOP_RIGHT" styleClass="content-pane" HBox.hgrow="ALWAYS">
+            <!-- O conteúdo será carregado dinamicamente aqui -->
+        </StackPane>
+    </HBox>
 
 </VBox>

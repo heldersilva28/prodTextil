@@ -21,7 +21,7 @@
 
   <!-- Lado direito: Imagem de fundo com efeito -->
   <StackPane styleClass="image-pane" prefWidth="400">
-    <ImageView fx:id="sideImage" fitWidth="400" fitHeight="500" preserveRatio="false" styleClass="side-image"/>
+    <ImageView fx:id="sideImage" fitWidth="600" fitHeight="500" preserveRatio="false" styleClass="side-image"/>
     <VBox alignment="CENTER" styleClass="overlay-text">
       <Label text="Bem-vindo!" styleClass="welcome-text"/>
       <Label text="Gerencie sua produção com estilo." styleClass="subtitle-text"/>
