@@ -1,6 +1,6 @@
 package com.ipvc.desktop;
 
-import com.ipvc.desktop.models.AuthService;
+import com.ipvc.desktop.Service.AuthService;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -15,8 +15,8 @@ public class Main extends Application {
         AuthService authService = new AuthService();
 
         String fxmlPath = authService.existemUtilizadores()
-                ? "/com/ipvc/desktop/login.fxml"
-                : "/com/ipvc/desktop/registo.fxml";
+                ? "/com/ipvc/desktop/views/login.fxml"
+                : "/com/ipvc/desktop/views/registo.fxml";
 
         Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(fxmlPath)));
         Scene scene = new Scene(root, 1000, 600); // largura maior para o layout em HBox

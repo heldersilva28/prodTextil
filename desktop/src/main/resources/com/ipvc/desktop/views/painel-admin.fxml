@@ -16,7 +16,7 @@
         <ImageView fitHeight="60" fitWidth="60"
                    pickOnBounds="true" preserveRatio="true">
             <image>
-                <Image url="@paineladm.png"/>
+                <Image url="@../images/paineladm.png"/>
             </image>
         </ImageView>
         <Label text="Painel de Administração" styleClass="header-label"/>

@@ -1,4 +1,4 @@
-package com.ipvc.desktop.models;
+package com.ipvc.desktop.Response;
 
 public class AuthResponse {
     private String message;

@@ -1,4 +1,4 @@
-package com.ipvc.desktop.models;
+package com.ipvc.desktop.Request;
 
 public class LoginRequest {
     private String email;

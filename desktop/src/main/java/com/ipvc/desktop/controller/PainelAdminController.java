@@ -11,9 +11,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -77,7 +75,7 @@ public class PainelAdminController {
     public void abrirFormularioNovoUtilizador(ActionEvent event) {
         try {
             // Carregar a interface do formulário para adicionar um novo utilizador
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/ipvc/desktop/novo-utilizador.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/ipvc/desktop/views/novo-utilizador.fxml"));
             Scene scene = new Scene(fxmlLoader.load());
 
             // Criar uma nova janela para o formulário
@@ -109,7 +107,7 @@ public class PainelAdminController {
                 System.out.println("Sessão encerrada!");
 
                 // Por exemplo, carregar a tela de login novamente:
-                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/ipvc/desktop/login.fxml"));
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/ipvc/desktop/views/login.fxml"));
                 Scene scene = new Scene(fxmlLoader.load(), 1000, 600);
                 scene.getStylesheets().add(Objects.requireNonNull(
                         getClass().getResource("/com/ipvc/desktop/style/login.css")).toExternalForm());
@@ -130,12 +128,12 @@ public class PainelAdminController {
 
     @FXML
     public void abrirDashboard() {
-        carregarConteudo("/com/ipvc/desktop/dashboard.fxml","/com/ipvc/desktop/style/dashboard.css"); // Carrega o conteúdo do Dashboard
+        carregarConteudo("/com/ipvc/desktop/views/dashboard.fxml","/com/ipvc/desktop/style/dashboard.css"); // Carrega o conteúdo do Dashboard
     }
 
     @FXML
     public void abrirGestaoUtilizadores() {
-        carregarConteudo("/com/ipvc/desktop/novo-utilizador.fxml","/com/ipvc/desktop/style/login.css"); // Carrega a página de gestão de utilizadores
+        carregarConteudo("/com/ipvc/desktop/views/novo-utilizador.fxml","/com/ipvc/desktop/style/login.css"); // Carrega a página de gestão de utilizadores
 
     }
 

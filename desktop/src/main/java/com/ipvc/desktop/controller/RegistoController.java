@@ -1,8 +1,8 @@
 package com.ipvc.desktop.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ipvc.desktop.models.AuthResponse;
-import com.ipvc.desktop.models.RegisterRequest;
+import com.ipvc.desktop.Response.AuthResponse;
+import com.ipvc.desktop.Request.RegisterRequest;
 import javafx.animation.FadeTransition;
 import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
@@ -91,7 +91,7 @@ public class RegistoController {
 
     private void irParaLogin() {
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/ipvc/desktop/login.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/ipvc/desktop/views/login.fxml"));
             Parent root = fxmlLoader.load();
 
             Scene scene = new Scene(root, 800, 500);

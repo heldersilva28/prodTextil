@@ -1,6 +1,8 @@
-package com.ipvc.desktop.models;
+package com.ipvc.desktop.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ipvc.desktop.Request.LoginRequest;
+import com.ipvc.desktop.Response.AuthResponse;
 
 import java.net.URI;
 import java.net.http.HttpClient;

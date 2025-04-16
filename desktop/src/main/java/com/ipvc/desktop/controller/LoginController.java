@@ -1,7 +1,7 @@
 package com.ipvc.desktop.controller;
 
-import com.ipvc.desktop.models.AuthResponse;
-import com.ipvc.desktop.models.AuthService;
+import com.ipvc.desktop.Response.AuthResponse;
+import com.ipvc.desktop.Service.AuthService;
 import javafx.animation.FadeTransition;
 import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
@@ -47,7 +47,7 @@ public class LoginController implements Initializable {
                 showToast(response.getMessage(), () -> {
                     // Carrega a próxima tela (painel admin)
                     try {
-                        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/ipvc/desktop/painel-admin.fxml"));
+                        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/ipvc/desktop/views/painel-admin.fxml"));
                         Parent root = fxmlLoader.load();
 
                         Scene scene = new Scene(root, 1000, 650);
