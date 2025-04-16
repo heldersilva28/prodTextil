@@ -3,6 +3,7 @@ package com.ipvc.desktop.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ipvc.desktop.Response.AuthResponse;
 import com.ipvc.desktop.Request.RegisterRequest;
+import com.ipvc.desktop.models.Utilizador;
 import javafx.animation.FadeTransition;
 import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
@@ -30,12 +31,14 @@ public class RegistoController {
     @FXML private Label errorLabel;
 
     private final ObjectMapper mapper = new ObjectMapper();
+    private final Utilizador utilizador = new Utilizador();
 
     @FXML
     public void initialize() {
         tipoComboBox.getItems().addAll(
-                new TipoItem(1, "Admin"),
-                new TipoItem(2, "Funcionário")
+                new TipoItem(1, utilizador.getTipoUtilizadorNomeFromApi(1)),
+                new TipoItem(2, utilizador.getTipoUtilizadorNomeFromApi(2)),
+                new TipoItem(3,utilizador.getTipoUtilizadorNomeFromApi(3))
         );
 
         FadeTransition ft = new FadeTransition(Duration.millis(800), registoVBox);

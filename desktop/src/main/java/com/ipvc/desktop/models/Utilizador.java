@@ -37,7 +37,7 @@ public class Utilizador {
     }
 
     // Faz uma requisição HTTP para buscar o nome do tipo de utilizador
-    private String getTipoUtilizadorNomeFromApi(int tipoUtilizadorId) {
+    public String getTipoUtilizadorNomeFromApi(int tipoUtilizadorId) {
         try {
             // Faz a requisição HTTP para buscar o nome do tipo de utilizador
             HttpRequest request = HttpRequest.newBuilder()
