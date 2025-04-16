@@ -56,7 +56,7 @@ public class LoginController implements Initializable {
                         Stage stage = new Stage();
                         stage.setTitle("Painel do Administrador");
                         stage.setScene(scene);
-                        stage.setResizable(false);
+
                         stage.show();
 
                         // Fecha a janela atual
