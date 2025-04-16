@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Pos?>
+<?import javafx.scene.text.Font?>
+
+<?import javafx.scene.chart.PieChart?>
+<ScrollPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.ipvc.desktop.controller.DashboardController"
+            fitToWidth="true" fitToHeight="true">
+
+    <VBox alignment="TOP_CENTER" spacing="20" styleClass="dashboard-container" fx:id="dashboardVbox">
+
+    <Label text="Resumo Geral" styleClass="dashboard-title"/>
+
+        <TilePane fx:id="cardsPane" hgap="15" vgap="15" prefColumns="3">
+            <!-- Cartões de estatísticas -->
+            <VBox alignment="CENTER" spacing="5" styleClass="dashboard-card">
+                <Label text="📊" styleClass="dashboard-icon"/>
+                <PieChart fx:id="pieChart" prefWidth="250" prefHeight="250"/>
+            </VBox>
+
+
+            <VBox alignment="CENTER" spacing="5" styleClass="dashboard-card">
+                <Label text="👥" styleClass="dashboard-icon"/>
+                <Label text="--" fx:id="totalUtilizadoresLabel" styleClass="dashboard-number"/>
+                <Label text="Utilizadores Totais" styleClass="dashboard-label"/>
+            </VBox>
+
+            <VBox alignment="CENTER" spacing="5" styleClass="dashboard-card">
+                <Label text="📦" styleClass="dashboard-icon"/>
+                <Label text="--" fx:id="encomendasClientesLabel" styleClass="dashboard-number"/>
+                <Label text="Encomendas Clientes" styleClass="dashboard-label"/>
+            </VBox>
+
+            <VBox alignment="CENTER" spacing="5" styleClass="dashboard-card">
+                <Label text="🏭" styleClass="dashboard-icon"/>
+                <Label text="--" fx:id="encomendasFornecedoresLabel" styleClass="dashboard-number"/>
+                <Label text="Encomendas Fornecedores" styleClass="dashboard-label"/>
+            </VBox>
+
+            <VBox alignment="CENTER" spacing="5" styleClass="dashboard-card">
+                <Label text="📦" styleClass="dashboard-icon"/>
+                <Label text="--" fx:id="materiaisStockLabel" styleClass="dashboard-number"/>
+                <Label text="Materiais em Stock" styleClass="dashboard-label"/>
+            </VBox>
+
+            <VBox alignment="CENTER" spacing="5" styleClass="dashboard-card">
+                <Label text="👨‍🔧" styleClass="dashboard-icon"/>
+                <Label text="--" fx:id="funcionariosLabel" styleClass="dashboard-number"/>
+                <Label text="Funcionários" styleClass="dashboard-label"/>
+            </VBox>
+
+        </TilePane>
+
+    </VBox>
+</ScrollPane>

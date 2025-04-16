@@ -1,0 +1,38 @@
+.dashboard-container {
+    -fx-padding: 20;
+    -fx-background-color: #f4f4f4;
+}
+
+.dashboard-title {
+    -fx-font-size: 26px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333;
+}
+
+.dashboard-card {
+    -fx-background-color: white;
+    -fx-padding: 20;
+    -fx-border-radius: 12;
+    -fx-background-radius: 12;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 8, 0, 0, 4);
+    -fx-min-width: 200;
+    -fx-max-width: 270;
+    -fx-alignment: center;
+    -fx-spacing: 10;
+}
+
+.dashboard-icon {
+    -fx-font-size: 40px;
+}
+
+.dashboard-number {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+}
+
+.dashboard-label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #666;
+}
+
