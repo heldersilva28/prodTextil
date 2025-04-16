@@ -3,6 +3,7 @@ package com.ipvc.desktop.controller;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ipvc.desktop.models.Utilizador;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -46,6 +47,8 @@ public class PainelAdminController {
 //
 //        // Carregar a lista de utilizadores da API
 //        carregarUtilizadores();
+        // só é seguro chamar aqui, porque o FXML já está na Scene
+        Platform.runLater(this::abrirDashboard);
     }
 
     private void carregarUtilizadores() {
@@ -125,10 +128,10 @@ public class PainelAdminController {
 
     // Métodos para carregar diferentes seções no painel
 
-//    @FXML
-//    public void abrirDashboard() {
-//        carregarConteudo("/com/ipvc/desktop/dashboard.fxml"); // Carrega o conteúdo do Dashboard
-//    }
+    @FXML
+    public void abrirDashboard() {
+        carregarConteudo("/com/ipvc/desktop/dashboard.fxml","/com/ipvc/desktop/style/dashboard.css"); // Carrega o conteúdo do Dashboard
+    }
 
     @FXML
     public void abrirGestaoUtilizadores() {
