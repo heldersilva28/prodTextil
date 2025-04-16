@@ -30,6 +30,7 @@ public class DashboardController {
     @FXML private Label materiaisStockLabel;
     @FXML private Label funcionariosLabel;
     @FXML private PieChart pieChart;
+    @FXML private Label lucroLabel;
 
     private final HttpClient httpClient = HttpClient.newHttpClient();
     private final String baseUrl = "http://localhost:8080/api/dashboard"; // Endpoint único
@@ -90,7 +91,21 @@ public class DashboardController {
                 materiaisStockLabel.setText(String.valueOf(materiaisStock));
                 funcionariosLabel.setText(String.valueOf(funcionarios));
 
+
+                BigDecimal lucro = rendimentos.subtract(despesas);
+                BigDecimal percentagem = despesas.compareTo(BigDecimal.ZERO) != 0
+                        ? lucro.multiply(BigDecimal.valueOf(100)).divide(despesas, 2, BigDecimal.ROUND_HALF_UP)
+                        : BigDecimal.ZERO;
+
+                String corLucro = lucro.compareTo(BigDecimal.ZERO) >= 0 ? "#4CAF50" : "#FF5252";
+                String lucroTexto = String.format("%+.2f€ (%.1f%%)", lucro.doubleValue(), percentagem.doubleValue());
+
+                lucroLabel.setText(lucroTexto);
+                lucroLabel.setStyle("-fx-text-fill: " + corLucro + "; -fx-font-weight: bold;");
+
+
                 carregarGraficoPie(rendimentos, despesas);
+                //carregarGraficoPie(rendimentos, despesas);
             });
 
         } catch (Exception e) {
@@ -119,21 +134,21 @@ public class DashboardController {
         // Pequena pausa para garantir que os nodes foram criados
         PauseTransition pause = new PauseTransition(Duration.millis(150));
         pause.setOnFinished(e -> Platform.runLater(() -> {
-            double totalFinal = total; // Para usar dentro da lambda
+            double totalFinal = total;
             for (PieChart.Data data : dados) {
                 Node slice = data.getNode();
                 if (slice == null) continue;
 
-                String nome = data.getName();
+                String nomeBase = data.getName().split(":")[0];
                 double valor = data.getPieValue();
 
                 if (totalFinal != 0) {
                     double percentagem = (valor / totalFinal) * 100;
-                    data.setName(String.format("%s: %.2f€ (%.1f%%)", nome, valor, percentagem));
+                    data.setName(String.format("%s: %.2f€ (%.1f%%)", nomeBase, valor, percentagem));
 
-                    if (nome.startsWith("Rendimentos")) {
+                    if (nomeBase.equals("Rendimentos")) {
                         slice.setStyle("-fx-pie-color: #4CAF50;");
-                    } else if (nome.startsWith("Despesas")) {
+                    } else if (nomeBase.equals("Despesas")) {
                         slice.setStyle("-fx-pie-color: #FF5252;");
                     }
                 } else {
@@ -141,19 +156,28 @@ public class DashboardController {
                 }
             }
 
-            // Coloração da legenda
-            for (Node legendItem : pieChart.lookupAll(".chart-legend-item")) {
-                if (legendItem instanceof Label label) {
-                    String text = label.getText();
-                    if (text.contains("Rendimentos")) {
-                        label.setStyle("-fx-text-fill: #4CAF50;");
-                    } else if (text.contains("Despesas")) {
-                        label.setStyle("-fx-text-fill: #FF5252;");
-                    } else {
-                        label.setStyle("-fx-text-fill: #9E9E9E;");
+            // Nova pausa para garantir que a legenda foi renderizada
+            PauseTransition legendaDelay = new PauseTransition(Duration.millis(100));
+            legendaDelay.setOnFinished(ev -> Platform.runLater(() -> {
+                for (Node legendItem : pieChart.lookupAll(".chart-legend-item")) {
+                    Node symbol = legendItem.lookup(".chart-legend-item-symbol");
+                    if (symbol != null && legendItem instanceof Label label) {
+                        String text = label.getText();
+                        if (text.contains("Rendimentos")) {
+                            label.setStyle("-fx-text-fill: #4CAF50;");
+                            symbol.setStyle("-fx-background-color: #4CAF50; -fx-background-radius: 10;");
+                        } else if (text.contains("Despesas")) {
+                            label.setStyle("-fx-text-fill: #FF5252;");
+                            symbol.setStyle("-fx-background-color: #FF5252; -fx-background-radius: 10;");
+                        } else {
+                            label.setStyle("-fx-text-fill: #9E9E9E;");
+                            symbol.setStyle("-fx-background-color: #BDBDBD;");
+                        }
                     }
                 }
-            }
+            }));
+            legendaDelay.play();
+
         }));
         pause.play();
     }

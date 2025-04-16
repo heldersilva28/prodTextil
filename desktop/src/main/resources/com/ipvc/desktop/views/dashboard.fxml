@@ -19,6 +19,7 @@
             <VBox alignment="CENTER" spacing="5" styleClass="dashboard-card">
                 <Label text="📊" styleClass="dashboard-icon"/>
                 <PieChart fx:id="pieChart" prefWidth="250" prefHeight="250"/>
+                <Label text="--" fx:id="lucroLabel" styleClass="dashboard-number"/>
             </VBox>
 
 
