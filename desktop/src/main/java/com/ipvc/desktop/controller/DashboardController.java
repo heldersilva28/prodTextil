@@ -6,12 +6,16 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.chart.PieChart;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -31,6 +35,7 @@ public class DashboardController {
     @FXML private Label funcionariosLabel;
     @FXML private PieChart pieChart;
     @FXML private Label lucroLabel;
+    @FXML private Label clientesLabel;
 
     private final HttpClient httpClient = HttpClient.newHttpClient();
     private final String baseUrl = "http://localhost:8080/api/dashboard"; // Endpoint único
@@ -43,6 +48,10 @@ public class DashboardController {
         ft.play();
 
         carregarDadosDashboard();
+    }
+    private PainelAdminController parentController;
+    public void setParentController(PainelAdminController parentController) {
+        this.parentController = parentController;
     }
 
     private void carregarDadosDashboard() {
@@ -62,6 +71,7 @@ public class DashboardController {
                         encomendasFornecedoresLabel.setText("Erro");
                         materiaisStockLabel.setText("Erro");
                         funcionariosLabel.setText("Erro");
+                        clientesLabel.setText("Erro");
                     });
                     return null;
                 });
@@ -71,12 +81,12 @@ public class DashboardController {
         try {
             ObjectMapper mapper = new ObjectMapper();
             JsonNode data = mapper.readTree(json);
-
             long totalUtilizadores = data.get("totalUtilizadores").asLong();
             long encomendasClientes = data.get("totalEncomendasClientes").asLong();
             long encomendasFornecedores = data.get("totalEncomendasFornecedores").asLong();
             long materiaisStock = data.get("totalMateriais").asLong();
             long funcionarios = data.get("totalFuncionarios").asLong();
+            long cliente = data.get("totalClientes").asLong();
 
             BigDecimal rendimentos = data.has("rendimentos") ?
                     new BigDecimal(data.get("rendimentos").asText()) : BigDecimal.ZERO;
@@ -90,7 +100,7 @@ public class DashboardController {
                 encomendasFornecedoresLabel.setText(String.valueOf(encomendasFornecedores));
                 materiaisStockLabel.setText(String.valueOf(materiaisStock));
                 funcionariosLabel.setText(String.valueOf(funcionarios));
-
+                clientesLabel.setText(String.valueOf(cliente));
 
                 BigDecimal lucro = rendimentos.subtract(despesas);
                 BigDecimal percentagem = despesas.compareTo(BigDecimal.ZERO) != 0
@@ -105,7 +115,6 @@ public class DashboardController {
 
 
                 carregarGraficoPie(rendimentos, despesas);
-                //carregarGraficoPie(rendimentos, despesas);
             });
 
         } catch (Exception e) {
@@ -182,5 +191,9 @@ public class DashboardController {
         pause.play();
     }
 
+    @FXML
+    private void abrirGestaoUtilizadores() {
+        parentController.carregarConteudo("/com/ipvc/desktop/views/novo-utilizador.fxml","/com/ipvc/desktop/style/login.css");
+    }
 
 }
