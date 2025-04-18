@@ -8,6 +8,7 @@ public record DashboardStatsDTO(
         long totalEncomendasFornecedores,
         long totalMateriais,
         long totalFuncionarios,
+        long totalClientes,
         BigDecimal rendimentos,
         BigDecimal despesas
 ) {}

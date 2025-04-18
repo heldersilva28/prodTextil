@@ -18,6 +18,7 @@ public class DashboardService {
     private final FuncionarioRepo funcionarioRepo;
     private final RecebimentosClientesRepo recebimentosRepo;
     private final PagamentosFornecedoresRepo pagamentosRepo;
+    private final ClienteRepo clienteRepo;
 
     public DashboardService(
             UtilizadorRepo utilizadorRepo,
@@ -26,7 +27,8 @@ public class DashboardService {
             MateriaisRepo materiaisRepo,
             FuncionarioRepo funcionarioRepo,
             RecebimentosClientesRepo recebimentosRepo,
-            PagamentosFornecedoresRepo pagamentosRepo
+            PagamentosFornecedoresRepo pagamentosRepo,
+            ClienteRepo clienteRepo
     ) {
         this.utilizadorRepo = utilizadorRepo;
         this.encomendaClienteRepo = encomendaClienteRepo;
@@ -35,6 +37,7 @@ public class DashboardService {
         this.funcionarioRepo = funcionarioRepo;
         this.recebimentosRepo = recebimentosRepo;
         this.pagamentosRepo = pagamentosRepo;
+        this.clienteRepo = clienteRepo;
     }
 
     public DashboardStatsDTO getStats() {
@@ -43,6 +46,7 @@ public class DashboardService {
         long totalEncomendasFornecedores = encomendaFornecedorRepo.count();
         long totalMateriais = materiaisRepo.count();
         long totalFuncionarios = funcionarioRepo.count();
+        long totalClientes = clienteRepo.count();
 
         BigDecimal rendimentos = recebimentosRepo.findAll().stream()
                 .map(RecebimentosCliente::getValorRecebido)
@@ -58,6 +62,7 @@ public class DashboardService {
                 totalEncomendasFornecedores,
                 totalMateriais,
                 totalFuncionarios,
+                totalClientes,
                 rendimentos,
                 despesas
         );
