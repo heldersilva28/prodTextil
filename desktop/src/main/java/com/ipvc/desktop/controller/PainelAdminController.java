@@ -8,6 +8,7 @@ import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -128,7 +129,7 @@ public class PainelAdminController {
 
     @FXML
     public void abrirDashboard() {
-        carregarConteudo("/com/ipvc/desktop/views/dashboard.fxml","/com/ipvc/desktop/style/dashboard.css"); // Carrega o conteúdo do Dashboard
+        carregarConteudoDashboard("/com/ipvc/desktop/views/dashboard.fxml","/com/ipvc/desktop/style/dashboard.css"); // Carrega o conteúdo do Dashboard
     }
 
     @FXML
@@ -163,7 +164,7 @@ public class PainelAdminController {
 //    }
 
     // Método para carregar o conteúdo dinâmico na StackPane
-    private void carregarConteudo(String fxmlPath, String css) {
+    public void carregarConteudo(String fxmlPath, String css) {
         try {
             // Carregar o FXML
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
@@ -190,6 +191,33 @@ public class PainelAdminController {
             e.printStackTrace();
             new Alert(Alert.AlertType.ERROR, "Erro ao carregar conteúdo").showAndWait();
         }
+    }
+
+    private void carregarConteudoDashboard(String fxmlPath, String cssPath) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+            Parent root = loader.load();
+
+            // Tenta injetar este controlador no novo, se ele tiver o método
+            Object controller = loader.getController();
+            if (controller instanceof DashboardController dashboardController) {
+                dashboardController.setParentController(this);
+            }
+
+            // Aplica CSS se fornecido
+            if (cssPath != null && !cssPath.isEmpty()) {
+                root.getStylesheets().clear();
+                root.getStylesheets().add(getClass().getResource(cssPath).toExternalForm());
+            }
+
+            contentPane.getChildren().setAll(root);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public void setContent(Node node) {
+        contentPane.getChildren().setAll(node);
     }
 
 }
