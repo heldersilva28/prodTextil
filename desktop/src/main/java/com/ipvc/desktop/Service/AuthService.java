@@ -44,4 +44,21 @@ public class AuthService {
         }
     }
 
+    public int obterCargoUtilizadorPorEmail(String email) {
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create("http://localhost:8080/api/utilizadores/cargo?email=" + email))
+                    .GET()
+                    .build();
+
+            HttpClient client = HttpClient.newHttpClient();
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            return Integer.parseInt(response.body()); // espera que a API devolva um número
+        } catch (Exception e) {
+            e.printStackTrace();
+            return -1; // fallback em caso de erro
+        }
+    }
+
 }

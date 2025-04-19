@@ -45,25 +45,27 @@ public class LoginController implements Initializable {
                 errorLabel.setVisible(false);
                 // Exibe o toast antes de mudar para a próxima página
                 showToast(response.getMessage(), () -> {
-                    // Carrega a próxima tela (painel admin)
-                    try {
-                        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/ipvc/desktop/views/painel-admin.fxml"));
-                        Parent root = fxmlLoader.load();
+                    if(authService.obterCargoUtilizadorPorEmail(email) == 1){
+                        // Carrega a próxima tela (painel admin)
+                        try {
+                            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/ipvc/desktop/views/painel-admin.fxml"));
+                            Parent root = fxmlLoader.load();
 
-                        Scene scene = new Scene(root, 1000, 650);
-                        scene.getStylesheets().add(Objects.requireNonNull(
-                                getClass().getResource("/com/ipvc/desktop/style/painel-admin.css")).toExternalForm());
-                        Stage stage = new Stage();
-                        stage.setTitle("Painel do Administrador");
-                        stage.setScene(scene);
+                            Scene scene = new Scene(root, 1000, 650);
+                            scene.getStylesheets().add(Objects.requireNonNull(
+                                    getClass().getResource("/com/ipvc/desktop/style/painel-admin.css")).toExternalForm());
+                            Stage stage = new Stage();
+                            stage.setTitle("Painel do Administrador");
+                            stage.setScene(scene);
 
-                        stage.show();
+                            stage.show();
 
-                        // Fecha a janela atual
-                        Stage currentStage = (Stage) loginVBox.getScene().getWindow();
-                        currentStage.close();
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                            // Fecha a janela atual
+                            Stage currentStage = (Stage) loginVBox.getScene().getWindow();
+                            currentStage.close();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                 });
 

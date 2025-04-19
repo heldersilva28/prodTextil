@@ -27,6 +27,13 @@ public class UtilizadorController {
         return ResponseEntity.ok(utilizadorService.getAllUtilizadores());
     }
 
+    @GetMapping("/cargo")
+    @Operation(summary = "Listar Cargo do Utilizador", description = "Retorna o ID do Cargo do Utilizador")
+    public ResponseEntity<Integer> getCargoPorEmail(@RequestParam String email) {
+        int cargo = utilizadorService.obterCargoPorEmail(email);
+        return ResponseEntity.ok(cargo);
+    }
+
     @GetMapping("/{id}")
     @Operation(summary = "Buscar utilizador por ID", description = "Retorna um utilizador específico pelo ID")
     public ResponseEntity<UtilizadorResponseDTO> getUtilizadorById(@PathVariable Integer id) {

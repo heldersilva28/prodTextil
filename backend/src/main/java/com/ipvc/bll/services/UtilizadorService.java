@@ -1,6 +1,7 @@
 package com.ipvc.bll.services;
 
 import com.ipvc.bll.dto.UtilizadorDTO;
+import com.ipvc.bll.dto.TiposUtilizadorDTO;
 import com.ipvc.bll.models.Funcionario;
 import com.ipvc.bll.models.TiposUtilizador;
 import com.ipvc.bll.models.Utilizador;
@@ -31,6 +32,14 @@ public class UtilizadorService {
 
     public Optional<UtilizadorDTO.UtilizadorResponseDTO> getUtilizadorById(Integer id) {
         return utilizadorRepo.findById(id).map(this::convertToDTO);
+    }
+
+    public int obterCargoPorEmail(String email) {
+        Utilizador utilizador = utilizadorRepo.findCargoUtilizadorByEmail(email);
+        if (utilizador != null && utilizador.getTipoUtilizador() != null) {
+            return utilizador.getTipoUtilizador().getId();
+        }
+        return -1;
     }
 
     public UtilizadorDTO.UtilizadorResponseDTO saveUtilizador(UtilizadorDTO.UtilizadorCreateDTO utilizadorDTO) {
