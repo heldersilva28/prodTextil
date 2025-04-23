@@ -192,8 +192,13 @@ public class DashboardController {
     }
 
     @FXML
-    private void abrirGestaoUtilizadores() {
-        parentController.carregarConteudo("/com/ipvc/desktop/views/novo-utilizador.fxml","/com/ipvc/desktop/style/login.css");
+    private void abrirStatsEncomendasClientes() {
+        parentController.carregarConteudo("/com/ipvc/desktop/views/estatisticas-encomendas-clientes.fxml","/com/ipvc/desktop/style/estatisticas-encomendas-clientes.css");
+    }
+
+    @FXML
+    private void abrirStatsEncomendasFornecedores() {
+        parentController.carregarConteudo("/com/ipvc/desktop/views/estatisticas-encomendas-fornecedores.fxml","/com/ipvc/desktop/style/estatisticas-encomendas-clientes.css");
     }
 
 }
