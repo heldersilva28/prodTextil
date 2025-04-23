@@ -1,5 +1,6 @@
 package com.ipvc.bll.services;
 
+import com.ipvc.bll.dto.EncomendasClientesStatsDTO;
 import com.ipvc.bll.dto.EncomendasFornecedorDTO.*;
 import com.ipvc.bll.models.EncomendasFornecedor;
 import com.ipvc.bll.models.Fornecedor;
@@ -11,8 +12,9 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
+import java.time.Month;
+import java.time.format.TextStyle;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -76,5 +78,32 @@ public class EncomendasFornecedorService {
                 encomenda.getEstado().getId(),
                 encomenda.getValorTotal()
         );
+    }
+
+    public EncomendasClientesStatsDTO obterEstatisticas() {
+        EncomendasClientesStatsDTO dto = new EncomendasClientesStatsDTO();
+
+        dto.setTotal(encomendasFornecedorRepo.count());
+        dto.setPendentes(encomendasFornecedorRepo.contarPorEstado(1));  // estado_id = 1
+        dto.setConcluidas(encomendasFornecedorRepo.contarPorEstado(2)); // estado_id = 2
+
+        Map<String, Integer> porMes = new LinkedHashMap<>();
+
+        for (Month mes : Month.values()) {
+            String nomeMes = mes.getDisplayName(TextStyle.FULL, new Locale("pt", "PT"));
+            porMes.put(nomeMes, 0);
+        }
+
+        List<Object[]> resultados = encomendasFornecedorRepo.contarPorMes();
+
+        for (Object[] linha : resultados) {
+            int mes = (int) linha[0];
+            int quantidade = ((Number) linha[1]).intValue();
+            String nomeMes = Month.of(mes).getDisplayName(TextStyle.FULL, new Locale("pt", "PT"));
+            porMes.put(nomeMes, quantidade);
+        }
+
+        dto.setPorMes(porMes);
+        return dto;
     }
 }

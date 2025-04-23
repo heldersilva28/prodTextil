@@ -1,6 +1,7 @@
 package com.ipvc.bll.controllers;
 
 import com.ipvc.bll.dto.EncomendasClienteDTO.*;
+import com.ipvc.bll.dto.EncomendasClientesStatsDTO;
 import com.ipvc.bll.services.EncomendasClienteService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -54,4 +55,11 @@ public class EncomendasClienteController {
         encomendasClienteService.deleteEncomenda(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/estatisticas")
+    @Operation(summary = "Estatísticas de encomendas de clientes", description = "Retorna estatísticas gerais sobre as encomendas dos clientes")
+    public ResponseEntity<EncomendasClientesStatsDTO> obterEstatisticas() {
+        return ResponseEntity.ok(encomendasClienteService.obterEstatisticas());
+    }
+
 }
