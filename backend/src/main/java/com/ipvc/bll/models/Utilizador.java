@@ -82,6 +82,13 @@ public class Utilizador {
         this.tipoUtilizador = tipoUtilizador;
     }
 
+    public String getTipoUtilizadorNome() {
+        return tipoUtilizador.getNome();
+    }
+    public void setTipoUtilizadorNome(String tipoUtilizadorNome) {
+        this.tipoUtilizador.setNome(tipoUtilizadorNome);
+    }
+
     public Set<Funcionario> getFuncionarios() {
         return funcionarios;
     }

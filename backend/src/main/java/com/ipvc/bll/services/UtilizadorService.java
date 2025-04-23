@@ -89,7 +89,8 @@ public class UtilizadorService {
                 utilizador.getId(),
                 utilizador.getUsername(),
                 utilizador.getEmail(),
-                utilizador.getTipoUtilizador().getId()
+                utilizador.getTipoUtilizador().getId(),
+                utilizador.getTipoUtilizadorNome()
         );
     }
 }

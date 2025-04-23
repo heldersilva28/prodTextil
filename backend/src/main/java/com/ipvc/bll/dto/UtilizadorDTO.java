@@ -22,6 +22,7 @@ public class UtilizadorDTO {
             Integer id,
             String username,
             String email,
-            Integer tipoUtilizadorId
+            Integer tipoUtilizadorId,
+            String tipoUtilizadorNome
     ) implements Serializable {}
 }

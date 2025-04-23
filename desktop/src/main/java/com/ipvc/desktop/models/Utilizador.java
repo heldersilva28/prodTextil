@@ -13,6 +13,7 @@ public class Utilizador {
     private String username;
     private String email;
     private Integer tipoUtilizadorId;  // Agora é um Integer para corresponder ao backend
+    private String tipoUtilizadorNome;
 
     public Integer getId() {
         return id;
