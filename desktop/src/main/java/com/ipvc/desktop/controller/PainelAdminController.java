@@ -17,6 +17,8 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -129,13 +131,12 @@ public class PainelAdminController {
 
     @FXML
     public void abrirDashboard() {
-        carregarConteudoDashboard("/com/ipvc/desktop/views/dashboard.fxml","/com/ipvc/desktop/style/dashboard.css"); // Carrega o conteúdo do Dashboard
+        carregarConteudo("/com/ipvc/desktop/views/dashboard.fxml","/com/ipvc/desktop/style/dashboard.css"); // Carrega o conteúdo do Dashboard
     }
 
     @FXML
     public void abrirGestaoUtilizadores() {
-        carregarConteudo("/com/ipvc/desktop/views/novo-utilizador.fxml","/com/ipvc/desktop/style/login.css"); // Carrega a página de gestão de utilizadores
-
+        carregarConteudo("/com/ipvc/desktop/views/gestao-utilizadores.fxml","/com/ipvc/desktop/style/gestao-utilizadores.css"); // Carrega a página de gestão de utilizadores
     }
 
 //    @FXML
@@ -163,45 +164,15 @@ public class PainelAdminController {
 //        carregarConteudo("/com/ipvc/desktop/historico-eventos.fxml"); // Carrega a página de histórico de eventos
 //    }
 
-    // Método para carregar o conteúdo dinâmico na StackPane
-    public void carregarConteudo(String fxmlPath, String css) {
-        try {
-            // Carregar o FXML
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
-            Parent newContent = loader.load();
-
-            // Limpar o conteúdo atual
-            contentPane.getChildren().clear();
-            contentPane.getChildren().add(newContent);  // Adicionar o novo conteúdo
-
-            // Carregar e aplicar o CSS à cena
-            Scene scene = newContent.getScene(); // Obtém a cena do novo conteúdo
-            if (scene != null) {
-                // Adicionar o arquivo CSS à cena, se ela já existir
-                scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource(css)).toExternalForm());
-            } else {
-                // Caso o conteúdo não tenha uma cena associada, crie uma nova cena
-                Stage stage = (Stage) contentPane.getScene().getWindow();
-                Scene newScene = new Scene(newContent);
-                newScene.getStylesheets().add(Objects.requireNonNull(getClass().getResource(css)).toExternalForm());
-                stage.setScene(newScene);
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            new Alert(Alert.AlertType.ERROR, "Erro ao carregar conteúdo").showAndWait();
-        }
-    }
-
-    private void carregarConteudoDashboard(String fxmlPath, String cssPath) {
+    public void carregarConteudo(String fxmlPath, String cssPath) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             Parent root = loader.load();
 
-            // Tenta injetar este controlador no novo, se ele tiver o método
+            // Tenta injetar o controlador no novo, se ele tiver o método 'setParentController'
             Object controller = loader.getController();
-            if (controller instanceof DashboardController dashboardController) {
-                dashboardController.setParentController(this);
+            if (controller != null) {
+                injetarController(controller, this.getClass());
             }
 
             // Aplica CSS se fornecido
@@ -210,10 +181,28 @@ public class PainelAdminController {
                 root.getStylesheets().add(getClass().getResource(cssPath).toExternalForm());
             }
 
+            // Adiciona o conteúdo carregado ao contentPane
             contentPane.getChildren().setAll(root);
 
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void injetarController(Object controller, Class<?> parentControllerType) {
+        if (controller != null) {
+            try {
+                // Tenta encontrar o método 'setParentController' no controlador
+                Method method = controller.getClass().getMethod("setParentController", parentControllerType);
+
+                // Invoca o método e passa 'this' (o controlador atual) como parâmetro
+                method.invoke(controller, this);
+            } catch (NoSuchMethodException e) {
+                // Caso o método não exista, você pode tratar isso como necessário
+                System.out.println("O método 'setParentController' não existe no controlador " + controller.getClass().getName());
+            } catch (IllegalAccessException | InvocationTargetException e) {
+                e.printStackTrace();
+            }
         }
     }
     public void setContent(Node node) {
