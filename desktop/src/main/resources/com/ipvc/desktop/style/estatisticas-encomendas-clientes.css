@@ -1,0 +1,52 @@
+.root {
+    -fx-background-color: #f7f7f7;
+    -fx-font-family: 'Segoe UI', sans-serif;
+}
+
+.titulo-principal {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+    -fx-padding: 0 0 10 0;
+}
+
+.card {
+    -fx-background-color: white;
+    -fx-padding: 20;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 6, 0, 0, 4);
+    -fx-spacing: 10;
+    -fx-alignment: center;
+    -fx-min-width: 200;
+}
+
+.card-title {
+    -fx-font-size: 14px;
+    -fx-text-fill: #7f8c8d;
+}
+
+.card-value {
+    -fx-font-size: 26px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #34495e;
+}
+
+.bar-chart {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.axis-label, .axis {
+    -fx-tick-label-fill: #34495e;
+    -fx-label-padding: 10 0 0 0;
+    -fx-font-size: 12px;
+}
+
+.chart-plot-background {
+    -fx-background-color: transparent;
+}
+
+.chart-bar {
+    -fx-bar-fill: #3498db;
+}

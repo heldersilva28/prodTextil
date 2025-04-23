@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.ipvc.desktop.controller.EstatisticasEncomendasClientesController">
+    <HBox prefWidth="800" prefHeight="600">
+        <VBox spacing="20" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0">
+            <padding>
+                <Insets top="20" right="20" bottom="20" left="20"/>
+            </padding>
+
+            <!-- Título -->
+            <Label text="Estatísticas de Encomendas de Clientes" styleClass="titulo-principal"/>
+
+            <!-- Resumo geral -->
+            <HBox spacing="30">
+                <VBox styleClass="card">
+                    <Label text="Total de Encomendas" styleClass="card-title"/>
+                    <Label fx:id="labelTotal" styleClass="card-value"/>
+                </VBox>
+                <VBox styleClass="card">
+                    <Label text="Pendentes" styleClass="card-title"/>
+                    <Label fx:id="labelPendentes" styleClass="card-value"/>
+                </VBox>
+                <VBox styleClass="card">
+                    <Label text="Concluídas" styleClass="card-title"/>
+                    <Label fx:id="labelConcluidas" styleClass="card-value"/>
+                </VBox>
+            </HBox>
+
+            <!-- Gráfico de encomendas por mês -->
+            <BarChart fx:id="graficoMensal" title="Encomendas por Mês" animated="true"
+                      legendVisible="false" categoryGap="10">
+                <xAxis>
+                    <CategoryAxis fx:id="eixox" label="Mês"/>
+                </xAxis>
+                <yAxis>
+                    <NumberAxis label="Quantidade"/>
+                </yAxis>
+            </BarChart>
+        </VBox>
+    </HBox>
+</AnchorPane>
