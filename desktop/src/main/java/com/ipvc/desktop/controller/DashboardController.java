@@ -201,4 +201,9 @@ public class DashboardController {
         parentController.carregarConteudo("/com/ipvc/desktop/views/estatisticas-encomendas-fornecedores.fxml","/com/ipvc/desktop/style/estatisticas-encomendas-clientes.css");
     }
 
+    @FXML
+    private void abrirStatsMateriais() {
+        parentController.carregarConteudo("/com/ipvc/desktop/views/estatisticas-materiais.fxml","/com/ipvc/desktop/style/estatisticas-materiais.css");
+    }
+
 }

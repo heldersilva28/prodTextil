@@ -40,7 +40,7 @@
                 <Label text="Encomendas Fornecedores" styleClass="dashboard-label"/>
             </VBox>
 
-            <VBox alignment="CENTER" spacing="5" styleClass="dashboard-card-click">
+            <VBox alignment="CENTER" spacing="5" styleClass="dashboard-card-click" onMouseClicked="#abrirStatsMateriais">
                 <Label text="📦" styleClass="dashboard-icon"/>
                 <Label text="--" fx:id="materiaisStockLabel" styleClass="dashboard-number"/>
                 <Label text="Materiais em Stock" styleClass="dashboard-label"/>
