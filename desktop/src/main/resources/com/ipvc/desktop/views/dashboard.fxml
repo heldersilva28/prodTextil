@@ -28,6 +28,12 @@
                 <Label text="Utilizadores Totais" styleClass="dashboard-label"/>
             </VBox>
 
+            <VBox alignment="CENTER" spacing="5" styleClass="dashboard-card">
+                <Label text="👨‍🔧" styleClass="dashboard-icon"/>
+                <Label text="--" fx:id="funcionariosLabel" styleClass="dashboard-number"/>
+                <Label text="Funcionários" styleClass="dashboard-label"/>
+            </VBox>
+
             <VBox alignment="CENTER" spacing="5" styleClass="dashboard-card-click" onMouseClicked="#abrirStatsEncomendasClientes">
                 <Label text="📦" styleClass="dashboard-icon"/>
                 <Label text="--" fx:id="encomendasClientesLabel" styleClass="dashboard-number"/>
@@ -44,12 +50,6 @@
                 <Label text="📦" styleClass="dashboard-icon"/>
                 <Label text="--" fx:id="materiaisStockLabel" styleClass="dashboard-number"/>
                 <Label text="Materiais em Stock" styleClass="dashboard-label"/>
-            </VBox>
-
-            <VBox alignment="CENTER" spacing="5" styleClass="dashboard-card-click">
-                <Label text="👨‍🔧" styleClass="dashboard-icon"/>
-                <Label text="--" fx:id="funcionariosLabel" styleClass="dashboard-number"/>
-                <Label text="Funcionários" styleClass="dashboard-label"/>
             </VBox>
 
             <VBox alignment="CENTER" spacing="5" styleClass="dashboard-card-click">
