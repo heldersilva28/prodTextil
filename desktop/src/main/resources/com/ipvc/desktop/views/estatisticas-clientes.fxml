@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.ipvc.desktop.controller.EstatisticasClientesController">
+    <VBox spacing="20" prefWidth="900" prefHeight="600" styleClass="pagina-estatisticas">
+        <!-- Título -->
+        <Label text="Estatísticas de Clientes" styleClass="titulo-principal"/>
+
+        <!-- Cards -->
+        <HBox spacing="20" styleClass="cards-container">
+            <VBox styleClass="card">
+                <Label text="Total de Clientes" styleClass="card-title"/>
+                <Label fx:id="labelTotalClientes" styleClass="card-value"/>
+            </VBox>
+            <VBox styleClass="card">
+                <Label text="Clientes Ativos" styleClass="card-title"/>
+                <Label fx:id="labelClientesAtivos" styleClass="card-value"/>
+            </VBox>
+        </HBox>
+
+        <!-- Gráficos -->
+        <HBox spacing="30" styleClass="graficos-container">
+            <BarChart fx:id="graficoTopClientes" title="Top Clientes por Encomendas" prefWidth="700">
+                <xAxis>
+                    <CategoryAxis label="Cliente"/>
+                </xAxis>
+                <yAxis>
+                    <NumberAxis label="Encomendas"/>
+                </yAxis>
+            </BarChart>
+        </HBox>
+    </VBox>
+</AnchorPane>
