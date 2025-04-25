@@ -1,0 +1,99 @@
+.estatisticas-container {
+    -fx-background-color: #ffffff;
+    -fx-padding: 30;
+    -fx-spacing: 20;
+    -fx-background-radius: 12;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0.2, 0, 2);
+}
+
+.titulo-principal {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333;
+    -fx-padding: 0 0 10 0;
+}
+
+.card {
+    -fx-background-color: #f0f4ff;
+    -fx-padding: 20;
+    -fx-spacing: 10;
+    -fx-alignment: center;
+    -fx-background-radius: 12;
+    -fx-pref-width: 200;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 5, 0.2, 0, 1);
+}
+
+.card-title {
+    -fx-font-size: 14px;
+    -fx-text-fill: #555;
+    -fx-padding: 5 0 0 0;
+}
+
+.card-value {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #0078d4;
+    -fx-padding: 0 0 5 0;
+}
+
+.grafico-container {
+    -fx-background-color: #f9f9f9;
+    -fx-padding: 15;
+    -fx-spacing: 10;
+    -fx-background-radius: 10;
+    -fx-pref-width: 400;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 5, 0.2, 0, 1);
+}
+
+.grafico-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333;
+    -fx-padding: 0 0 10 0;
+}
+
+/* Estilo para o ComboBox */
+.combo-box {
+    -fx-font-size: 14px;
+    -fx-padding: 5 10;
+    -fx-background-color: #f0f4ff;
+    -fx-border-color: #0078d4;
+    -fx-border-radius: 5;
+    -fx-background-insets: 0;
+    -fx-text-fill: #333;
+    -fx-pref-width: 150;
+}
+
+/* Estilo para o ComboBox quando selecionado */
+.combo-box .combo-box-popup {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #0078d4;
+}
+
+/* Alterações no gráfico */
+.chart .chart-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333;
+    -fx-padding: 0 0 10 0;
+}
+
+.chart .x-axis .axis-label, .chart .y-axis .axis-label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #555;
+}
+
+.chart .x-axis .tick-label, .chart .y-axis .tick-label {
+    -fx-font-size: 12px;
+    -fx-text-fill: #777;
+}
+
+/* Estilo para a área do gráfico de barras */
+.chart-bar {
+    -fx-bar-fill: #0078d4;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0.2, 0, 1);
+}
+
+.chart-bar-hover {
+    -fx-bar-fill: #005a8d;
+}

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<?import javafx.collections.FXCollections?>
+<?import java.lang.String?>
+<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.ipvc.desktop.controller.EstatisticasMateriaisController">
+    <VBox spacing="20" prefWidth="800" prefHeight="600">
+        <!-- Título -->
+        <Label text="Estatísticas de Materiais" styleClass="titulo-principal"/>
+
+        <!-- Resumo geral -->
+        <HBox spacing="30">
+            <VBox styleClass="card">
+                <Label text="Total de Materiais" styleClass="card-title"/>
+                <Label fx:id="labelTotalMateriais" styleClass="card-value"/>
+            </VBox>
+            <VBox styleClass="card">
+                <Label text="Materiais com Baixo Stock" styleClass="card-title"/>
+                <Label fx:id="labelBaixoStock" styleClass="card-value"/>
+            </VBox>
+        </HBox>
+
+        <!-- ComboBox para alternar entre Stock e Valor -->
+        <ComboBox fx:id="comboBoxGrafico" onAction="#alternarGrafico" promptText="Escolha o gráfico">
+            <items>
+                <FXCollections fx:factory="observableArrayList">
+                    <String fx:value="Stock"/>
+                    <String fx:value="Valor"/>
+                </FXCollections>
+            </items>
+        </ComboBox>
+
+        <ScrollPane fitToHeight="true" fitToWidth="true">
+            <!-- Gráfico de barras -->
+            <BarChart fx:id="graficoStockPorCategoria" title="Stock por Categoria" legendVisible="false">
+                <xAxis>
+                    <CategoryAxis label="Categoria"/>
+                </xAxis>
+                <yAxis>
+                    <NumberAxis label="Quantidade" fx:id="eixoY"/>
+                </yAxis>
+            </BarChart>
+        </ScrollPane>
+    </VBox>
+</AnchorPane>
