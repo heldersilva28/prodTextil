@@ -3,6 +3,7 @@ module com.ipvc.desktop {
     requires javafx.fxml;
     requires java.net.http;
     requires com.fasterxml.jackson.databind;
+    requires java.desktop;
 
     opens com.ipvc.desktop to javafx.fxml;
 
