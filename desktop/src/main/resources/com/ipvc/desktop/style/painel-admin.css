@@ -39,6 +39,8 @@
 
 .logout-button:hover {
     -fx-background-color: #e03e3e;
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
 }
 .logout-button:pressed {
     -fx-scale-x: 0.98;
