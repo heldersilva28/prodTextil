@@ -7,7 +7,9 @@ import com.ipvc.bll.repos.ClienteRepo;
 import com.ipvc.bll.repos.CodPostalRepo;
 import org.springframework.stereotype.Service;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -90,4 +92,25 @@ public class ClienteService {
                 cliente.getCodigoPostal().getCodigo()
         );
     }
+
+    public ClientesStatsDTO obterEstatisticasClientes() {
+        ClientesStatsDTO dto = new ClientesStatsDTO();
+
+        dto.setTotal(clienteRepo.count());
+        dto.setAtivos(clienteRepo.countClientesComEncomendas());
+
+        Map<String, Integer> encomendasPorCliente = new LinkedHashMap<>();
+
+        // Popular encomendasPorCliente
+        List<Object[]> top = clienteRepo.topClientesPorEncomendas();
+        for (Object[] row : top) {
+            String nome = (String) row[0];
+            int qtd = ((Number) row[1]).intValue();
+            encomendasPorCliente.put(nome, qtd);
+        }
+
+        dto.setEncomendasPorCliente(encomendasPorCliente);
+        return dto;
+    }
+
 }

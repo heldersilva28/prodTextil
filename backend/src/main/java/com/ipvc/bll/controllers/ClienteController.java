@@ -72,4 +72,9 @@ public class ClienteController {
         clienteService.deleteCliente(id);
         return ResponseEntity.noContent().build();
     }
+
+        @GetMapping("/estatisticas")
+        public ResponseEntity<ClientesStatsDTO> obterEstatisticas() {
+            return ResponseEntity.ok(clienteService.obterEstatisticasClientes());
+        }
 }
