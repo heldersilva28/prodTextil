@@ -206,4 +206,10 @@ public class DashboardController {
         parentController.carregarConteudo("/com/ipvc/desktop/views/estatisticas-materiais.fxml","/com/ipvc/desktop/style/estatisticas-materiais.css");
     }
 
+    @FXML
+    private void abrirStatsClientes() {
+        parentController.carregarConteudo("/com/ipvc/desktop/views/estatisticas-clientes.fxml","/com/ipvc/desktop/style/estatisticas-clientes.css");
+
+    }
+
 }

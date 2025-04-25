@@ -52,7 +52,7 @@
                 <Label text="Materiais em Stock" styleClass="dashboard-label"/>
             </VBox>
 
-            <VBox alignment="CENTER" spacing="5" styleClass="dashboard-card-click">
+            <VBox alignment="CENTER" spacing="5" styleClass="dashboard-card-click" onMouseClicked="#abrirStatsClientes">
                 <Label text="👨‍💼" styleClass="dashboard-icon"/>
                 <Label text="--" fx:id="clientesLabel" styleClass="dashboard-number"/>
                 <Label text="Clientes" styleClass="dashboard-label"/>
