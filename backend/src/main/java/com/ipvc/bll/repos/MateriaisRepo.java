@@ -10,6 +10,10 @@ import java.util.List;
 @Repository
 public interface MateriaisRepo extends JpaRepository<Materiais, Integer> {
     List<Materiais> findByNomeContainingIgnoreCase(String nome);
-    List<Materiais> findByTipo_Id(Integer tipoId);
     List<Materiais> findByStockDisponivelGreaterThan(BigDecimal quantidade);
+
+    int countByStockDisponivelLessThanEqual(int limite);
+    int countByTipo_Id(Integer tipoId);
+    List<Materiais> findByTipo_Id(Integer id);
+
 }

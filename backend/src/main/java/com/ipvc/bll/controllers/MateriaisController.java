@@ -1,6 +1,7 @@
 package com.ipvc.bll.controllers;
 
 import com.ipvc.bll.dto.MateriaisDTO.*;
+import com.ipvc.bll.dto.MateriaisStatsDTO;
 import com.ipvc.bll.services.MateriaisService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -54,5 +55,10 @@ public class MateriaisController {
     public ResponseEntity<Void> deleteMaterial(@PathVariable Integer id) {
         materiaisService.deleteMaterial(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/estatisticas")
+    public ResponseEntity<MateriaisStatsDTO> getEstatisticasMateriais() {
+        return ResponseEntity.ok(materiaisService.obterEstatisticas());
     }
 }

@@ -1,6 +1,7 @@
 package com.ipvc.bll.services;
 
 import com.ipvc.bll.dto.MateriaisDTO.*;
+import com.ipvc.bll.dto.MateriaisStatsDTO;
 import com.ipvc.bll.models.Materiais;
 import com.ipvc.bll.models.TiposMateriais;
 import com.ipvc.bll.repos.MateriaisRepo;
@@ -8,7 +9,9 @@ import com.ipvc.bll.repos.TiposMateriaisRepo;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -21,6 +24,41 @@ public class MateriaisService {
         this.materiaisRepo = materiaisRepo;
         this.tiposMateriaisRepo = tiposMateriaisRepo;
     }
+
+
+    public MateriaisStatsDTO obterEstatisticas() {
+        MateriaisStatsDTO dto = new MateriaisStatsDTO();
+
+        dto.setTotal(materiaisRepo.count());
+        dto.setBaixoStock(materiaisRepo.countByStockDisponivelLessThanEqual(100)); // Considerar <= 100 como baixo stock
+
+        Map<String, Integer> porCategoria = new HashMap<>();
+        Map<String, BigDecimal> valorPorCategoria = new HashMap<>();
+
+        tiposMateriaisRepo.findAll().forEach(tipo -> {
+            String nomeTipo = tipo.getNome();
+
+            // Somar o total de stock disponível por tipo de material
+            int totalStock = materiaisRepo.findByTipo_Id(tipo.getId()).stream()
+                    .mapToInt(mat -> mat.getStockDisponivel().intValue()) // Se for BigDecimal
+                    .sum();
+            porCategoria.put(nomeTipo, totalStock);
+
+            // Calcular valor total (stock * preco)
+            BigDecimal valorTotal = materiaisRepo.findByTipo_Id(tipo.getId()).stream()
+                    .map(mat -> mat.getPrecoUnidade().multiply(mat.getStockDisponivel()))
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+            valorPorCategoria.put(nomeTipo, valorTotal);
+        });
+
+        dto.setPorCategoria(porCategoria);
+        dto.setValorPorCategoria(valorPorCategoria);
+
+        return dto;
+    }
+
+
 
     public List<MateriaisResponseDTO> getAllMateriais() {
         return materiaisRepo.findAll().stream().map(this::convertToDTO).collect(Collectors.toList());
