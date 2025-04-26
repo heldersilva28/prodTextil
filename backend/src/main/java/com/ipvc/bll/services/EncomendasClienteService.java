@@ -77,8 +77,10 @@ public class EncomendasClienteService {
         return new EncomendaClienteResponseDTO(
                 encomenda.getId(),
                 encomenda.getCliente().getId(),
+                encomenda.getCliente().getNome(),
                 encomenda.getDataEncomenda(),
                 encomenda.getEstado().getId(),
+                encomenda.getEstado().getNome(),
                 encomenda.getValorTotal()
         );
     }

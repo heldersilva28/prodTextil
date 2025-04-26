@@ -25,8 +25,11 @@ public class EncomendasClienteDTO {
     public record EncomendaClienteResponseDTO(
             Integer id,
             Integer clienteId,
+            String clienteNome,
             LocalDate dataEncomenda,
             Integer estadoId,
+            String estadoNome,
             BigDecimal valorTotal
     ) implements Serializable {}
+
 }
