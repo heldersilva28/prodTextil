@@ -1,0 +1,45 @@
+.pagina-encomendas-clientes {
+    -fx-padding: 20;
+    -fx-spacing: 20;
+}
+
+.titulo-principal {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+}
+
+.campo-pesquisa {
+    -fx-pref-width: 300px;
+    -fx-font-size: 14px;
+    -fx-padding: 8px;
+}
+
+.combo-estado {
+    -fx-pref-width: 200px;
+    -fx-font-size: 14px;
+}
+
+.tabela-encomendas {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #dddddd;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-padding: 10;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: #f0f0f0;
+}
+
+.table-view .column-header, .table-view .filler {
+    -fx-size: 40px;
+    -fx-alignment: CENTER-LEFT;
+    -fx-font-weight: bold;
+    -fx-text-fill: #555555;
+}
+
+.table-view .cell {
+    -fx-font-size: 13px;
+    -fx-padding: 5px;
+}

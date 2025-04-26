@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.ipvc.desktop.controller.GestaoEncomendasClientesController">
+    <VBox spacing="20" padding="20" prefWidth="1000" prefHeight="700">
+
+        <!-- Título -->
+        <Label text="Gestão de Encomendas de Clientes" styleClass="titulo-principal"/>
+
+        <!-- Barra de Ações -->
+        <HBox spacing="10" alignment="CENTER_RIGHT">
+            <Button text="Nova Encomenda" onAction="#abrirFormularioNova"/>
+            <Button text="Editar Encomenda" onAction="#editarEncomendaSelecionada"/>
+            <Button text="Apagar Encomenda" onAction="#apagarEncomendaSelecionada"/>
+        </HBox>
+
+        <!-- Tabela de Encomendas -->
+        <TableView fx:id="tabelaEncomendas" prefHeight="600">
+            <columns>
+                <TableColumn fx:id="colId" text="ID" prefWidth="60"/>
+                <TableColumn fx:id="colCliente" text="Cliente" prefWidth="200"/>
+                <TableColumn fx:id="colData" text="Data Encomenda" prefWidth="150"/>
+                <TableColumn fx:id="colEstado" text="Estado" prefWidth="150"/>
+                <TableColumn fx:id="colValorTotal" text="Valor Total (€)" prefWidth="150"/>
+            </columns>
+        </TableView>
+    </VBox>
+</AnchorPane>
