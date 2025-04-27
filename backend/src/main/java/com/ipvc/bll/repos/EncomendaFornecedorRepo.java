@@ -11,9 +11,9 @@ import java.util.List;
 public interface EncomendaFornecedorRepo extends JpaRepository<EncomendasFornecedor, Integer> {
     List<EncomendasFornecedor> findByFornecedor_Id(Integer fornecedorId);
     List<EncomendasFornecedor> findByEstado_Id(Integer estadoId);
-    @Query("SELECT COUNT(e) FROM EncomendasCliente e WHERE e.estado.id = :estadoId")
+    @Query("SELECT COUNT(e) FROM EncomendasFornecedor e WHERE e.estado.id = :estadoId")
     long contarPorEstado(@Param("estadoId") int estadoId);
 
-    @Query("SELECT MONTH(e.dataEncomenda), COUNT(e) FROM EncomendasCliente e GROUP BY MONTH(e.dataEncomenda) ORDER BY MONTH(e.dataEncomenda)")
+    @Query("SELECT MONTH(e.dataPedido), COUNT(e) FROM EncomendasFornecedor e GROUP BY MONTH(e.dataPedido) ORDER BY MONTH(e.dataPedido)")
     List<Object[]> contarPorMes();
 }
