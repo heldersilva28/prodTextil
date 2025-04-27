@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.ipvc.desktop.controller.EditarEncomendaController">
+    <VBox spacing="20" padding="20" prefWidth="400" prefHeight="450">
+
+        <Label text="Editar Encomenda" styleClass="titulo-principal"/>
+
+        <Label text="Data Encomenda:"/>
+        <DatePicker fx:id="campoDataEncomenda"/>
+
+        <Label text="Estado ID:"/>
+        <TextField fx:id="campoEstadoId"/>
+
+        <Label text="Valor Total:"/>
+        <TextField fx:id="campoValorTotal"/>
+
+        <Button text="Atualizar Encomenda" onAction="#atualizarEncomenda"/>
+    </VBox>
+</AnchorPane>
