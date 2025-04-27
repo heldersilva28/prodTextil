@@ -139,10 +139,10 @@ public class PainelAdminController {
         carregarConteudo("/com/ipvc/desktop/views/gestao-utilizadores.fxml","/com/ipvc/desktop/style/gestao-utilizadores.css"); // Carrega a página de gestão de utilizadores
     }
 
-//    @FXML
-//    public void abrirGestaoEncomendasClientes() {
-//        carregarConteudo("/com/ipvc/desktop/gestao-encomendas-clientes.fxml"); // Carrega a página de encomendas de clientes
-//    }
+    @FXML
+    public void abrirGestaoEncomendasClientes() {
+        carregarConteudo("/com/ipvc/desktop/views/gestao-encomendas-clientes.fxml","/com/ipvc/desktop/style/gestao-encomendas-clientes.css"); // Carrega a página de encomendas de clientes
+    }
 //
 //    @FXML
 //    public void abrirGestaoEncomendasFornecedores() {
