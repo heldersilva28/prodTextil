@@ -1,0 +1,18 @@
+AnchorPane {
+    -fx-background-color: #f0f2f5;
+    -fx-padding: 20;
+}
+
+.label {
+    -fx-font-size: 16px;
+}
+
+.botao-confirmar {
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.button {
+    -fx-background-radius: 8px;
+}
