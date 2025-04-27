@@ -2,13 +2,19 @@ package com.ipvc.desktop.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.ipvc.desktop.models.EncomendaCliente;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Stage;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -25,9 +31,18 @@ public class GestaoEncomendasClientesController {
     @FXML private TableColumn<EncomendaCliente, String> colEstado;
     @FXML private TableColumn<EncomendaCliente, String> colValorTotal;
 
-    private final ObjectMapper mapper = new ObjectMapper();
+    //private final ObjectMapper mapper = new ObjectMapper();
     private final HttpClient httpClient = HttpClient.newHttpClient();
     private final String apiUrl = "http://localhost:8080/api/encomendas-clientes";
+
+    private final ObjectMapper mapper;
+
+    public GestaoEncomendasClientesController() {
+        // Registra o módulo para lidar com datas do Java 8
+        this.mapper = new ObjectMapper();
+        this.mapper.registerModule(new JavaTimeModule());
+        this.mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);  // Desabilita a escrita de datas como timestamps
+    }
 
     @FXML
     public void initialize() {
@@ -86,23 +101,46 @@ public class GestaoEncomendasClientesController {
     @FXML
     private void apagarEncomendaSelecionada() {
         EncomendaCliente selecionada = tabelaEncomendas.getSelectionModel().getSelectedItem();
-        if (selecionada != null) {
+        if (selecionada == null) {
+            mostrarAlerta("Selecione uma encomenda para apagar!");
+            return;
+        }
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/ipvc/desktop/views/confirmacao.fxml"));
+            Parent root = loader.load();
+            ConfirmacaoController controller = loader.getController();
+            controller.setMensagem("Tem a certeza que pretende apagar esta encomenda?");
+            controller.setOnConfirm(() -> confirmarApagarEncomenda(selecionada.getId()));
+
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Confirmação");
+            stage.show();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void confirmarApagarEncomenda(int encomendaId) {
+        try {
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(apiUrl + "/" + selecionada.getId()))
+                    .uri(URI.create("http://localhost:8080/api/encomendas-clientes/" + encomendaId))
                     .DELETE()
                     .build();
 
             httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
                     .thenAccept(response -> {
-                        Platform.runLater(() -> {
-                            carregarEncomendas();
-                            mostrarAlerta("Encomenda apagada com sucesso!");
-                        });
+                        System.out.println("Encomenda apagada com sucesso!");
+                        carregarEncomendas(); // Atualizar tabela
                     });
-        } else {
-            mostrarAlerta("Selecione uma encomenda para apagar!");
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
+
 
     private void mostrarAlerta(String mensagem) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);

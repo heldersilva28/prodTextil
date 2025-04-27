@@ -20,14 +20,25 @@
     -fx-font-size: 14px;
 }
 
+/* Estilos da Tabela */
 .tabela-encomendas {
     -fx-background-color: #ffffff;
     -fx-border-color: #dddddd;
     -fx-border-radius: 8px;
     -fx-background-radius: 8px;
     -fx-padding: 10;
+    -fx-pref-height: 600; /* Definir altura preferencial para a tabela */
 }
 
+/* Estilos do ScrollPane */
+.scroll-tabela {
+    -fx-background-color: transparent;  /* Remove o fundo do ScrollPane */
+    -fx-padding: 10;  /* Adiciona um padding ao redor da tabela */
+    -fx-max-height: 600; /* Limita a altura máxima do ScrollPane */
+    -fx-min-height: 600; /* Define uma altura mínima para o ScrollPane */
+}
+
+/* Estilos da Header da Tabela */
 .table-view .column-header-background {
     -fx-background-color: #f0f0f0;
 }
@@ -39,7 +50,14 @@
     -fx-text-fill: #555555;
 }
 
+/* Estilos das Células da Tabela */
 .table-view .cell {
     -fx-font-size: 13px;
     -fx-padding: 5px;
+}
+
+/* Se você quiser um scroll apenas para as linhas da tabela e não para as colunas */
+.table-view {
+    -fx-vbar-policy: ALWAYS;  /* Sempre exibe a barra de rolagem vertical */
+    -fx-hbar-policy: NEVER;   /* Não exibe barra de rolagem horizontal */
 }
