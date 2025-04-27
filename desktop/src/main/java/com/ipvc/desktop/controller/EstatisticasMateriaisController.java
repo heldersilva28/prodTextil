@@ -14,7 +14,6 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 
-import java.awt.*;
 import java.math.BigDecimal;
 import java.net.URI;
 import java.net.http.HttpClient;
