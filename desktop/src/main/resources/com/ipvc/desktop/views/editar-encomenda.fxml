@@ -2,21 +2,33 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
 
-<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.ipvc.desktop.controller.EditarEncomendaController">
-    <VBox spacing="20" padding="20" prefWidth="400" prefHeight="450">
+<AnchorPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.ipvc.desktop.controller.EditarEncomendaController"
+            styleClass="editar-encomenda-root">
+    <!-- VBox centralizado dentro do AnchorPane -->
+    <VBox fx:id="rootVBox" spacing="20" alignment="CENTER" prefWidth="400" prefHeight="450"
+          AnchorPane.topAnchor="50" AnchorPane.bottomAnchor="50"
+          AnchorPane.leftAnchor="50" AnchorPane.rightAnchor="50">
+        <padding>
+            <Insets top="20" right="20" bottom="20" left="20"/>
+        </padding>
 
+        <!-- Título -->
         <Label text="Editar Encomenda" styleClass="titulo-principal"/>
 
-        <Label text="Data Encomenda:"/>
-        <DatePicker fx:id="campoDataEncomenda"/>
+        <!-- Campos -->
+        <Label text="Data Encomenda:" styleClass="label"/>
+        <DatePicker fx:id="campoDataEncomenda" styleClass="date-picker"/>
 
-        <Label text="Estado ID:"/>
-        <TextField fx:id="campoEstadoId"/>
+        <Label text="Estado:" styleClass="label"/>
+        <ComboBox fx:id="campoEstadoId" styleClass="combo-box"/>
 
-        <Label text="Valor Total:"/>
-        <TextField fx:id="campoValorTotal"/>
+        <Label text="Valor Total(€):" styleClass="label"/>
+        <TextField fx:id="campoValorTotal" styleClass="text-field"/>
 
-        <Button text="Atualizar Encomenda" onAction="#atualizarEncomenda"/>
+        <!-- Botão -->
+        <Button text="Atualizar Encomenda" onAction="#atualizarEncomenda" styleClass="button"/>
     </VBox>
 </AnchorPane>

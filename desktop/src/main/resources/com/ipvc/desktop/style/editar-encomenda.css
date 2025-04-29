@@ -1,0 +1,62 @@
+/* Janela de edição de encomendas */
+.editar-encomenda-root {
+    -fx-background-color: #f9fbfd;
+    -fx-font-family: "Segoe UI", sans-serif;
+    -fx-font-size: 14px;
+    -fx-text-fill: #333;
+    -fx-padding: 0; /* Removido padding global para evitar excesso de espaço */
+}
+
+/* Título principal */
+.titulo-principal {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #003366;
+    -fx-padding: 0 0 10 0;
+    -fx-alignment: center; /* Alinha o título ao centro */
+}
+
+/* Labels */
+.label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #555;
+    -fx-alignment: center; /* Alinha as labels ao centro */
+}
+
+/* Campos de input */
+.text-field, .date-picker {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #ccd9e8;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-padding: 10;
+    -fx-font-size: 14px;
+    -fx-alignment: center; /* Alinha o texto dentro dos campos */
+}
+
+/* Botão de ação */
+.button {
+    -fx-background-color: #005bb5;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 20;
+    -fx-padding: 12 20;
+    -fx-cursor: hand;
+    -fx-alignment: center; /* Alinha o texto do botão ao centro */
+}
+
+.button:hover {
+    -fx-background-color: #0077e6;
+}
+
+.button:pressed {
+    -fx-scale-x: 0.98;
+    -fx-scale-y: 0.98;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 4, 0, 0, 2);
+}
+
+/* Para centralizar a VBox dentro da AnchorPane */
+.editar-encomenda-root .vbox {
+    -fx-alignment: center;
+    -fx-padding: 20;
+}

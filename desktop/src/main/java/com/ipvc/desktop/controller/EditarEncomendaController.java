@@ -1,51 +1,181 @@
 package com.ipvc.desktop.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ipvc.desktop.models.EncomendaCliente;
+import com.ipvc.desktop.models.EstadoEncomenda;
+import javafx.animation.FadeTransition;
+import javafx.animation.TranslateTransition;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import java.math.BigDecimal;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.List;
 
 public class EditarEncomendaController {
 
     @FXML private DatePicker campoDataEncomenda;
-    @FXML private TextField campoEstadoId;
+    @FXML private ComboBox<EstadoEncomenda> campoEstadoId;
     @FXML private TextField campoValorTotal;
+    @FXML private VBox rootVBox;
 
     private final HttpClient httpClient = HttpClient.newHttpClient();
     private final ObjectMapper mapper = new ObjectMapper();
-    private Integer encomendaId; // Vai ser passado do controller principal
+    private EncomendaCliente encomendaAtual;
+    public void setEncomenda(EncomendaCliente encomenda) {
+        this.encomendaAtual = encomenda;
+        campoDataEncomenda.setValue(encomenda.getDataEncomenda());
+        campoValorTotal.setText(String.format("%.2f", encomenda.getValorTotal()));
 
-    public void setEncomendaId(Integer id) {
-        this.encomendaId = id;
+        httpClient.sendAsync(
+                HttpRequest.newBuilder()
+                        .uri(URI.create("http://localhost:8080/api/estados-encomenda"))
+                        .GET()
+                        .build(),
+                HttpResponse.BodyHandlers.ofString()
+        ).thenAccept(response -> {
+            try {
+                List<EstadoEncomenda> estados = mapper.readValue(
+                        response.body(),
+                        mapper.getTypeFactory().constructCollectionType(List.class, EstadoEncomenda.class)
+                );
+
+                Platform.runLater(() -> {
+                    campoEstadoId.getItems().setAll(estados);
+                    for (EstadoEncomenda estado : estados) {
+                        if (estado.getId().equals(encomenda.getEstadoId())) {
+                            campoEstadoId.setValue(estado);
+                            break;
+                        }
+                    }
+                });
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    @FXML
+    public void initialize() {
+        FadeTransition ft = new FadeTransition(Duration.millis(800), rootVBox);
+        ft.setFromValue(0);
+        ft.setToValue(1);
+        ft.play();
     }
 
     @FXML
     private void atualizarEncomenda() {
         try {
+            if (campoDataEncomenda.getValue() == null) {
+                showToast("Por favor, selecione a data da encomenda.");
+                shakeNode(rootVBox);
+                return;
+            }
+
+            if (campoEstadoId.getValue() == null) {
+                showToast("Por favor, selecione um estado.");
+                shakeNode(rootVBox);
+                return;
+            }
+
+            String valorTexto = campoValorTotal.getText().trim();
+            if (valorTexto.isEmpty()) {
+                showToast("Por favor, insira o valor total.");
+                shakeNode(rootVBox);
+                return;
+            }
+
+            BigDecimal valorTotal;
+            try {
+                valorTotal = new BigDecimal(valorTexto.replace(",", "."));
+            } catch (NumberFormatException e) {
+                showToast("Valor total inválido. Ex: 123.45");
+                shakeNode(rootVBox);
+                return;
+            }
+
             var body = mapper.createObjectNode();
             body.put("dataEncomenda", campoDataEncomenda.getValue().toString());
-            body.put("estadoId", Integer.parseInt(campoEstadoId.getText()));
-            body.put("valorTotal", new BigDecimal(campoValorTotal.getText()));
+            body.put("estadoId", campoEstadoId.getValue().getId());
+            body.put("valorTotal", valorTotal);
 
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create("http://localhost:8080/api/encomendas-clientes/" + encomendaId))
+                    .uri(URI.create("http://localhost:8080/api/encomendas-clientes/" + encomendaAtual.getId()))
                     .header("Content-Type", "application/json")
                     .PUT(HttpRequest.BodyPublishers.ofString(mapper.writeValueAsString(body)))
                     .build();
 
             httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
-                    .thenAccept(response -> {
-                        System.out.println("Encomenda atualizada!");
-                    });
+                    .thenAccept(response -> Platform.runLater(() -> {
+                        showToast("Encomenda atualizada com sucesso!");
+
+                        // Esperar antes de fechar para mostrar o toast
+                        new Thread(() -> {
+                            try {
+                                Thread.sleep(2000); // espera 2 segundos
+                                Platform.runLater(() -> {
+                                    // Fecha a janela atual
+                                    Stage stage = (Stage) rootVBox.getScene().getWindow();
+                                    stage.close();
+
+                                    // Se quiseres atualizar a lista da página anterior, podes passar um callback aqui
+                                    // Ex: listController.refreshTable();
+                                });
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }).start();
+                    }));
 
         } catch (Exception e) {
             e.printStackTrace();
+            showToast("Erro ao atualizar encomenda.");
+            shakeNode(rootVBox);
         }
+    }
+
+
+    private void shakeNode(VBox node) {
+        TranslateTransition tt = new TranslateTransition(Duration.millis(70), node);
+        tt.setFromX(-10);
+        tt.setByX(20);
+        tt.setCycleCount(4);
+        tt.setAutoReverse(true);
+        tt.play();
+    }
+
+    private void showToast(String message) {
+        Label toast = new Label(message);
+        toast.setStyle("-fx-background-color: #333; -fx-text-fill: white; -fx-padding: 10; -fx-background-radius: 5;");
+        StackPane container = new StackPane(toast);
+        container.setStyle("-fx-alignment: center;");
+
+        rootVBox.getChildren().add(container);
+
+        FadeTransition fadeIn = new FadeTransition(Duration.seconds(0.3), toast);
+        fadeIn.setFromValue(0);
+        fadeIn.setToValue(1);
+
+        FadeTransition fadeOut = new FadeTransition(Duration.seconds(0.5), toast);
+        fadeOut.setFromValue(1);
+        fadeOut.setToValue(0);
+        fadeOut.setDelay(Duration.seconds(2));
+
+        fadeOut.setOnFinished(e -> rootVBox.getChildren().remove(container));
+
+        fadeIn.play();
+        fadeOut.play();
     }
 }
