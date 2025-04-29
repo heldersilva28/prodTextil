@@ -12,6 +12,20 @@ AnchorPane {
     -fx-text-fill: white;
     -fx-font-weight: bold;
 }
+.botao-confirmar:hover {
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}
+
+.botao-cancelar {
+    -fx-background-color: #ff4e4e;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+.botao-cancelar:hover {
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}
 
 .button {
     -fx-background-radius: 8px;

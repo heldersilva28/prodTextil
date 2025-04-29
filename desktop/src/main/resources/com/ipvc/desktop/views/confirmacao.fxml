@@ -3,12 +3,16 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
+<?import javafx.geometry.Insets?>
 <AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.ipvc.desktop.controller.ConfirmacaoController">
-    <VBox spacing="20" alignment="CENTER" padding="20">
+    <VBox spacing="20" alignment="CENTER" >
+        <padding>
+            <Insets top="20" right="20" bottom="20" left="20"/>
+        </padding>
         <Label fx:id="labelMensagem" text="Tem a certeza que pretende eliminar?" wrapText="true" styleClass="titulo-principal"/>
 
         <HBox spacing="20" alignment="CENTER">
-            <Button text="Cancelar" onAction="#cancelar"/>
+            <Button text="Cancelar" onAction="#cancelar" styleClass="botao-cancelar"/>
             <Button text="Confirmar" onAction="#confirmar" styleClass="botao-confirmar"/>
         </HBox>
     </VBox>
