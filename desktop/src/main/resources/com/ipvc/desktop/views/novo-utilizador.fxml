@@ -16,6 +16,7 @@
         <TextField fx:id="inputNome" promptText="Nome de utilizador" styleClass="login-field"/>
         <TextField fx:id="inputEmail" promptText="Email" styleClass="login-field"/>
         <PasswordField fx:id="inputPassword" promptText="Palavra-passe" styleClass="login-field"/>
+        <PasswordField fx:id="inputPasswordConfirm" promptText="Confirmar Palavra-passe" styleClass="login-field"/>
         <ComboBox fx:id="tipoComboBox" promptText="Tipo de utilizador" styleClass="login-field"/>
         <Button text="Registar" onAction="#criarUtilizador" styleClass="login-button"/>
         <Label fx:id="errorLabel" text="Erro ao registar" visible="false" styleClass="error-label"/>
