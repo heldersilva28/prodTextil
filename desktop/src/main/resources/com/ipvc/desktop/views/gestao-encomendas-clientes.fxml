@@ -2,31 +2,41 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.control.cell.PropertyValueFactory?>
+<?import javafx.geometry.Insets?>
+<?import javafx.geometry.Pos?>
 
-<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.ipvc.desktop.controller.GestaoEncomendasClientesController" styleClass="pagina-encomendas-clientes">
-    <VBox fx:id="vbox" styleClass="pagina-encomendas-clientes">
-        <!-- Título -->
-        <Label text="Gestão de Encomendas de Clientes" styleClass="titulo-principal"/>
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.ipvc.desktop.controller.GestaoEncomendasClientesController"
+            prefWidth="1000" prefHeight="600"
+            styleClass="gestao-root"
+            fx:id="border">
 
-        <!-- Barra de Ações -->
-        <HBox spacing="10" alignment="CENTER_RIGHT">
-            <Button text="Nova Encomenda" onAction="#abrirFormularioNova"/>
-            <Button text="Editar Encomenda" onAction="#editarEncomendaSelecionada"/>
-            <Button text="Apagar Encomenda" onAction="#apagarEncomendaSelecionada"/>
-        </HBox>
+    <!-- Topo com título e botões de ação -->
+    <top>
+        <VBox spacing="10" styleClass="top-bar">
+            <HBox alignment="CENTER_LEFT" spacing="5">
+                <Label text="Gestão de Encomendas de Clientes" styleClass="title"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button fx:id="btnNova" text="➕ Nova Encomenda" onAction="#abrirFormularioNova" styleClass="add-button"/>
+                <Button fx:id="btnEditar" text="✎️ Editar Encomenda" onAction="#editarEncomendaSelecionada" styleClass="edit-button"/>
+                <Button fx:id="btnApagar" text="🗑️ Apagar Encomenda" onAction="#apagarEncomendaSelecionada" styleClass="delete-button"/>
+            </HBox>
+        </VBox>
+    </top>
 
-        <!-- Tabela de Encomendas com Scroll -->
-        <ScrollPane styleClass="scroll-tabela" fitToWidth="true">
-            <TableView fx:id="tabelaEncomendas" prefHeight="600" styleClass="tabela-encomendas">
+    <!-- Tabela de Encomendas -->
+    <center>
+        <VBox spacing="10">
+            <TableView fx:id="tabelaEncomendas" styleClass="custom-table" prefHeight="500">
                 <columns>
                     <TableColumn fx:id="colId" text="ID" prefWidth="60"/>
-                    <TableColumn fx:id="colCliente" text="Cliente" prefWidth="200"/>
+                    <TableColumn fx:id="colCliente" text="Cliente" prefWidth="250"/>
                     <TableColumn fx:id="colData" text="Data Encomenda" prefWidth="150"/>
                     <TableColumn fx:id="colEstado" text="Estado" prefWidth="150"/>
                     <TableColumn fx:id="colValorTotal" text="Valor Total (€)" prefWidth="150"/>
                 </columns>
             </TableView>
-        </ScrollPane>
-    </VBox>
-</AnchorPane>
+        </VBox>
+    </center>
+</BorderPane>

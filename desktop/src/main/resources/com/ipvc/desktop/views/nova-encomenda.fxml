@@ -2,24 +2,40 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
 
 <AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.ipvc.desktop.controller.NovaEncomendaController">
-    <VBox spacing="20" padding="20" prefWidth="400" prefHeight="450">
+    <VBox spacing="20" prefWidth="400" prefHeight="450"
+          AnchorPane.topAnchor="50" AnchorPane.bottomAnchor="50"
+          AnchorPane.leftAnchor="50" AnchorPane.rightAnchor="50">
+        <padding>
+            <Insets top="20" right="20" bottom="20" left="20"/>
+        </padding>
 
+        <!-- Título -->
         <Label text="Nova Encomenda de Cliente" styleClass="titulo-principal"/>
 
-        <Label text="Cliente ID:"/>
-        <TextField fx:id="campoClienteId"/>
+        <!-- Campo Cliente ID -->
+        <Label text="Cliente ID:" styleClass="label"/>
+        <ComboBox fx:id="campoClienteId" styleClass="combo-box">
+            <!-- A ComboBox será preenchida dinamicamente com os e-mails dos clientes -->
+        </ComboBox>
 
-        <Label text="Data Encomenda:"/>
-        <DatePicker fx:id="campoDataEncomenda"/>
+        <!-- Campo Data Encomenda -->
+        <Label text="Data Encomenda:" styleClass="label"/>
+        <DatePicker fx:id="campoDataEncomenda" styleClass="text-field"/>
 
-        <Label text="Estado ID:"/>
-        <TextField fx:id="campoEstadoId"/>
+        <!-- Campo Estado ID -->
+        <Label text="Estado ID:" styleClass="label"/>
+        <ComboBox fx:id="campoEstadoId" styleClass="combo-box">
+            <!-- A ComboBox será preenchida dinamicamente com os estados -->
+        </ComboBox>
 
-        <Label text="Valor Total:"/>
-        <TextField fx:id="campoValorTotal"/>
+        <!-- Campo Valor Total -->
+        <Label text="Valor Total:" styleClass="label"/>
+        <TextField fx:id="campoValorTotal" styleClass="text-field"/>
 
-        <Button text="Criar Encomenda" onAction="#criarEncomenda"/>
+        <!-- Botão Criar Encomenda -->
+        <Button text="Criar Encomenda" onAction="#criarEncomenda" styleClass="button"/>
     </VBox>
 </AnchorPane>

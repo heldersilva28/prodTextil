@@ -10,10 +10,12 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.net.URI;
@@ -83,20 +85,54 @@ public class GestaoEncomendasClientesController {
 
     @FXML
     private void abrirFormularioNova() {
-        System.out.println("Abrir formulário de nova encomenda");
-        // Aqui carregavas o formulário de criar nova encomenda
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/ipvc/desktop/views/nova-encomenda.fxml"));
+            Parent root = loader.load();
+
+            Scene scene = new Scene(root);
+
+            // Carregar CSS
+            scene.getStylesheets().add(getClass().getResource("/com/ipvc/desktop/style/nova-encomenda.css").toExternalForm());
+
+            Stage stage = new Stage();
+            stage.setScene(scene);
+            stage.setTitle("Adicionar Encomenda");
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.showAndWait();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
     private void editarEncomendaSelecionada() {
         EncomendaCliente selecionada = tabelaEncomendas.getSelectionModel().getSelectedItem();
         if (selecionada != null) {
-            System.out.println("Editar encomenda ID: " + selecionada.getId());
-            // Carrega o formulário de edição passando a encomenda selecionada
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/ipvc/desktop/views/editar-encomenda.fxml"));
+                Parent root = loader.load();
+
+                // Obter controller e passar dados
+                EditarEncomendaController controller = loader.getController();
+                controller.setEncomenda(selecionada);
+
+                Scene scene = new Scene(root);
+                scene.getStylesheets().add(getClass().getResource("/com/ipvc/desktop/style/editar-encomenda.css").toExternalForm());
+
+                Stage stage = new Stage();
+                stage.setScene(scene);
+                stage.setTitle("Edição de Encomenda");
+                stage.initModality(Modality.APPLICATION_MODAL);
+                stage.showAndWait();
+                carregarEncomendas();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         } else {
             mostrarAlerta("Selecione uma encomenda para editar!");
         }
     }
+
 
     @FXML
     private void apagarEncomendaSelecionada() {
@@ -113,14 +149,20 @@ public class GestaoEncomendasClientesController {
             controller.setMensagem("Tem a certeza que pretende apagar esta encomenda?");
             controller.setOnConfirm(() -> confirmarApagarEncomenda(selecionada.getId()));
 
-            Stage stage = new Stage();
-            stage.setScene(new Scene(root));
-            stage.setTitle("Confirmação");
-            stage.show();
+            Scene scene = new Scene(root);
 
+            // Carregar CSS
+            scene.getStylesheets().add(getClass().getResource("/com/ipvc/desktop/style/confirmacao.css").toExternalForm());
+
+            Stage stage = new Stage();
+            stage.setScene(scene);
+            stage.setTitle("Confirmação");
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.showAndWait();
         } catch (Exception e) {
             e.printStackTrace();
         }
+
     }
 
     private void confirmarApagarEncomenda(int encomendaId) {
