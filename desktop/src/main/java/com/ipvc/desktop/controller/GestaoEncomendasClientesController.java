@@ -99,6 +99,7 @@ public class GestaoEncomendasClientesController {
             stage.setTitle("Adicionar Encomenda");
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.showAndWait();
+            carregarEncomendas();
         } catch (Exception e) {
             e.printStackTrace();
         }
