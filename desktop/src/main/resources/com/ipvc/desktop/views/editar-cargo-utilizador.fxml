@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.ipvc.desktop.controller.EditarCargoUtilizadorController"
+            styleClass="editar-cargo-root">
+    <VBox fx:id="rootVBox" spacing="20" alignment="CENTER" prefWidth="400" prefHeight="200"
+          AnchorPane.topAnchor="50" AnchorPane.bottomAnchor="50"
+          AnchorPane.leftAnchor="50" AnchorPane.rightAnchor="50">
+        <padding>
+            <Insets top="20" right="20" bottom="20" left="20"/>
+        </padding>
+
+        <Label text="Atualizar Cargo do Utilizador" styleClass="titulo-principal"/>
+
+        <ComboBox fx:id="tipoComboBox" styleClass="combo-box"/>
+
+        <Button text="Atualizar Cargo" onAction="#atualizarCargo" styleClass="button"/>
+    </VBox>
+</AnchorPane>
