@@ -129,9 +129,6 @@ public class EditarEncomendaController {
                                     // Fecha a janela atual
                                     Stage stage = (Stage) rootVBox.getScene().getWindow();
                                     stage.close();
-
-                                    // Se quiseres atualizar a lista da página anterior, podes passar um callback aqui
-                                    // Ex: listController.refreshTable();
                                 });
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
