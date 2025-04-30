@@ -4,8 +4,11 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
 
-<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.ipvc.desktop.controller.NovaEncomendaController">
-    <VBox spacing="20" prefWidth="400" prefHeight="450"
+<AnchorPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.ipvc.desktop.controller.NovaEncomendaController"
+            styleClass="nova-encomenda-root">
+
+    <VBox fx:id="rootVBox" spacing="20" alignment="CENTER" prefWidth="400" prefHeight="450"
           AnchorPane.topAnchor="50" AnchorPane.bottomAnchor="50"
           AnchorPane.leftAnchor="50" AnchorPane.rightAnchor="50">
         <padding>
@@ -15,27 +18,20 @@
         <!-- Título -->
         <Label text="Nova Encomenda de Cliente" styleClass="titulo-principal"/>
 
-        <!-- Campo Cliente ID -->
-        <Label text="Cliente ID:" styleClass="label"/>
-        <ComboBox fx:id="campoClienteId" styleClass="combo-box">
-            <!-- A ComboBox será preenchida dinamicamente com os e-mails dos clientes -->
-        </ComboBox>
+        <!-- Campos -->
+        <Label text="Cliente:" styleClass="label"/>
+        <ComboBox fx:id="campoClienteId" styleClass="combo-box"/>
 
-        <!-- Campo Data Encomenda -->
         <Label text="Data Encomenda:" styleClass="label"/>
-        <DatePicker fx:id="campoDataEncomenda" styleClass="text-field"/>
+        <DatePicker fx:id="campoDataEncomenda" styleClass="date-picker"/>
 
-        <!-- Campo Estado ID -->
-        <Label text="Estado ID:" styleClass="label"/>
-        <ComboBox fx:id="campoEstadoId" styleClass="combo-box">
-            <!-- A ComboBox será preenchida dinamicamente com os estados -->
-        </ComboBox>
+        <Label text="Estado:" styleClass="label"/>
+        <ComboBox fx:id="campoEstadoId" styleClass="combo-box"/>
 
-        <!-- Campo Valor Total -->
-        <Label text="Valor Total:" styleClass="label"/>
+        <Label text="Valor Total (€):" styleClass="label"/>
         <TextField fx:id="campoValorTotal" styleClass="text-field"/>
 
-        <!-- Botão Criar Encomenda -->
+        <!-- Botão -->
         <Button text="Criar Encomenda" onAction="#criarEncomenda" styleClass="button"/>
     </VBox>
 </AnchorPane>

@@ -1,17 +1,19 @@
 package com.ipvc.desktop.controller;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ipvc.desktop.models.EstadoEncomenda;
+import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.TextField;
-import javafx.scene.control.Alert;
+import javafx.scene.control.*;
 import javafx.scene.layout.Region;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.math.BigDecimal;
@@ -21,7 +23,10 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.LocalDate;
 import java.time.chrono.Chronology;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class NovaEncomendaController {
 
@@ -33,7 +38,7 @@ public class NovaEncomendaController {
 
     private final HttpClient httpClient = HttpClient.newHttpClient();
     private final ObjectMapper mapper = new ObjectMapper();
-    private int idCliente;
+    private Map<String, Integer> emailParaIdMap = new HashMap<>();
 
     @FXML
     public void initialize() {
@@ -45,17 +50,29 @@ public class NovaEncomendaController {
     private void carregarClientes() {
         try {
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create("http://localhost:8080/api/clientes/emails")) // Alterado para /emails
+                    .uri(URI.create("http://localhost:8080/api/clientes/emails"))
                     .build();
 
             httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
                     .thenApply(HttpResponse::body)
                     .thenAccept(response -> {
                         try {
-                            // A resposta é uma lista de e-mails
-                            List<String> clientes = mapper.readValue(response, List.class);
-                            Platform.runLater(() -> campoClienteId.getItems().setAll(clientes)); // Preencher ComboBox com os e-mails
-                            campoClienteId.getSelectionModel().select(0);
+                            JsonNode jsonNode = mapper.readTree(response);
+                            List<String> emails = new ArrayList<>();
+
+                            // Percorrer as chaves (IDs) do JSON
+                            jsonNode.fieldNames().forEachRemaining(idStr -> {
+                                String email = jsonNode.get(idStr).asText();
+                                int id = Integer.parseInt(idStr);
+                                emails.add(email);
+                                emailParaIdMap.put(email, id); // Associa email ao ID
+                            });
+
+                            Platform.runLater(() -> {
+                                campoClienteId.getItems().setAll(emails);
+                                campoClienteId.getSelectionModel().select(0);
+                            });
+
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -64,6 +81,7 @@ public class NovaEncomendaController {
             e.printStackTrace();
         }
     }
+
 
     private void carregarEstados() {
         httpClient.sendAsync(
@@ -100,26 +118,37 @@ public class NovaEncomendaController {
         try {
             // Verificações de validação
             if (campoClienteId.getValue() == null) {
-                shakeNode(campoClienteId);
+                shakeNode(rootVBox);
                 showToast("Por favor, selecione um cliente.");
                 return;
             }
 
             if (campoDataEncomenda.getValue() == null) {
-                shakeNode(campoDataEncomenda);
+                shakeNode(rootVBox);
                 showToast("Por favor, selecione a data da encomenda.");
                 return;
             }
+            String dataTexto = campoDataEncomenda.getEditor().getText().trim();
+
+            LocalDate dataEncomenda;
+            try {
+                dataEncomenda = LocalDate.parse(dataTexto);
+            } catch (Exception e) {
+                shakeNode(rootVBox);
+                showToast("Data inválida. Use o formato AAAA-MM-DD.");
+                return;
+            }
+
 
             if (campoEstadoId.getValue() == null) {
-                shakeNode(campoEstadoId);
+                shakeNode(rootVBox);
                 showToast("Por favor, selecione um estado.");
                 return;
             }
 
             String valorTexto = campoValorTotal.getText().trim();
             if (valorTexto.isEmpty()) {
-                shakeNode(campoValorTotal);
+                shakeNode(rootVBox);
                 showToast("Por favor, insira o valor total.");
                 return;
             }
@@ -128,16 +157,25 @@ public class NovaEncomendaController {
             try {
                 valorTotal = new BigDecimal(valorTexto.replace(",", "."));
             } catch (NumberFormatException e) {
-                shakeNode(campoValorTotal);
+                shakeNode(rootVBox);
                 showToast("Valor total inválido. Ex: 123.45");
                 return;
             }
 
+            String emailSelecionado = campoClienteId.getValue();
+            Integer clienteId = emailParaIdMap.get(emailSelecionado);
+
+            if (clienteId == null) {
+                showToast("Cliente inválido selecionado.");
+                return;
+            }
+
             var body = mapper.createObjectNode();
-            body.put("clienteId", idCliente); // Usar e-mail do cliente
-            body.put("dataEncomenda", campoDataEncomenda.getValue().toString());
-            body.put("estadoId", campoEstadoId.getValue().getId());   // Usar nome do estado
+            body.put("clienteId", clienteId);
+            body.put("dataEncomenda", dataEncomenda.toString());
+            body.put("estadoId", campoEstadoId.getValue().getId());
             body.put("valorTotal", valorTotal);
+
 
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create("http://localhost:8080/api/encomendas-clientes"))
@@ -149,7 +187,19 @@ public class NovaEncomendaController {
                     .thenAccept(response -> {
                         Platform.runLater(() -> {
                             showToast("Encomenda criada com sucesso!");
-                            limparCampos();
+                            // Esperar antes de fechar para mostrar o toast
+                            new Thread(() -> {
+                                try {
+                                    Thread.sleep(2000); // espera 2 segundos
+                                    Platform.runLater(() -> {
+                                        // Fecha a janela atual
+                                        Stage stage = (Stage) rootVBox.getScene().getWindow();
+                                        stage.close();
+                                    });
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                            }).start();
                         });
                     });
 
@@ -159,34 +209,35 @@ public class NovaEncomendaController {
         }
     }
 
-    private void showToast(String mensagem) {
-        // Exibir uma mensagem de toast
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setHeaderText(null);
-        alert.setContentText(mensagem);
-        alert.setResizable(true);
-        alert.showAndWait();
+    private void showToast(String message) {
+        Label toast = new Label(message);
+        toast.setStyle("-fx-background-color: #333; -fx-text-fill: white; -fx-padding: 10; -fx-background-radius: 5;");
+        StackPane container = new StackPane(toast);
+        container.setStyle("-fx-alignment: center;");
+
+        rootVBox.getChildren().add(container);
+
+        FadeTransition fadeIn = new FadeTransition(Duration.seconds(0.3), toast);
+        fadeIn.setFromValue(0);
+        fadeIn.setToValue(1);
+
+        FadeTransition fadeOut = new FadeTransition(Duration.seconds(0.5), toast);
+        fadeOut.setFromValue(1);
+        fadeOut.setToValue(0);
+        fadeOut.setDelay(Duration.seconds(2));
+
+        fadeOut.setOnFinished(e -> rootVBox.getChildren().remove(container));
+
+        fadeIn.play();
+        fadeOut.play();
     }
 
-    private void shakeNode(javafx.scene.Node node) {
-        // Criar o efeito "shake"
-        Timeline timeline = new Timeline(
-                new KeyFrame(Duration.millis(0), e -> node.setTranslateX(0)),
-                new KeyFrame(Duration.millis(50), e -> node.setTranslateX(10)),
-                new KeyFrame(Duration.millis(100), e -> node.setTranslateX(-10)),
-                new KeyFrame(Duration.millis(150), e -> node.setTranslateX(10)),
-                new KeyFrame(Duration.millis(200), e -> node.setTranslateX(-10)),
-                new KeyFrame(Duration.millis(250), e -> node.setTranslateX(10)),
-                new KeyFrame(Duration.millis(300), e -> node.setTranslateX(0))
-        );
-        timeline.setCycleCount(1);
-        timeline.play();
-    }
-
-    private void limparCampos() {
-        campoClienteId.getSelectionModel().clearSelection();
-        campoDataEncomenda.setValue(null);
-        campoEstadoId.getSelectionModel().clearSelection();
-        campoValorTotal.clear();
+    private void shakeNode(VBox node) {
+        TranslateTransition tt = new TranslateTransition(Duration.millis(70), node);
+        tt.setFromX(-10);
+        tt.setByX(20);
+        tt.setCycleCount(4);
+        tt.setAutoReverse(true);
+        tt.play();
     }
 }
