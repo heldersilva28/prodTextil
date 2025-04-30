@@ -21,8 +21,8 @@
         </ImageView>
         <Label text="Painel de Administração" styleClass="header-label"/>
         <!-- Espaço expansível -->
-        <Region fx:id="headerSpacer" HBox.hgrow="ALWAYS"/>
-        <Button text="Logout" alignment="CENTER_RIGHT" onAction="#onLogout" styleClass="logout-button"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button text="Terminar Sessão" alignment="CENTER_RIGHT" onAction="#onLogout" styleClass="logout-button"/>
     </HBox>
 
     <!-- Área Principal (Menu + Conteúdo) -->
