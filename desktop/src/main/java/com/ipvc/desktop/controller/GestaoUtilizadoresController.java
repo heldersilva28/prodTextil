@@ -10,12 +10,19 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.util.Duration;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -59,15 +66,19 @@ public class GestaoUtilizadoresController {
             ContextMenu contextMenu = new ContextMenu();
 
             // Cria a opção de "Editar"
-            MenuItem editItem = new MenuItem("Editar");
+            MenuItem editItem = new MenuItem("Atualizar Cargo");
             editItem.setOnAction((ActionEvent e) -> {
                 Utilizador selectedUtilizador = row.getItem();
                 if (selectedUtilizador != null) {
                     // Chama o método para editar o utilizador (ou abrir um formulário, etc.)
                     //abrirFormularioEditar(selectedUtilizador);
-                    parentController.carregarConteudo("/com/ipvc/desktop/views/novo-utilizador.fxml","/com/ipvc/desktop/style/login.css");
+                    abrirModalEditarCargo(selectedUtilizador.getId());
+                    //EditarCargoUtilizadorController editarCargoUtilizadorController = new EditarCargoUtilizadorController();
+                    //editarCargoUtilizadorController.setUtilizadorId(selectedUtilizador.getId());
+                    //parentController.carregarConteudo("/com/ipvc/desktop/views/editar-cargo-utilizador.fxml","/com/ipvc/desktop/style/editar-cargo-utilizador.css");
                 }
             });
+
 
             contextMenu.getItems().add(editItem);
 
@@ -173,4 +184,32 @@ public class GestaoUtilizadoresController {
     public void abrirFormularioNovo() {
         parentController.carregarConteudo("/com/ipvc/desktop/views/novo-utilizador.fxml","/com/ipvc/desktop/style/login.css");
     }
+
+    private void abrirModalEditarCargo(int utilizadorId) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/ipvc/desktop/views/editar-cargo-utilizador.fxml"));
+            Parent root = loader.load(); // ⚠️ SEM REUTILIZAR nenhum root já existente
+
+            EditarCargoUtilizadorController controller = loader.getController();
+            controller.setUtilizadorId(utilizadorId);
+
+            Scene scene = new Scene(root);
+            scene.getStylesheets().add(getClass().getResource("/com/ipvc/desktop/style/editar-cargo-utilizador.css").toExternalForm());
+
+            Stage modal = new Stage();
+            modal.initModality(Modality.APPLICATION_MODAL);
+            modal.initStyle(StageStyle.UTILITY);
+            modal.setTitle("Editar Cargo");
+            modal.setScene(scene);
+            modal.showAndWait();
+
+            // Opcional: recarregar lista
+            carregarUtilizadores();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
 }
