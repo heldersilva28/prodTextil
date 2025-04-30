@@ -8,9 +8,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -43,11 +41,11 @@ public class ClienteController {
 
     @GetMapping("/emails")
     @Operation(summary = "Listar todos os emails de clientes", description = "Retorna todos os emails de clientes")
-    public ResponseEntity<List<String>> getAllEmailClientes() {
+    public ResponseEntity<Map<Integer,String>> getAllEmailClientes() {
         List<Cliente> clientes = clienteService.getAllClientes();
-        List<String> emails = new ArrayList<>();
+        Map<Integer,String> emails = new HashMap<>();
         for (Cliente cliente : clientes) {
-            emails.add(cliente.getEmail());
+            emails.put(cliente.getId(), cliente.getEmail());
         }
         return ResponseEntity.ok(emails);
     }
