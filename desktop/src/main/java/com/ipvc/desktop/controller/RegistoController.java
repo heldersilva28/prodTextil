@@ -26,6 +26,7 @@ public class RegistoController {
     @FXML private TextField inputNome;
     @FXML private TextField inputEmail;
     @FXML private PasswordField inputPassword;
+    @FXML private PasswordField inputPasswordConfirm;
     @FXML private ComboBox<TipoItem> tipoComboBox;
     @FXML private VBox registoVBox;
     @FXML private Label errorLabel;
@@ -52,44 +53,50 @@ public class RegistoController {
         String nome = inputNome.getText();
         String email = inputEmail.getText();
         String password = inputPassword.getText();
+        String passwordConfirm = inputPasswordConfirm.getText();
         TipoItem tipo = tipoComboBox.getValue();
 
-        if (nome.isEmpty() || email.isEmpty() || password.isEmpty() || tipo == null) {
+        if (nome.isEmpty() || email.isEmpty() || password.isEmpty() || tipo == null || passwordConfirm.isEmpty()) {
             errorLabel.setText("Preenche todos os campos");
             errorLabel.setVisible(true);
             shakeNode(registoVBox);
             return;
+        } else if (!password.equals(passwordConfirm)) {
+            errorLabel.setText("Palavras-Passe diferentes");
+            errorLabel.setVisible(true);
+            shakeNode(registoVBox);
+            return;
         }
-            try {
-                RegisterRequest req = new RegisterRequest(email, password, nome, tipo.id());
-                String json = mapper.writeValueAsString(req);
+        try {
+            RegisterRequest req = new RegisterRequest(email, password, nome, tipo.id());
+            String json = mapper.writeValueAsString(req);
 
-                HttpRequest request = HttpRequest.newBuilder()
-                        .uri(URI.create("http://localhost:8080/api/auth/register"))
-                        .header("Content-Type", "application/json")
-                        .POST(HttpRequest.BodyPublishers.ofString(json))
-                        .build();
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create("http://localhost:8080/api/auth/register"))
+                    .header("Content-Type", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString(json))
+                    .build();
 
-                HttpResponse<String> response = HttpClient.newHttpClient()
-                        .send(request, HttpResponse.BodyHandlers.ofString());
+            HttpResponse<String> response = HttpClient.newHttpClient()
+                    .send(request, HttpResponse.BodyHandlers.ofString());
 
-                AuthResponse resp = mapper.readValue(response.body(), AuthResponse.class);
+            AuthResponse resp = mapper.readValue(response.body(), AuthResponse.class);
 
-                if (resp.isSuccess()) {
-                    errorLabel.setVisible(false);
-                    showToast(resp.getMessage(), this::irParaLogin);
-                } else {
-                    errorLabel.setText(resp.getMessage());
-                    errorLabel.setVisible(true);
-                    shakeNode(registoVBox);
-                }
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                errorLabel.setText("Erro ao criar utilizador");
+            if (resp.isSuccess()) {
+                errorLabel.setVisible(false);
+                showToast(resp.getMessage(), this::irParaLogin);
+            } else {
+                errorLabel.setText(resp.getMessage());
                 errorLabel.setVisible(true);
                 shakeNode(registoVBox);
             }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            errorLabel.setText("Erro ao criar utilizador");
+            errorLabel.setVisible(true);
+            shakeNode(registoVBox);
+        }
     }
 
     private void irParaLogin() {
