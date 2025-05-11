@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -62,4 +63,13 @@ public class EncomendasClienteController {
         return ResponseEntity.ok(encomendasClienteService.obterEstatisticas());
     }
 
+    @GetMapping("/{id}/encomendas")
+    @Operation(summary = "Buscar uma encomenda de um cliente", description = "Retorna os detalhes das encomendas pelo ID do Cliente")
+    public ResponseEntity<List<EncomendaClienteResponseDTO>> obterEncomendas(@PathVariable Integer id) {
+        List<EncomendaClienteResponseDTO> encomendas = encomendasClienteService.obterEncomendasClientePorId(id);
+        if (encomendas.isEmpty()) {
+            return ResponseEntity.ok(Collections.emptyList());
+        }
+        return ResponseEntity.ok(encomendas);
+    }
 }

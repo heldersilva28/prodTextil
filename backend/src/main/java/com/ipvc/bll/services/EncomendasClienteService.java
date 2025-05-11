@@ -1,5 +1,6 @@
 package com.ipvc.bll.services;
 
+import com.ipvc.bll.dto.EncomendasClienteDTO;
 import com.ipvc.bll.dto.EncomendasClienteDTO.*;
 import com.ipvc.bll.dto.EncomendasClientesStatsDTO;
 import com.ipvc.bll.models.EncomendasCliente;
@@ -112,5 +113,26 @@ public class EncomendasClienteService {
 
         dto.setPorMes(porMes);
         return dto;
+    }
+
+
+    public List<EncomendaClienteResponseDTO> obterEncomendasClientePorId(Integer id) {
+        List<EncomendasCliente> encomendas = encomendaClienteRepo.findByCliente_Id(id);
+
+        if (encomendas.isEmpty()) {
+            throw new RuntimeException("Nenhuma encomenda encontrada para o cliente");
+        }
+
+        return encomendas.stream()
+                .map(encomenda -> new EncomendaClienteResponseDTO(
+                        encomenda.getId(),
+                        encomenda.getCliente().getId(),
+                        encomenda.getCliente().getNome(),
+                        encomenda.getDataEncomenda(),
+                        encomenda.getEstado().getId(),
+                        encomenda.getEstado().getNome(),
+                        encomenda.getValorTotal()
+                ))
+                .collect(Collectors.toList());
     }
 }
