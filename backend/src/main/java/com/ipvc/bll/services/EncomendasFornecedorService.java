@@ -74,8 +74,10 @@ public class EncomendasFornecedorService {
         return new EncomendaFornecedorResponseDTO(
                 encomenda.getId(),
                 encomenda.getFornecedor().getId(),
+                encomenda.getFornecedor().getNome(),
                 encomenda.getDataPedido(),
                 encomenda.getEstado().getId(),
+                encomenda.getEstado().getNome(),
                 encomenda.getValorTotal()
         );
     }

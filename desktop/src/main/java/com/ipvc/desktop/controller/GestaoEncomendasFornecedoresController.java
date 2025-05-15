@@ -52,10 +52,10 @@ public class GestaoEncomendasFornecedoresController {
 
     private void configurarTabela() {
         colId.setCellValueFactory(new PropertyValueFactory<>("id"));
-        colFornecedor.setCellValueFactory(new PropertyValueFactory<>("fornecedorNome"));
-        colData.setCellValueFactory(new PropertyValueFactory<>("dataEncomenda"));
-        colEstado.setCellValueFactory(new PropertyValueFactory<>("estadoNome"));
-        colValorTotal.setCellValueFactory(new PropertyValueFactory<>("valorTotalFormatado"));
+        colFornecedor.setCellValueFactory(new PropertyValueFactory<>("fornecedorNome")); // Exibe o Nome do fornecedor
+        colData.setCellValueFactory(new PropertyValueFactory<>("dataEncomendaFormatada")); // Formata a data
+        colEstado.setCellValueFactory(new PropertyValueFactory<>("estadoNome")); // Exibe o Nome do estado
+        colValorTotal.setCellValueFactory(new PropertyValueFactory<>("valorTotalFormatado")); // Formata o valor total
     }
 
     private void carregarEncomendas() {

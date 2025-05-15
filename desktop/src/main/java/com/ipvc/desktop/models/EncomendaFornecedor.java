@@ -8,10 +8,13 @@ import java.time.format.DateTimeFormatter;
 
 public class EncomendaFornecedor {
     private Integer id;
+    @JsonProperty("fornecedorId")
     private Integer fornecedorId;
     @JsonProperty("dataPedido")
     private LocalDate dataEncomenda;
+    @JsonProperty("estadoId")
     private Integer estadoId;
+    @JsonProperty("valorTotal")
     private BigDecimal valorTotal;
 
     private String fornecedorNome;
@@ -65,3 +68,4 @@ public class EncomendaFornecedor {
         return dataEncomenda != null ? dataEncomenda.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) : "";
     }
 }
+

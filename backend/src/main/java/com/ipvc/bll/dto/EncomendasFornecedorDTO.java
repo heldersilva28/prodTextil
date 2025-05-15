@@ -25,8 +25,10 @@ public class EncomendasFornecedorDTO {
     public record EncomendaFornecedorResponseDTO(
             Integer id,
             Integer fornecedorId,
+            String fornecedorNome,
             LocalDate dataPedido,
             Integer estadoId,
+            String estadoNome,
             BigDecimal valorTotal
     ) implements Serializable {}
 }
