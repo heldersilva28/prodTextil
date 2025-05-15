@@ -169,10 +169,10 @@ public class NovaEncomendaFornecedorController {
             }
 
             var body = mapper.createObjectNode();
-            body.put("fornecedor_id", fornecedorId);
-            body.put("data_pedido", dataPedido.toString());
-            body.put("estado_id", campoEstadoId.getValue().getId());
-            body.put("valor_total", valorTotal);
+            body.put("fornecedorId", fornecedorId);
+            body.put("dataPedido", dataPedido.toString());
+            body.put("estadoId", campoEstadoId.getValue().getId());
+            body.put("valorTotal", valorTotal);
 
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create("http://localhost:8080/api/encomendas-fornecedores"))
