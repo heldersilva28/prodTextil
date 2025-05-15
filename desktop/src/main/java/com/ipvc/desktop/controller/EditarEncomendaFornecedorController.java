@@ -21,6 +21,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.time.LocalDate;
 import java.util.List;
 
 public class EditarEncomendaFornecedorController {
@@ -74,16 +75,25 @@ public class EditarEncomendaFornecedorController {
         ft.setFromValue(0);
         ft.setToValue(1);
         ft.play();
+
+        // Adicionar filtro para permitir apenas números, "," e "."
+        campoValorTotal.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("[0-9.,]*")) {
+                campoValorTotal.setText(oldValue);
+            }
+        });
     }
 
     @FXML
     private void atualizarEncomenda() {
         try {
             if (campoDataEncomenda.getValue() == null) {
-                showToast("Por favor, selecione a data da encomenda.");
+                showToast("Por favor, selecione a data do pedido.");
                 shakeNode(rootVBox);
                 return;
             }
+
+            LocalDate dataPedido = campoDataEncomenda.getValue();
 
             if (campoEstadoId.getValue() == null) {
                 showToast("Por favor, selecione um estado.");
@@ -98,19 +108,26 @@ public class EditarEncomendaFornecedorController {
                 return;
             }
 
+            // Verificar se o valor está no formato correto
+            if (!valorTexto.matches("\\d+(,\\d{1,2})?|\\d+(\\.\\d{1,2})?")) {
+                showToast("Valor total inválido. Use o formato 123,45 ou 123.45.");
+                shakeNode(rootVBox);
+                return;
+            }
+
             BigDecimal valorTotal;
             try {
                 valorTotal = new BigDecimal(valorTexto.replace(",", "."));
             } catch (NumberFormatException e) {
-                showToast("Valor total inválido. Ex: 123.45");
+                showToast("Valor total inválido. Ex: 123,45 ou 123.45");
                 shakeNode(rootVBox);
                 return;
             }
 
             var body = mapper.createObjectNode();
-            body.put("dataEncomenda", campoDataEncomenda.getValue().toString());
-            body.put("estadoId", campoEstadoId.getValue().getId());
-            body.put("valorTotal", valorTotal);
+            body.put("data_pedido", dataPedido.toString());
+            body.put("estado_id", campoEstadoId.getValue().getId());
+            body.put("valor_total", valorTotal);
 
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create("http://localhost:8080/api/encomendas-fornecedores/" + encomendaAtual.getId()))

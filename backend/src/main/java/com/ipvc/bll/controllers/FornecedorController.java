@@ -59,12 +59,12 @@ public class FornecedorController {
     }
 
     @GetMapping("/emails")
-    @Operation(summary = "Listar todos os emails de clientes", description = "Retorna todos os emails de clientes")
+    @Operation(summary = "Listar todos os emails de fornecedores", description = "Retorna todos os emails de fornecedores")
     public ResponseEntity<Map<Integer,String>> getAllEmailFornecedores() {
-        List<Fornecedor> fornecedores = fornecedorService.getAllFornecedores();
+        List<FornecedorResponseDTO> fornecedores = fornecedorService.getAllFornecedores();
         Map<Integer,String> emails = new HashMap<>();
-        for (Cliente cliente : clientes) {
-            emails.put(cliente.getId(), cliente.getEmail());
+        for (FornecedorResponseDTO fornecedor : fornecedores) {
+            emails.put(fornecedor.id(), fornecedor.email());
         }
         return ResponseEntity.ok(emails);
     }

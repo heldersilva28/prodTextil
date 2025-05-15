@@ -45,6 +45,13 @@ public class NovaEncomendaController {
         carregarClientes();
         campoDataEncomenda.setValue(LocalDate.now());
         carregarEstados();
+
+        // Adicionar filtro para permitir apenas números, "," e "."
+        campoValorTotal.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("[0-9.,]*")) {
+                campoValorTotal.setText(oldValue);
+            }
+        });
     }
 
     private void carregarClientes() {
@@ -128,17 +135,8 @@ public class NovaEncomendaController {
                 showToast("Por favor, selecione a data da encomenda.");
                 return;
             }
-            String dataTexto = campoDataEncomenda.getEditor().getText().trim();
 
-            LocalDate dataEncomenda;
-            try {
-                dataEncomenda = LocalDate.parse(dataTexto);
-            } catch (Exception e) {
-                shakeNode(rootVBox);
-                showToast("Data inválida. Use o formato AAAA-MM-DD.");
-                return;
-            }
-
+            LocalDate dataEncomenda = campoDataEncomenda.getValue();
 
             if (campoEstadoId.getValue() == null) {
                 shakeNode(rootVBox);
@@ -153,12 +151,19 @@ public class NovaEncomendaController {
                 return;
             }
 
+            // Verificar se o valor está no formato correto
+            if (!valorTexto.matches("\\d+(,\\d{1,2})?|\\d+(\\.\\d{1,2})?")) {
+                showToast("Valor total inválido. Use o formato 123,45 ou 123.45.");
+                shakeNode(rootVBox);
+                return;
+            }
+
             BigDecimal valorTotal;
             try {
                 valorTotal = new BigDecimal(valorTexto.replace(",", "."));
             } catch (NumberFormatException e) {
                 shakeNode(rootVBox);
-                showToast("Valor total inválido. Ex: 123.45");
+                showToast("Valor total inválido. Ex: 123,45 ou 123.45");
                 return;
             }
 

@@ -1,13 +1,18 @@
 package com.ipvc.desktop.controller;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ipvc.desktop.models.EstadoEncomenda;
 import com.ipvc.desktop.models.Fornecedor;
+import javafx.animation.FadeTransition;
+import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import java.math.BigDecimal;
 import java.net.URI;
@@ -15,15 +20,19 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class NovaEncomendaFornecedorController {
 
     @FXML private VBox rootVBox;
-    @FXML private ComboBox<Fornecedor> campoFornecedorId;
+    @FXML private ComboBox<String> campoFornecedorId;
     @FXML private DatePicker campoDataEncomenda;
     @FXML private ComboBox<EstadoEncomenda> campoEstadoId;
     @FXML private TextField campoValorTotal;
+    private Map<String, Integer> emailParaIdMap = new HashMap<>();
 
     private final HttpClient httpClient = HttpClient.newHttpClient();
     private final ObjectMapper mapper = new ObjectMapper();
@@ -31,71 +40,139 @@ public class NovaEncomendaFornecedorController {
     @FXML
     public void initialize() {
         carregarFornecedores();
+        campoDataEncomenda.setValue(LocalDate.now());
         carregarEstados();
+
+        // Adicionar filtro para permitir apenas números, "," e "."
+        campoValorTotal.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("[0-9.,]*")) {
+                campoValorTotal.setText(oldValue);
+            }
+        });
     }
 
     private void carregarFornecedores() {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8080/api/fornecedores"))
-                .GET()
-                .build();
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create("http://localhost:8080/api/fornecedores/emails"))
+                    .build();
 
-        httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
-                .thenAccept(response -> {
-                    try {
-                        List<Fornecedor> fornecedores = mapper.readValue(
-                                response.body(),
-                                mapper.getTypeFactory().constructCollectionType(List.class, Fornecedor.class)
-                        );
+            httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+                    .thenApply(HttpResponse::body)
+                    .thenAccept(response -> {
+                        try {
+                            JsonNode jsonNode = mapper.readTree(response);
+                            List<String> emails = new ArrayList<>();
 
-                        Platform.runLater(() -> campoFornecedorId.getItems().setAll(fornecedores));
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                });
+                            // Percorrer as chaves (IDs) do JSON
+                            jsonNode.fieldNames().forEachRemaining(idStr -> {
+                                String email = jsonNode.get(idStr).asText();
+                                int id = Integer.parseInt(idStr);
+                                emails.add(email);
+                                emailParaIdMap.put(email, id); // Associa email ao ID
+                            });
+
+                            Platform.runLater(() -> {
+                                campoFornecedorId.getItems().setAll(emails);
+                                campoFornecedorId.getSelectionModel().select(0);
+                            });
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void carregarEstados() {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8080/api/estados-encomenda"))
-                .GET()
-                .build();
+        httpClient.sendAsync(
+                HttpRequest.newBuilder()
+                        .uri(URI.create("http://localhost:8080/api/estados-encomenda"))
+                        .GET()
+                        .build(),
+                HttpResponse.BodyHandlers.ofString()
+        ).thenAccept(response -> {
+            try {
+                // Parse da resposta para a lista de objetos EstadoEncomenda
+                List<EstadoEncomenda> estados = mapper.readValue(
+                        response.body(),
+                        mapper.getTypeFactory().constructCollectionType(List.class, EstadoEncomenda.class)
+                );
 
-        httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
-                .thenAccept(response -> {
-                    try {
-                        List<EstadoEncomenda> estados = mapper.readValue(
-                                response.body(),
-                                mapper.getTypeFactory().constructCollectionType(List.class, EstadoEncomenda.class)
-                        );
-
-                        Platform.runLater(() -> campoEstadoId.getItems().setAll(estados));
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                // Executa o código na thread de UI (JavaFX)
+                Platform.runLater(() -> {
+                    // Preenche a ComboBox com os estados
+                    campoEstadoId.getItems().setAll(estados);
+                    campoEstadoId.getSelectionModel().select(0);
                 });
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     @FXML
     private void criarEncomendaFornecedor() {
         try {
-            Fornecedor fornecedor = campoFornecedorId.getValue();
-            LocalDate data = campoDataEncomenda.getValue();
-            EstadoEncomenda estado = campoEstadoId.getValue();
-            String valorTexto = campoValorTotal.getText().replace(",", ".");
-
-            if (fornecedor == null || data == null || estado == null || valorTexto.isBlank()) {
-                mostrarAlerta("Preencha todos os campos.");
+            if (campoFornecedorId.getValue() == null) {
+                shakeNode(rootVBox);
+                showToast("Por favor, selecione um fornecedor.");
                 return;
             }
 
-            BigDecimal valor = new BigDecimal(valorTexto);
+            if (campoDataEncomenda.getValue() == null) {
+                shakeNode(rootVBox);
+                showToast("Por favor, selecione a data do pedido.");
+                return;
+            }
+
+            LocalDate dataPedido = campoDataEncomenda.getValue();
+
+            if (campoEstadoId.getValue() == null) {
+                shakeNode(rootVBox);
+                showToast("Por favor, selecione um estado.");
+                return;
+            }
+
+            String valorTexto = campoValorTotal.getText().trim();
+            if (valorTexto.isEmpty()) {
+                shakeNode(rootVBox);
+                showToast("Por favor, insira o valor total.");
+                return;
+            }
+
+            // Verificar se o valor está no formato correto
+            if (!valorTexto.matches("\\d+(,\\d{1,2})?|\\d+(\\.\\d{1,2})?")) {
+                showToast("Valor total inválido. Use o formato 123,45 ou 123.45.");
+                shakeNode(rootVBox);
+                return;
+            }
+
+            BigDecimal valorTotal;
+            try {
+                valorTotal = new BigDecimal(valorTexto.replace(",", "."));
+            } catch (NumberFormatException e) {
+                shakeNode(rootVBox);
+                showToast("Valor total inválido. Ex: 123,45 ou 123.45");
+                return;
+            }
+
+            String emailSelecionado = campoFornecedorId.getValue();
+            Integer fornecedorId = emailParaIdMap.get(emailSelecionado);
+
+            if (fornecedorId == null) {
+                showToast("Fornecedor inválido selecionado.");
+                return;
+            }
 
             var body = mapper.createObjectNode();
-            body.put("fornecedorId", fornecedor.getId());
-            body.put("dataEncomenda", data.toString());
-            body.put("estadoId", estado.getId());
-            body.put("valorTotal", valor);
+            body.put("fornecedor_id", fornecedorId);
+            body.put("data_pedido", dataPedido.toString());
+            body.put("estado_id", campoEstadoId.getValue().getId());
+            body.put("valor_total", valorTotal);
 
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create("http://localhost:8080/api/encomendas-fornecedores"))
@@ -104,25 +181,58 @@ public class NovaEncomendaFornecedorController {
                     .build();
 
             httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
-                    .thenAccept(response -> Platform.runLater(() -> {
-                        mostrarAlerta("Encomenda criada com sucesso!");
-                        fecharJanela();
-                    }));
+                    .thenAccept(response -> {
+                        Platform.runLater(() -> {
+                            showToast("Encomenda criada com sucesso!");
+                            new Thread(() -> {
+                                try {
+                                    Thread.sleep(2000);
+                                    Platform.runLater(() -> {
+                                        Stage stage = (Stage) rootVBox.getScene().getWindow();
+                                        stage.close();
+                                    });
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                            }).start();
+                        });
+                    });
 
         } catch (Exception e) {
             e.printStackTrace();
-            mostrarAlerta("Erro ao criar encomenda.");
+            showToast("Erro ao criar a encomenda.");
         }
     }
 
-    private void mostrarAlerta(String msg) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setContentText(msg);
-        alert.showAndWait();
+    private void showToast(String message) {
+        Label toast = new Label(message);
+        toast.setStyle("-fx-background-color: #333; -fx-text-fill: white; -fx-padding: 10; -fx-background-radius: 5;");
+        StackPane container = new StackPane(toast);
+        container.setStyle("-fx-alignment: center;");
+
+        rootVBox.getChildren().add(container);
+
+        FadeTransition fadeIn = new FadeTransition(Duration.seconds(0.3), toast);
+        fadeIn.setFromValue(0);
+        fadeIn.setToValue(1);
+
+        FadeTransition fadeOut = new FadeTransition(Duration.seconds(0.5), toast);
+        fadeOut.setFromValue(1);
+        fadeOut.setToValue(0);
+        fadeOut.setDelay(Duration.seconds(2));
+
+        fadeOut.setOnFinished(e -> rootVBox.getChildren().remove(container));
+
+        fadeIn.play();
+        fadeOut.play();
     }
 
-    private void fecharJanela() {
-        Stage stage = (Stage) rootVBox.getScene().getWindow();
-        stage.close();
+    private void shakeNode(VBox node) {
+        TranslateTransition tt = new TranslateTransition(Duration.millis(70), node);
+        tt.setFromX(-10);
+        tt.setByX(20);
+        tt.setCycleCount(4);
+        tt.setAutoReverse(true);
+        tt.play();
     }
 }

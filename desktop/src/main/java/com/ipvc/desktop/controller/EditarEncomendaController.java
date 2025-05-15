@@ -21,6 +21,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.time.LocalDate;
 import java.util.List;
 
 public class EditarEncomendaController {
@@ -73,6 +74,13 @@ public class EditarEncomendaController {
         ft.setFromValue(0);
         ft.setToValue(1);
         ft.play();
+
+        // Adicionar filtro para permitir apenas números, "," e "."
+        campoValorTotal.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("[0-9.,]*")) {
+                campoValorTotal.setText(oldValue);
+            }
+        });
     }
 
     @FXML
@@ -83,6 +91,8 @@ public class EditarEncomendaController {
                 shakeNode(rootVBox);
                 return;
             }
+
+            LocalDate dataEncomenda = campoDataEncomenda.getValue();
 
             if (campoEstadoId.getValue() == null) {
                 showToast("Por favor, selecione um estado.");
@@ -97,17 +107,24 @@ public class EditarEncomendaController {
                 return;
             }
 
+            // Verificar se o valor está no formato correto
+            if (!valorTexto.matches("\\d+(,\\d{1,2})?|\\d+(\\.\\d{1,2})?")) {
+                showToast("Valor total inválido. Use o formato 123,45 ou 123.45.");
+                shakeNode(rootVBox);
+                return;
+            }
+
             BigDecimal valorTotal;
             try {
                 valorTotal = new BigDecimal(valorTexto.replace(",", "."));
             } catch (NumberFormatException e) {
-                showToast("Valor total inválido. Ex: 123.45");
+                showToast("Valor total inválido. Ex: 123,45 ou 123.45");
                 shakeNode(rootVBox);
                 return;
             }
 
             var body = mapper.createObjectNode();
-            body.put("dataEncomenda", campoDataEncomenda.getValue().toString());
+            body.put("dataEncomenda", dataEncomenda.toString());
             body.put("estadoId", campoEstadoId.getValue().getId());
             body.put("valorTotal", valorTotal);
 
