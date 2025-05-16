@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.ipvc.desktop.controller.EditarEncomendaFornecedorController"
+            styleClass="editar-encomenda-root">
+    <VBox fx:id="rootVBox" spacing="20" alignment="CENTER" prefWidth="400" prefHeight="450"
+          AnchorPane.topAnchor="50" AnchorPane.bottomAnchor="50"
+          AnchorPane.leftAnchor="50" AnchorPane.rightAnchor="50">
+        <padding>
+            <Insets top="20" right="20" bottom="20" left="20"/>
+        </padding>
+
+        <!-- Título -->
+        <Label text="Editar Encomenda de Fornecedor" styleClass="titulo-principal"/>
+
+        <!-- Campos -->
+        <Label text="Data Encomenda:" styleClass="label"/>
+        <DatePicker fx:id="campoDataEncomenda" styleClass="date-picker"/>
+
+        <Label text="Estado:" styleClass="label"/>
+        <ComboBox fx:id="campoEstadoId" styleClass="combo-box"/>
+
+        <Label text="Valor Total(€):" styleClass="label"/>
+        <TextField fx:id="campoValorTotal" styleClass="text-field"/>
+
+        <!-- Botão -->
+        <Button text="Atualizar Encomenda" onAction="#atualizarEncomenda" styleClass="button"/>
+    </VBox>
+</AnchorPane>
