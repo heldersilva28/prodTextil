@@ -18,7 +18,7 @@
             <HBox alignment="CENTER_LEFT" spacing="10">
                 <Label text="Gestão de Clientes" styleClass="title"/>
                 <Region HBox.hgrow="ALWAYS"/>
-                <Button fx:id="btnNovo" text="👁️ Ver Detalhes" onAction="#verDetalhes" styleClass="add-button"/>
+                <Button fx:id="btnNovo" text="👁️ Ver Encomendas" onAction="#verEncomendas" styleClass="add-button"/>
             </HBox>
 
             <!-- Filtros -->

@@ -33,4 +33,16 @@ public class TarefasProducaoDTO {
             Instant dataFim,
             String estado
     ) implements Serializable {}
+
+    public record TarefasProducaoResponseFullDTO(
+            Integer id,
+            Integer encomendaId,
+            Integer tipoEventoId,
+            String descricao,
+            Integer funcionarioId,
+            String funcionarioNome,
+            Instant dataInicio,
+            Instant dataFim,
+            String estado
+    ) implements Serializable {}
 }

@@ -65,8 +65,8 @@ public class EncomendasClienteController {
 
     @GetMapping("/{id}/encomendas")
     @Operation(summary = "Buscar uma encomenda de um cliente", description = "Retorna os detalhes das encomendas pelo ID do Cliente")
-    public ResponseEntity<List<EncomendaClienteResponseDTO>> obterEncomendas(@PathVariable Integer id) {
-        List<EncomendaClienteResponseDTO> encomendas = encomendasClienteService.obterEncomendasClientePorId(id);
+    public ResponseEntity<List<EncomendaClienteFullResponseDTO>> obterEncomendas(@PathVariable Integer id) {
+        List<EncomendaClienteFullResponseDTO> encomendas = encomendasClienteService.obterEncomendasClientePorId(id);
         if (encomendas.isEmpty()) {
             return ResponseEntity.ok(Collections.emptyList());
         }

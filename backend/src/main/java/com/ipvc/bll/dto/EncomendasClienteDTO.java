@@ -1,8 +1,12 @@
 package com.ipvc.bll.dto;
 
+import com.ipvc.bll.models.EtapasProducao;
+import com.ipvc.bll.models.TarefasProducao;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 public class EncomendasClienteDTO {
 
@@ -30,6 +34,18 @@ public class EncomendasClienteDTO {
             Integer estadoId,
             String estadoNome,
             BigDecimal valorTotal
+    ) implements Serializable {}
+
+    public record EncomendaClienteFullResponseDTO(
+            Integer id,
+            Integer clienteId,
+            String clienteNome,
+            LocalDate dataEncomenda,
+            Integer estadoId,
+            String estadoNome,
+            BigDecimal valorTotal,
+            List<TarefasProducaoDTO.TarefasProducaoResponseFullDTO> tarefas,
+            List<EtapasProducaoDTO.EtapaProducaoResponseDTO> etapas
     ) implements Serializable {}
 
 }

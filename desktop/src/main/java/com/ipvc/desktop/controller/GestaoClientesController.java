@@ -111,7 +111,7 @@ public class GestaoClientesController {
     }
 
     @FXML
-    public void verDetalhes() {
+    public void verEncomendas() {
         Cliente selecionado = tabelaUtilizadores.getSelectionModel().getSelectedItem();
         if (selecionado == null) {
             mostrarAlerta("Por favor selecione um cliente da tabela.");
