@@ -8,7 +8,7 @@ public class TarefasProducaoDTO {
     // DTO para Criar uma Tarefa de Produção
     public record TarefasProducaoCreateDTO(
             Integer encomendaId,
-            String descricao,
+            int descricao,
             Integer funcionarioId,
             Instant dataInicio,
             String estado
@@ -16,7 +16,7 @@ public class TarefasProducaoDTO {
 
     // DTO para Atualizar uma Tarefa de Produção
     public record TarefasProducaoUpdateDTO(
-            String descricao,
+            int descricao,
             Integer funcionarioId,
             Instant dataInicio,
             Instant dataFim,
@@ -27,7 +27,7 @@ public class TarefasProducaoDTO {
     public record TarefasProducaoResponseDTO(
             Integer id,
             Integer encomendaId,
-            String descricao,
+            int descricao,
             Integer funcionarioId,
             Instant dataInicio,
             Instant dataFim,
@@ -38,7 +38,7 @@ public class TarefasProducaoDTO {
             Integer id,
             Integer encomendaId,
             Integer tipoEventoId,
-            String descricao,
+            String descricaoNome,
             Integer funcionarioId,
             String funcionarioNome,
             Instant dataInicio,

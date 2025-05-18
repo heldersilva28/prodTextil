@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="com.ipvc.desktop.controller.DetalhesEncomendaModalController" spacing="10" alignment="TOP_LEFT" style="-fx-padding: 20;" prefWidth="600" prefHeight="400">
+    <Label text="Detalhes da Encomenda" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
+    <GridPane hgap="10" vgap="10">
+        <columnConstraints>
+            <ColumnConstraints percentWidth="30" />
+            <ColumnConstraints percentWidth="70" />
+        </columnConstraints>
+        <Label text="Cliente:" GridPane.rowIndex="0" GridPane.columnIndex="0" />
+        <Label fx:id="lblCliente" wrapText="true" GridPane.rowIndex="0" GridPane.columnIndex="1" />
+        <Label text="Data:" GridPane.rowIndex="1" GridPane.columnIndex="0" />
+        <Label fx:id="lblData" wrapText="true" GridPane.rowIndex="1" GridPane.columnIndex="1" />
+        <Label text="Estado:" GridPane.rowIndex="2" GridPane.columnIndex="0" />
+        <Label fx:id="lblEstado" wrapText="true" GridPane.rowIndex="2" GridPane.columnIndex="1" />
+        <Label text="Valor Total:" GridPane.rowIndex="3" GridPane.columnIndex="0" />
+        <Label fx:id="lblValorTotal" wrapText="true" GridPane.rowIndex="3" GridPane.columnIndex="1" />
+        <Label text="Tarefas:" GridPane.rowIndex="4" GridPane.columnIndex="0" />
+        <TextArea fx:id="lblTarefas" editable="false" wrapText="true" prefHeight="100" GridPane.rowIndex="4" GridPane.columnIndex="1" />
+        <Label text="Etapas:" GridPane.rowIndex="5" GridPane.columnIndex="0" />
+        <TextArea fx:id="lblEtapas" editable="false" wrapText="true" prefHeight="100" GridPane.rowIndex="5" GridPane.columnIndex="1" />
+    </GridPane>
+    <Button text="Fechar" onAction="#fechar" maxWidth="Infinity" />
+</VBox>

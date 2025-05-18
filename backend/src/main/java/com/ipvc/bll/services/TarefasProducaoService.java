@@ -45,7 +45,7 @@ public class TarefasProducaoService {
         Funcionario funcionario = funcionarioRepo.findById(tarefaDTO.funcionarioId())
                 .orElseThrow(() -> new RuntimeException("Funcionário não encontrado"));
 
-        TiposEvento tipoEvento = tiposEventoRepo.findById(Integer.parseInt(tarefaDTO.descricao()))
+        TiposEvento tipoEvento = tiposEventoRepo.findById(tarefaDTO.descricao())
                 .orElseThrow(() -> new RuntimeException("Tipo de Evento não encontrado"));
 
         TarefasProducao tarefa = new TarefasProducao();
@@ -63,7 +63,7 @@ public class TarefasProducaoService {
             Funcionario funcionario = funcionarioRepo.findById(tarefaDTO.funcionarioId())
                     .orElseThrow(() -> new RuntimeException("Funcionário não encontrado"));
 
-            TiposEvento tipoEvento = tiposEventoRepo.findById(Integer.parseInt(tarefaDTO.descricao()))
+            TiposEvento tipoEvento = tiposEventoRepo.findById(tarefaDTO.descricao())
                     .orElseThrow(() -> new RuntimeException("Tipo de Evento não encontrado"));
 
             tarefa.setFuncionario(funcionario);
@@ -84,7 +84,7 @@ public class TarefasProducaoService {
         return new TarefasProducaoResponseDTO(
                 tarefa.getId(),
                 tarefa.getEncomenda().getId(),
-                String.valueOf(tarefa.getTipoEvento().getId()),
+                tarefa.getTipoEvento().getId(),
                 tarefa.getFuncionario().getId(),
                 tarefa.getDataInicio(),
                 tarefa.getDataFim(),

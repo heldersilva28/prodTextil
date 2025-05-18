@@ -1,28 +1,160 @@
 package com.ipvc.desktop.controller;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.ipvc.desktop.models.EncomendaDetalhes;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ListView;
+import javafx.scene.control.ListCell;
+import javafx.scene.input.MouseButton;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+
+import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.util.List;
 
 public class VerDetalhesEncomendaController {
 
-    @FXML private Label labelIdEncomenda;
-    @FXML private Label labelCliente;
-    @FXML private Label labelData;
-    @FXML private Label labelEstado;
-    @FXML private Label labelValorTotal;
+    @FXML private ListView<EncomendaDetalhes> listaEncomendas;
 
-    public void setDetalhes(String id, String cliente, String data, String estado, String valor) {
-        labelIdEncomenda.setText(id);
-        labelCliente.setText(cliente);
-        labelData.setText(data);
-        labelEstado.setText(estado);
-        labelValorTotal.setText(valor + " €");
+    private final HttpClient httpClient = HttpClient.newHttpClient();
+    private final ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule()); // Registra o módulo
+
+    @FXML
+    public void initialize() {
+        // Configurar evento de clique na lista
+        listaEncomendas.setOnMouseClicked(event -> {
+            if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) { // Clique duplo com botão esquerdo
+                EncomendaDetalhes selecionada = listaEncomendas.getSelectionModel().getSelectedItem();
+                if (selecionada != null) {
+                    abrirModalDetalhes(selecionada);
+                }
+            }
+        });
+
+        // Desativar seleção visual para manter o texto preto
+        listaEncomendas.setStyle("-fx-selection-bar: transparent; -fx-selection-bar-text: black;");
+    }
+
+    public void carregarDetalhes(String apiUrl) {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(apiUrl))
+                .build();
+
+        httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+                .thenApply(HttpResponse::body)
+                .thenAccept(response -> {
+                    try {
+                        // Verifique se a resposta é um erro
+                        if (response.startsWith("{") && response.contains("\"status\":404")) {
+                            Platform.runLater(() -> mostrarAlerta("Nenhuma encomenda encontrada para este cliente."));
+                            return;
+                        }
+
+                        // Desserializar a resposta como uma lista de EncomendaDetalhes
+                        List<EncomendaDetalhes> encomendas = mapper.readValue(response, new TypeReference<>() {});
+                        Platform.runLater(() -> listaEncomendas.getItems().setAll(encomendas));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Platform.runLater(() -> mostrarAlerta("Erro ao processar os detalhes das encomendas."));
+                    }
+                });
+
+        listaEncomendas.setCellFactory(param -> new ListCell<>() {
+            @Override
+            protected void updateItem(EncomendaDetalhes encomenda, boolean empty) {
+                super.updateItem(encomenda, empty);
+                if (empty || encomenda == null) {
+                    setText(null);
+                } else {
+                    StringBuilder detalhes = new StringBuilder();
+                    detalhes.append("Cliente: ").append(encomenda.getClienteNome()).append("\n")
+                            .append("Data: ").append(encomenda.getDataEncomenda()).append("\n")
+                            .append("Estado: ").append(encomenda.getEstadoNome()).append("\n")
+                            .append("Valor Total: ").append(encomenda.getValorTotal()).append(" €\n")
+                            .append("Tarefas:\n");
+
+                    encomenda.getTarefas().forEach(tarefa -> detalhes.append("  - ")
+                            .append(tarefa.getDescricaoNome())
+                            .append(" (").append(tarefa.getEstado()).append(")")
+                            .append(" - Funcionário: ").append(tarefa.getFuncionarioNome()).append("\n"));
+
+                    detalhes.append("Etapas:\n");
+                    encomenda.getEtapas().forEach(etapa -> {
+                        String nomeEtapa = buscarNomeEtapa(etapa.getTipoEtapaId());
+                        detalhes.append("  - ").append(nomeEtapa).append("\n");
+                    });
+
+                    setText(detalhes.toString());
+                }
+            }
+        });
+    }
+
+    private String buscarNomeEtapa(int tipoEtapaId) {
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create("http://localhost:8080/api/tipos-etapas/" + tipoEtapaId))
+                    .build();
+
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            var jsonNode = mapper.readTree(response.body());
+
+            // Verifica se o nó "nome" existe e não é nulo
+            if (jsonNode != null && jsonNode.has("descricao")) {
+                return jsonNode.get("descricao").asText();
+            } else {
+                return "Nome da etapa não encontrado";
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Erro ao buscar nome da etapa";
+        }
+    }
+
+    private void abrirModalDetalhes(EncomendaDetalhes encomenda) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/ipvc/desktop/views/detalhes-encomenda-modal.fxml"));
+            Parent root = loader.load();
+
+            DetalhesEncomendaModalController controller = loader.getController();
+            controller.carregarDetalhes(encomenda);
+
+            Stage modal = new Stage();
+            modal.initModality(Modality.APPLICATION_MODAL);
+            modal.initStyle(StageStyle.UTILITY);
+            modal.setTitle("Detalhes da Encomenda");
+            modal.setScene(new Scene(root));
+            modal.showAndWait();
+        } catch (IOException e) {
+            e.printStackTrace();
+            mostrarAlerta("Erro ao abrir os detalhes da encomenda.");
+        }
+    }
+
+    // Adicione este método para exibir alertas
+    private void mostrarAlerta(String mensagem) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Informação");
+        alert.setHeaderText(null);
+        alert.setContentText(mensagem);
+        alert.showAndWait();
     }
 
     @FXML
     private void fechar() {
-        Stage stage = (Stage) labelIdEncomenda.getScene().getWindow();
+        Stage stage = (Stage) listaEncomendas.getScene().getWindow();
         stage.close();
     }
 }

@@ -2,6 +2,7 @@ package com.ipvc.desktop.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.ipvc.desktop.models.Cliente;
 import javafx.animation.FadeTransition;
 import javafx.application.Platform;
@@ -32,23 +33,32 @@ import java.util.stream.Collectors;
 
 public class GestaoClientesController {
 
-    @FXML private TableView<Cliente> tabelaUtilizadores;
-    @FXML private TableColumn<Cliente, String> colNome;
-    @FXML private TableColumn<Cliente, String> colEmail;
-    @FXML private TableColumn<Cliente, String> colTelemovel;
-    @FXML private TableColumn<Cliente, String> colMorada;
-    @FXML private TableColumn<Cliente, String> colCodPostal;
-
-    @FXML private TextField campoPesquisa;
-
-    private final ObjectMapper mapper = new ObjectMapper();
+    // Registra o módulo para suporte a tipos de data/hora do Java 8
+    private final ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
     private final HttpClient httpClient = HttpClient.newHttpClient();
+
+    @FXML
+    private TableView<Cliente> tabelaUtilizadores;
+    @FXML
+    private TableColumn<Cliente, String> colNome;
+    @FXML
+    private TableColumn<Cliente, String> colEmail;
+    @FXML
+    private TableColumn<Cliente, String> colTelemovel;
+    @FXML
+    private TableColumn<Cliente, String> colMorada;
+    @FXML
+    private TableColumn<Cliente, String> colCodPostal;
+
+    @FXML
+    private TextField campoPesquisa;
 
     private final String apiUtilizadores = "http://localhost:8080/api/clientes";
 
     private List<Cliente> todosUtilizadores = new ArrayList<>();
 
-    @FXML private BorderPane border;
+    @FXML
+    private BorderPane border;
 
     @FXML
     public void initialize() {
@@ -62,6 +72,7 @@ public class GestaoClientesController {
     }
 
     private PainelAdminController parentController;
+
     public void setParentController(PainelAdminController parentController) {
         this.parentController = parentController;
     }
@@ -117,25 +128,30 @@ public class GestaoClientesController {
             mostrarAlerta("Por favor selecione um cliente da tabela.");
             return;
         }
-        //AbrirModal
+
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/ipvc/desktop/views/detalhes-cliente.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/ipvc/desktop/views/ver-detalhes-encomenda.fxml"));
             Parent root = loader.load();
 
-            //DetalhesClienteController controller = loader.getController();
-            //controller.setCliente(selecionado);
+            VerDetalhesEncomendaController controller = loader.getController();
+            String apiUrl = "http://localhost:8080/api/encomendas-clientes/" + 2 + "/encomendas";
+            controller.carregarDetalhes(apiUrl);
+
+            Scene scene = new Scene(root);
+            scene.getStylesheets().add(getClass().getResource("/com/ipvc/desktop/style/ver-detalhes-encomenda.css").toExternalForm());
 
             Stage modal = new Stage();
             modal.initModality(Modality.APPLICATION_MODAL);
             modal.initStyle(StageStyle.UTILITY);
-            modal.setTitle("Detalhes do Cliente");
-            modal.setScene(new Scene(root));
+            modal.setTitle("Detalhes das Encomendas");
+            modal.setScene(scene);
             modal.showAndWait();
         } catch (IOException e) {
             e.printStackTrace();
+            mostrarAlerta("Erro ao carregar os detalhes das encomendas.");
         }
-
     }
+
     private void mostrarAlerta(String mensagem) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Informação");
@@ -143,6 +159,4 @@ public class GestaoClientesController {
         alert.setContentText(mensagem);
         alert.showAndWait();
     }
-
-
 }
