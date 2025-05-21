@@ -41,6 +41,13 @@ public class UtilizadorController {
         return utilizador.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @GetMapping("/email")
+    @Operation(summary = "Buscar utilizador por email", description = "Retorna um utilizador específico pelo email")
+    public ResponseEntity<UtilizadorResponseDTO> getUtilizadorByEmail(@RequestParam String email) {
+        Optional<UtilizadorResponseDTO> utilizador = utilizadorService.getUtilizadorByEmail(email);
+        return utilizador.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
     @PostMapping
     @Operation(summary = "Criar um novo utilizador", description = "Adiciona um novo utilizador ao sistema")
     public ResponseEntity<UtilizadorResponseDTO> createUtilizador(@RequestBody UtilizadorCreateDTO utilizadorDTO) {

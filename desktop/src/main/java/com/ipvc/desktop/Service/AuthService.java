@@ -3,6 +3,7 @@ package com.ipvc.desktop.Service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ipvc.desktop.Request.LoginRequest;
 import com.ipvc.desktop.Response.AuthResponse;
+import com.ipvc.desktop.models.Utilizador;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -58,6 +59,23 @@ public class AuthService {
         } catch (Exception e) {
             e.printStackTrace();
             return -1; // fallback em caso de erro
+        }
+    }
+
+    public Utilizador obterUtilizadorPorEmail(String email) {
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create("http://localhost:8080/api/utilizadores/email?email=" + email))
+                    .GET()
+                    .build();
+
+            HttpClient client = HttpClient.newHttpClient();
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            return objectMapper.readValue(response.body(), Utilizador.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null; // fallback em caso de erro
         }
     }
 

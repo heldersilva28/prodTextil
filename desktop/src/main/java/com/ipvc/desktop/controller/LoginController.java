@@ -2,6 +2,8 @@ package com.ipvc.desktop.controller;
 
 import com.ipvc.desktop.Response.AuthResponse;
 import com.ipvc.desktop.Service.AuthService;
+import com.ipvc.desktop.models.Session;
+import com.ipvc.desktop.models.Utilizador;
 import javafx.animation.FadeTransition;
 import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
@@ -43,6 +45,11 @@ public class LoginController implements Initializable {
 
             if (response.isSuccess()) {
                 errorLabel.setVisible(false);
+
+                // 1) Obtém o Utilizador completo
+                Utilizador user = authService.obterUtilizadorPorEmail(email);
+                // 2) Guarda-o na sessão
+                Session.getInstance().setCurrentUser(user);
                 // Exibe o toast antes de mudar para a próxima página
                 showToast(response.getMessage(), () -> {
                     if(authService.obterCargoUtilizadorPorEmail(email) == 1){

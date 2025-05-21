@@ -34,6 +34,10 @@ public class UtilizadorService {
         return utilizadorRepo.findById(id).map(this::convertToDTO);
     }
 
+    public Optional<UtilizadorDTO.UtilizadorResponseDTO> getUtilizadorByEmail(String email) {
+        return utilizadorRepo.findByEmail(email).map(this::convertToDTO);
+    }
+
     public int obterCargoPorEmail(String email) {
         Utilizador utilizador = utilizadorRepo.findCargoUtilizadorByEmail(email);
         if (utilizador != null && utilizador.getTipoUtilizador() != null) {
