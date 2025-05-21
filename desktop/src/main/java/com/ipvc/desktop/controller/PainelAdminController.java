@@ -99,11 +99,14 @@ public class PainelAdminController {
         carregarConteudo("/com/ipvc/desktop/views/gestao-materiais.fxml",
                 "/com/ipvc/desktop/style/gestao-materiais.css"); // Carrega a página de gestão de materiais
     }
-//
-//    @FXML
-//    public void abrirGestaoFuncionarios() {
-//        carregarConteudo("/com/ipvc/desktop/gestao-funcionarios.fxml"); // Carrega a página de gestão de funcionários
-//    }
+
+    @FXML
+    public void abrirGestaoFuncionarios() {
+        carregarConteudo(
+                "/com/ipvc/desktop/views/gestao-funcionarios.fxml",
+                "/com/ipvc/desktop/style/gestao-utilizadores.css"
+        );
+    }
 //
 //    @FXML
 //    public void abrirHistoricoEventos() {
