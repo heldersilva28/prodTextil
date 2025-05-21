@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.ipvc.desktop.models.Funcionario;
+import com.ipvc.desktop.models.Utilizador;
 import javafx.animation.FadeTransition;
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyStringWrapper;
@@ -21,6 +22,7 @@ import java.net.http.HttpResponse;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class GestaoFuncionariosController {
@@ -39,10 +41,11 @@ public class GestaoFuncionariosController {
     @FXML
     private TableColumn<Funcionario, String> colDataAdmissao;
 
-    @FXML
-    private TextField campoPesquisa;
+    @FXML private TextField campoPesquisa;
+    @FXML private ComboBox<String> comboCargo;
 
     private final String apiFuncionarios = "http://localhost:8080/api/funcionarios";
+    private final String apiCargos = "http://localhost:8080/api/tipos-utilizadores";
     private List<Funcionario> todosFuncionarios = new ArrayList<>();
 
     @FXML
@@ -60,15 +63,42 @@ public class GestaoFuncionariosController {
         ft.setToValue(1);
         ft.play();
         configurarTabela();
+        carregarCargos();
         carregarFuncionarios();
     }
 
     private void configurarTabela() {
         colNome.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getNome()));
         colTelefone.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getTelefone()));
-        colCargo.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getCargo()));
+        colCargo.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getCargoNome()));
         colDataAdmissao.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(
                 cellData.getValue().getDataAdmissao().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))));
+    }
+
+    private void carregarCargos() {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(apiCargos))
+                .build();
+
+        httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+                .thenApply(HttpResponse::body)
+                .thenAccept(response -> {
+                    try {
+                        // Supondo que o backend devolve [{ "id": 1, "nome": "Admin" }, ...]
+                        List<Map<String, Object>> cargos = mapper.readValue(response, new TypeReference<>() {});
+                        List<String> nomesCargos = cargos.stream()
+                                .map(c -> c.get("nome").toString())
+                                .collect(Collectors.toList());
+
+                        Platform.runLater(() -> {
+                            comboCargo.getItems().add("Todos");
+                            comboCargo.getItems().addAll(nomesCargos);
+                            comboCargo.getSelectionModel().selectFirst();
+                        });
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                });
     }
 
     private void carregarFuncionarios() {
@@ -96,9 +126,17 @@ public class GestaoFuncionariosController {
     @FXML
     private void filtrarFuncionarios() {
         String pesquisa = campoPesquisa.getText().toLowerCase();
+        String cargoSelecionado = comboCargo.getValue();
 
         List<Funcionario> filtrados = todosFuncionarios.stream()
-                .filter(f -> f.getNome() != null && f.getNome().toLowerCase().contains(pesquisa))
+                .filter(u -> u.getNome().toLowerCase().contains(pesquisa) ||
+                        u.getTelefone().toLowerCase().contains(pesquisa))
+                .filter(u -> cargoSelecionado == null || cargoSelecionado.equals("Todos") ||
+                        (u.getCargoNome() != null && u.getCargoNome().equals(cargoSelecionado)))
+                .filter(u -> {
+                    u.getDataAdmissao().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+                    return u.getDataAdmissao().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")).contains(pesquisa);
+                })
                 .collect(Collectors.toList());
 
         atualizarTabela(filtrados);

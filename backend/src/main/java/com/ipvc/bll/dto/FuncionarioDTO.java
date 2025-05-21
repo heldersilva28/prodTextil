@@ -24,6 +24,7 @@ public class FuncionarioDTO {
             String nome,
             String telefone,
             Integer cargo,  // Agora é Integer, representando o id do Utilizador
+            String cargoNome,
             LocalDate dataAdmissao
     ) implements Serializable {}
 }

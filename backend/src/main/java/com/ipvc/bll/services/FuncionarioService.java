@@ -160,6 +160,7 @@ public class FuncionarioService {
                 funcionario.getUtilizador().getUsername(),
                 funcionario.getTelefone(),
                 funcionario.getTipoUtilizadorId(),
+                funcionario.getCargo().getTipoUtilizadorNome(),
                 funcionario.getDataAdmissao()
         );
     }

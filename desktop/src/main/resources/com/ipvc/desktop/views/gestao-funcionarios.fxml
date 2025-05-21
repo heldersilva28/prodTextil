@@ -23,8 +23,8 @@
 
             <!-- Filtros -->
             <HBox spacing="10">
-                <TextField fx:id="campoPesquisaFuncionario" promptText="Pesquisar por nome ou email..." onKeyReleased="#filtrarFuncionarios" styleClass="search-bar"/>
-                <ComboBox fx:id="comboCargoFuncionario" promptText="Filtrar por cargo" onAction="#filtrarFuncionarios" styleClass="filter-box"/>
+                <TextField fx:id="campoPesquisa" promptText="Pesquisar por nome,telefone ou data Admissão..." onKeyReleased="#filtrarFuncionarios" styleClass="search-bar"/>
+                <ComboBox fx:id="comboCargo" promptText="Filtrar por cargo" onAction="#filtrarFuncionarios" styleClass="filter-box"/>
             </HBox>
         </VBox>
     </top>

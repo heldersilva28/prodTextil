@@ -7,7 +7,8 @@ public class Funcionario {
     private Integer id;
     private String nome;
     private String telefone;
-    private String cargo; // nome do cargo
+    private int cargo; // id do cargo
+    private String cargoNome; // nome do cargo
     private LocalDate dataAdmissao;
 
     public Integer getId() {
@@ -34,12 +35,19 @@ public class Funcionario {
         this.telefone = telefone;
     }
 
-    public String getCargo() {
+    public int getCargo() {
         return cargo;
     }
 
-    public void setCargo(String cargo) {
+    public void setCargo(int cargo) {
         this.cargo = cargo;
+    }
+
+    public String getCargoNome() {
+        return cargoNome;
+    }
+    public void setCargoNome(String cargoNome) {
+        this.cargoNome = cargoNome;
     }
 
     public LocalDate getDataAdmissao() {
