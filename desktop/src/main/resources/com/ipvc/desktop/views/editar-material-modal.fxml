@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns:fx="http://javafx.com/fxml" 
+      fx:controller="com.ipvc.desktop.controller.EditarMaterialModalController" 
+      spacing="20" 
+      alignment="TOP_LEFT" 
+      prefWidth="500" 
+      prefHeight="400"
+      styleClass="modal-container">
+      
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <Label text="Editar Material" styleClass="titulo-modal"/>
+    
+    <GridPane hgap="15" vgap="15">
+        <columnConstraints>
+            <ColumnConstraints minWidth="100" prefWidth="150"/>
+            <ColumnConstraints minWidth="200" prefWidth="300" hgrow="ALWAYS"/>
+        </columnConstraints>
+
+        <Label text="Nome:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+        <TextField fx:id="campoNome" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+        
+        <Label text="Tipo:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+        <ComboBox fx:id="campoTipo" maxWidth="Infinity" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+        
+        <Label text="Preço Unidade:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+        <TextField fx:id="campoPrecoUnidade" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+        
+        <Label text="Stock Disponível:" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+        <TextField fx:id="campoStockDisponivel" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+    </GridPane>
+    
+    <Region VBox.vgrow="ALWAYS"/> <!-- Espaçador flexível -->
+    
+    <Button text="Salvar" onAction="#salvarMaterial" maxWidth="Infinity"/>
+</VBox>

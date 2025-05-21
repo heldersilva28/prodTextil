@@ -1,0 +1,55 @@
+.vbox {
+    -fx-background-color: #f0f8ff; /* Azul claro */
+    -fx-padding: 20;
+    -fx-spacing: 10;
+}
+
+.label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #333; /* Cinza escuro */
+    -fx-font-weight: bold;
+}
+
+.label:first-child {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #4682b4; /* Azul aço */
+}
+
+.grid-pane {
+    -fx-hgap: 10;
+    -fx-vgap: 10;
+}
+
+.text-field, .combo-box {
+    -fx-border-color: #87ceeb; /* Azul céu */
+    -fx-border-width: 1;
+    -fx-background-color: #ffffff; /* Branco */
+    -fx-padding: 5;
+    -fx-pref-height: 35px;
+    -fx-font-size: 14px;
+}
+
+.button {
+    -fx-background-color: #4682b4; /* Azul aço */
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 10 20;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+}
+
+.button:hover {
+    -fx-background-color: #5a9bd4; /* Azul mais claro */
+}
+
+.modal-container {
+    -fx-background-color: #f0f8ff;
+}
+
+.titulo-modal {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #4682b4;
+    -fx-padding: 0 0 10 0;
+}

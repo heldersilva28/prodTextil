@@ -27,72 +27,11 @@ import java.util.List;
 import java.util.Objects;
 
 public class PainelAdminController {
-
-    @FXML private TableView<Utilizador> tabelaUtilizadores;
-    @FXML private TableColumn<Utilizador, String> colNome;
-    @FXML private TableColumn<Utilizador, String> colEmail;
-    @FXML private TableColumn<Utilizador, String> colTipo;
-
-    @FXML private Button btnLogout; // Botão de Logout
-    @FXML private Button btnNovoUtilizador; // Botão para abrir formulário de novo utilizador
     @FXML private StackPane contentPane; // Área de conteúdo principal onde as telas serão carregadas
-
-    private final ObjectMapper mapper = new ObjectMapper();
 
     @FXML
     public void initialize() {
-//        // Definir como as colunas irão apresentar os dados da classe Utilizador
-//        colNome.setCellValueFactory(new PropertyValueFactory<>("username"));
-//        colEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
-//        colTipo.setCellValueFactory(new PropertyValueFactory<>("tipoUtilizadorNome"));
-//
-//        // Carregar a lista de utilizadores da API
-//        carregarUtilizadores();
-        // só é seguro chamar aqui, porque o FXML já está na Scene
         Platform.runLater(this::abrirDashboard);
-    }
-
-    private void carregarUtilizadores() {
-        try {
-            // Criando a requisição HTTP para buscar os utilizadores
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create("http://localhost:8080/api/utilizadores"))
-                    .build();
-
-            // Enviar a requisição e pegar a resposta
-            HttpResponse<String> response = HttpClient.newHttpClient()
-                    .send(request, HttpResponse.BodyHandlers.ofString());
-
-            // Converter a resposta JSON para uma lista de Utilizadores
-            List<Utilizador> lista = mapper.readValue(response.body(), new TypeReference<>() {});
-            tabelaUtilizadores.setItems(FXCollections.observableArrayList(lista)); // Atualizar a tabela com os dados
-
-        } catch (Exception e) {
-            // Exibir mensagem de erro se ocorrer algum problema na requisição ou parsing
-            e.printStackTrace();
-            new Alert(Alert.AlertType.ERROR, "Erro ao carregar utilizadores: " + e.getMessage()).showAndWait();
-        }
-    }
-
-    @FXML
-    public void abrirFormularioNovoUtilizador(ActionEvent event) {
-        try {
-            // Carregar a interface do formulário para adicionar um novo utilizador
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/ipvc/desktop/views/novo-utilizador.fxml"));
-            Scene scene = new Scene(fxmlLoader.load());
-
-            // Criar uma nova janela para o formulário
-            Stage stage = new Stage();
-            stage.setTitle("Criar Novo Utilizador");
-            stage.setScene(scene);
-            stage.initModality(Modality.APPLICATION_MODAL); // Modal, bloqueia o acesso à janela principal até ser fechado
-            stage.showAndWait(); // Aguarda a interação do utilizador
-
-        } catch (IOException e) {
-            // Exibir mensagem de erro se ocorrer algum problema ao carregar o FXML
-            e.printStackTrace();
-            new Alert(Alert.AlertType.ERROR, "Erro ao abrir o formulário de novo utilizador").showAndWait();
-        }
     }
 
     @FXML
@@ -154,11 +93,12 @@ public class PainelAdminController {
         carregarConteudo("/com/ipvc/desktop/views/gestao-encomendas-fornecedores.fxml",
                 "/com/ipvc/desktop/style/gestao-encomendas-clientes.css");
     }
-//
-//    @FXML
-//    public void abrirGestaoMateriais() {
-//        carregarConteudo("/com/ipvc/desktop/gestao-materiais.fxml"); // Carrega a página de gestão de materiais
-//    }
+
+    @FXML
+    public void abrirGestaoMateriais() {
+        carregarConteudo("/com/ipvc/desktop/views/gestao-materiais.fxml",
+                "/com/ipvc/desktop/style/gestao-materiais.css"); // Carrega a página de gestão de materiais
+    }
 //
 //    @FXML
 //    public void abrirGestaoFuncionarios() {

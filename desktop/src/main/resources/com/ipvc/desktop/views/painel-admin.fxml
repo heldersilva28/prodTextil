@@ -31,11 +31,15 @@
         <VBox spacing="15" alignment="TOP_LEFT" styleClass="sidebar" prefWidth="265" minWidth="250" maxWidth="400">
             <Button text="Dashboard" styleClass="menu-item" onAction="#abrirDashboard" maxWidth="Infinity"/>
             <Button text="Gestão de Utilizadores" styleClass="menu-item" onAction="#abrirGestaoUtilizadores" maxWidth="Infinity"/>
+            <Button text="Gestão de Funcionários" styleClass="menu-item" maxWidth="Infinity"/>
             <Button text="Gestão de Clientes" styleClass="menu-item" onAction="#abrirGestaoClientes" maxWidth="Infinity"/>
+            <Button text="Gestão de Fornecedores" styleClass="menu-item" maxWidth="Infinity"/>
             <Button text="Encomendas Clientes" styleClass="menu-item" onAction="#abrirGestaoEncomendasClientes" maxWidth="Infinity"/>
             <Button text="Encomendas Fornecedores" styleClass="menu-item" onAction="#abrirGestaoEncomendasFornecedores" maxWidth="Infinity"/>
-            <Button text="Gestão de Materiais" styleClass="menu-item" maxWidth="Infinity"/>
-            <Button text="Gestão de Funcionários" styleClass="menu-item" maxWidth="Infinity"/>
+            <Button text="Gestão de Materiais" styleClass="menu-item" onAction="#abrirGestaoMateriais" maxWidth="Infinity"/>
+            <Button text="Etapas/Tarefas" styleClass="menu-item" maxWidth="Infinity"/>
+            <Button text="Pagamentos a Fornecedores" styleClass="menu-item" maxWidth="Infinity"/>
+            <Button text="Recebimentos de clientes" styleClass="menu-item" maxWidth="Infinity"/>
             <Button text="Histórico de Eventos" styleClass="menu-item" maxWidth="Infinity"/>
         </VBox>
 
