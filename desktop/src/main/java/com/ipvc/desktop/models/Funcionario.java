@@ -5,6 +5,7 @@ import java.time.LocalDate;
 public class Funcionario {
 
     private Integer id;
+    private Integer utilizadorId; // id do utilizador
     private String nome;
     private String telefone;
     private int cargo; // id do cargo
@@ -17,6 +18,13 @@ public class Funcionario {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Integer getUtilizadorId() {
+        return utilizadorId;
+    }
+    public void setUtilizadorId(Integer utilizadorId) {
+        this.utilizadorId = utilizadorId;
     }
 
     public String getNome() {

@@ -6,7 +6,7 @@
 
 <HBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.ipvc.desktop.controller.RegistoController"
+      fx:controller="com.ipvc.desktop.controller.NovoUtilizadorController"
       prefWidth="800" prefHeight="500"
       styleClass="login-root">
 

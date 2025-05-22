@@ -18,7 +18,8 @@
             <HBox alignment="CENTER_LEFT" spacing="10">
                 <Label text="Gestão de Funcionários" styleClass="title"/>
                 <Region HBox.hgrow="ALWAYS"/>
-               <Button fx:id="btnNovoFuncionario" text="➕ Novo Funcionário" onAction="#abrirFormularioNovoFuncionario" styleClass="add-button"/>
+                <Button fx:id="btnNovoFuncionario" text="➕ Novo Funcionário" onAction="#abrirFormularioNovoFuncionario" styleClass="add-button"/>
+                <Button fx:id="btnEditarFuncionario" text="✎️ Editar Funcionário" onAction="#abrirModalEditarFuncionario" styleClass="add-button"/>
             </HBox>
 
             <!-- Filtros -->

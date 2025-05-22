@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/17"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.ipvc.desktop.controller.EditarFuncionarioController">
+
+    <!-- Título -->
+    <Label text="Editar Funcionário" textAlignment="CENTER" alignment="CENTER" styleClass="edit-title"/>
+
+    <!-- Formulário -->
+    <VBox styleClass="edit-form" alignment="CENTER" spacing="15">
+        <TextField fx:id="inputTelefone"
+                   promptText="Telefone (9 dígitos)"
+                   styleClass="edit-field"/>
+        <ComboBox fx:id="cargoComboBox"
+                  promptText="Selecione o cargo"
+                  styleClass="edit-field"/>
+        <DatePicker fx:id="inputDataAdmissao"
+                    promptText="Data de admissão"
+                    styleClass="edit-field date-picker"/>
+        <Button text="Atualizar"
+                onAction="#atualizarFuncionario"
+                styleClass="edit-button"/>
+        <Label fx:id="errorLabel"
+               textFill="red"
+               visible="false"
+               styleClass="error-label"/>
+    </VBox>
+
+</VBox>

@@ -11,10 +11,17 @@ import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.util.Duration;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -146,31 +153,42 @@ public class GestaoFuncionariosController {
 
    @FXML
      public void abrirFormularioNovoFuncionario() {
-         parentController.carregarConteudo("/com/ipvc/desktop/views/novo-utilizador.fxml", "/com/ipvc/desktop/style/login.css");
+         parentController.carregarConteudo("/com/ipvc/desktop/views/novo-funcionario.fxml", "/com/ipvc/desktop/style/novo-funcionario.css");
      }
-//
-//    private void abrirModalEditarCargo(int funcionarioId) {
-//         try {
-//             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/ipvc/desktop/views/editar-cargo-utilizador.fxml"));
-//             Parent root = loader.load();
-//
-//             EditarCargoUtilizadorController controller = loader.getController();
-//             controller.setUtilizadorId(funcionarioId);
-//
-//             Scene scene = new Scene(root);
-//             scene.getStylesheets().add(getClass().getResource("/com/ipvc/desktop/style/editar-cargo-utilizador.css").toExternalForm());
-//
-//             Stage modal = new Stage();
-//             modal.initModality(Modality.APPLICATION_MODAL);
-//             modal.initStyle(StageStyle.UTILITY);
-//             modal.setTitle("Editar Cargo");
-//             modal.setScene(scene);
-//             modal.showAndWait();
-//
-//             carregarFuncionarios();
-//
-//         } catch (IOException e) {
-//             e.printStackTrace();
-//         }
-//     }
+    @FXML
+    public void abrirModalEditarFuncionario() {
+        if(tabelaFuncionarios.getSelectionModel().getSelectedItem() == null) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Seleção Inválida");
+            alert.setHeaderText(null);
+            alert.setContentText("Por favor, selecione um funcionário para editar.");
+            alert.showAndWait();
+            return;
+        }
+        System.out.println("Funcionário selecionado: " + tabelaFuncionarios.getSelectionModel().getSelectedItem().getId());
+        System.out.println("Funcionario user id: " + tabelaFuncionarios.getSelectionModel().getSelectedItem().getUtilizadorId());
+         try {
+             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/ipvc/desktop/views/editar-funcionario.fxml"));
+             Parent root = loader.load();
+
+             EditarFuncionarioController controller = loader.getController();
+             controller.setUtilizadorId(tabelaFuncionarios.getSelectionModel().getSelectedItem().getUtilizadorId());
+                controller.setFuncionarioId(tabelaFuncionarios.getSelectionModel().getSelectedItem().getId());
+
+             Scene scene = new Scene(root);
+             scene.getStylesheets().add(getClass().getResource("/com/ipvc/desktop/style/editar-funcionario.css").toExternalForm());
+
+             Stage modal = new Stage();
+             modal.initModality(Modality.APPLICATION_MODAL);
+             modal.initStyle(StageStyle.UTILITY);
+             modal.setTitle("Editar Cargo");
+             modal.setScene(scene);
+             modal.showAndWait();
+
+             carregarFuncionarios();
+
+         } catch (IOException e) {
+             e.printStackTrace();
+         }
+     }
 }
