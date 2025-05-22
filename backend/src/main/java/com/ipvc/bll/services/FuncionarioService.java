@@ -46,7 +46,7 @@ public class FuncionarioService {
         Utilizador utilizador = utilizadorRepo.findById(funcionarioDTO.utilizadorId())
                 .orElseThrow(() -> new RuntimeException("Utilizador não encontrado"));
 
-        Utilizador cargo = utilizadorRepo.findCargoUtilizadorById(utilizador.getId());
+        TiposUtilizador cargo = utilizadorRepo.findTipoUtilizadorById(utilizador.getId());
 
         // Criar o novo funcionário
         Funcionario funcionario = new Funcionario();
@@ -71,9 +71,9 @@ public class FuncionarioService {
         return funcionarioRepo.findByUtilizador_Id(utilizadorId).map(funcionario -> {
             System.out.println("✅ Funcionário encontrado: " + funcionario.getId());
 
-            // Buscar o novo cargo corretamente (Utilizador)
-            Utilizador novoCargo = utilizadorRepo.findById(funcionarioDTO.cargo())
-                    .orElseThrow(() -> new RuntimeException("❌ Cargo (Utilizador) não encontrado"));
+
+            TiposUtilizador novoCargo = tipoUtilizadorRepo.findById(funcionarioDTO.cargo())
+                    .orElseThrow(() -> new RuntimeException("❌ Cargo (TipoUtilizador) não encontrado"));
 
             // Verificar se o funcionário já tem um cargo associado
             if (funcionario.getCargo() != null) {
@@ -90,11 +90,15 @@ public class FuncionarioService {
             if (funcionarioDTO.telefone() != null) {
                 funcionario.setTelefone(funcionarioDTO.telefone());
             }
+            // Atualizar data de admissão, se necessário
+            if (funcionarioDTO.dataAdmissao() != null) {
+                funcionario.setDataAdmissao(funcionarioDTO.dataAdmissao());
+            }
 
             // Atualizar tipo_utilizador_id na tabela Utilizador
             Utilizador utilizador = funcionario.getUtilizador();
-            utilizador.setTipoUtilizador(novoCargo.getTipoUtilizador());
-            System.out.println("✅ Tipo de Utilizador atualizado para: " + novoCargo.getTipoUtilizador().getId());
+            utilizador.setTipoUtilizador(novoCargo);
+            System.out.println("✅ Tipo de Utilizador atualizado para: " + novoCargo.getId());
 
             // ** Evitar problemas de sessão do Hibernate **
             utilizadorRepo.save(utilizador);  // Atualiza primeiro o `Utilizador`
@@ -119,7 +123,7 @@ public class FuncionarioService {
             System.out.println("✅ Funcionário encontrado para Utilizador ID: " + utilizadorId);
 
             // Buscar o novo cargo correto a partir do Utilizador
-            Utilizador novoCargo = utilizadorRepo.findCargoUtilizadorById(utilizadorId);
+            TiposUtilizador novoCargo = utilizadorRepo.findTipoUtilizadorById(utilizadorId);
 
             if(novoCargo == null) {
                 throw new RuntimeException("❌ Cargo (Utilizador) não encontrado para este utilizador");
@@ -157,10 +161,11 @@ public class FuncionarioService {
     private FuncionarioDTO.FuncionarioResponseDTO convertToDTO(Funcionario funcionario) {
         return new FuncionarioDTO.FuncionarioResponseDTO(
                 funcionario.getId(),
+                funcionario.getUtilizador().getId(),
                 funcionario.getUtilizador().getUsername(),
                 funcionario.getTelefone(),
                 funcionario.getTipoUtilizadorId(),
-                funcionario.getCargo().getTipoUtilizadorNome(),
+                funcionario.getCargo().getNome(),
                 funcionario.getDataAdmissao()
         );
     }

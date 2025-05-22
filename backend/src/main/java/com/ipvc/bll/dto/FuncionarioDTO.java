@@ -15,12 +15,14 @@ public class FuncionarioDTO {
     // DTO para Atualizar Funcionario
     public record FuncionarioUpdateDTO(
             String telefone,
-            Integer cargo  // Agora é Integer, representando o id do Utilizador
+            Integer cargo,  // Agora é Integer, representando o id do Utilizador
+            LocalDate dataAdmissao
     ) implements Serializable {}
 
     // DTO para Responder Requisições
     public record FuncionarioResponseDTO(
             Integer id,
+            Integer utilizadorId,
             String nome,
             String telefone,
             Integer cargo,  // Agora é Integer, representando o id do Utilizador

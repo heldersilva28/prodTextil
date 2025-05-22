@@ -30,10 +30,11 @@ public class FuncionarioController {
         List<FuncionarioDTO.FuncionarioResponseDTO> response = funcionarios.stream()
                 .map(funcionario -> new FuncionarioDTO.FuncionarioResponseDTO(
                         funcionario.getId(),
+                        funcionario.getUtilizador().getId(),
                         funcionario.getNome(),
                         funcionario.getTelefone(),
                         funcionario.getTipoUtilizadorId(),
-                        funcionario.getCargo().getTipoUtilizadorNome(),
+                        funcionario.getCargo().getNome(),
                         funcionario.getDataAdmissao()// Acesse o campo correto do código postal
                 ))
                 .collect(Collectors.toList());

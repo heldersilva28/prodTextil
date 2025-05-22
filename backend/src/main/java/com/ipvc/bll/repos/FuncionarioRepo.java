@@ -12,7 +12,7 @@ import java.util.Optional;
 
 @Repository
 public interface FuncionarioRepo extends JpaRepository<Funcionario, Integer> {
-    List<Funcionario> findAllByCargo_TipoUtilizador(TiposUtilizador tipoUtilizador);
+    //List<Funcionario> findAllByCargo_TipoUtilizador(TiposUtilizador tipoUtilizador);
     Optional<Funcionario> findById(Integer id);
     Optional<Funcionario> findByUtilizadorId(Integer utilizadorId);
     Optional<Funcionario> findFuncionariosByUtilizadorId(Integer utilizadorId);
