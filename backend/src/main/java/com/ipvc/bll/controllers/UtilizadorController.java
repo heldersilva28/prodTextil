@@ -27,6 +27,12 @@ public class UtilizadorController {
         return ResponseEntity.ok(utilizadorService.getAllUtilizadores());
     }
 
+    @GetMapping("/sem-funcionario")
+    @Operation(summary = "Listar utilizadores sem funcionário e nao sao Admin", description = "Retorna uma lista de utilizadores que não são funcionários nem administradores")
+    public ResponseEntity<List<UtilizadorResponseDTO>> getAllUtilizadoresSemFuncionarioSemAdmin() {
+        return ResponseEntity.ok(utilizadorService.getAllUtilizadoresSemFuncionarioSemAdmin());
+    }
+
     @GetMapping("/cargo")
     @Operation(summary = "Listar Cargo do Utilizador", description = "Retorna o ID do Cargo do Utilizador")
     public ResponseEntity<Integer> getCargoPorEmail(@RequestParam String email) {

@@ -1,5 +1,6 @@
 package com.ipvc.bll.services;
 
+import com.ipvc.bll.dto.FuncionarioDTO;
 import com.ipvc.bll.dto.UtilizadorDTO;
 import com.ipvc.bll.dto.TiposUtilizadorDTO;
 import com.ipvc.bll.models.Funcionario;
@@ -10,6 +11,7 @@ import com.ipvc.bll.repos.TipoUtilizadorRepo;
 import com.ipvc.bll.repos.UtilizadorRepo;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -28,6 +30,20 @@ public class UtilizadorService {
 
     public List<UtilizadorDTO.UtilizadorResponseDTO> getAllUtilizadores() {
         return utilizadorRepo.findAll().stream().map(this::convertToDTO).collect(Collectors.toList());
+    }
+
+    public List<UtilizadorDTO.UtilizadorResponseDTO> getAllUtilizadoresSemFuncionarioSemAdmin() {
+        List<FuncionarioDTO.FuncionarioResponseDTO> funcionarios = funcionarioService.getAllFuncionarios();
+        // Filtrar os utilizadores que não são funcionários e não são administradores
+        List<Integer> idsFuncionarios = new ArrayList<>();
+        for (FuncionarioDTO.FuncionarioResponseDTO funcionario : funcionarios) {
+            idsFuncionarios.add(funcionario.utilizadorId());
+        }
+
+        return utilizadorRepo.findAll().stream()
+                .filter(utilizador -> !idsFuncionarios.contains(utilizador.getId()) && utilizador.getTipoUtilizador().getId() != 1)
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
     }
 
     public Optional<UtilizadorDTO.UtilizadorResponseDTO> getUtilizadorById(Integer id) {
