@@ -134,15 +134,23 @@ public class GestaoFuncionariosController {
     private void filtrarFuncionarios() {
         String pesquisa = campoPesquisa.getText().toLowerCase();
         String cargoSelecionado = comboCargo.getValue();
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
         List<Funcionario> filtrados = todosFuncionarios.stream()
-                .filter(u -> u.getNome().toLowerCase().contains(pesquisa) ||
-                        u.getTelefone().toLowerCase().contains(pesquisa))
-                .filter(u -> cargoSelecionado == null || cargoSelecionado.equals("Todos") ||
-                        (u.getCargoNome() != null && u.getCargoNome().equals(cargoSelecionado)))
                 .filter(u -> {
-                    u.getDataAdmissao().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-                    return u.getDataAdmissao().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")).contains(pesquisa);
+                    // 1) cargo bate?
+                    boolean matchesCargo = cargoSelecionado == null
+                            || cargoSelecionado.equals("Todos")
+                            || (u.getCargoNome() != null
+                            && u.getCargoNome().equals(cargoSelecionado));
+
+                    // 2) nome, telefone ou data contém a pesquisa?
+                    boolean matchesPesquisa = u.getNome().toLowerCase().contains(pesquisa)
+                            || u.getTelefone().toLowerCase().contains(pesquisa)
+                            || (u.getDataAdmissao() != null
+                            && u.getDataAdmissao().format(fmt).contains(pesquisa));
+
+                    return matchesCargo && matchesPesquisa;
                 })
                 .collect(Collectors.toList());
 
@@ -153,7 +161,7 @@ public class GestaoFuncionariosController {
 
    @FXML
      public void abrirFormularioNovoFuncionario() {
-         parentController.carregarConteudo("/com/ipvc/desktop/views/novo-funcionario.fxml", "/com/ipvc/desktop/style/novo-funcionario.css");
+         parentController.carregarConteudo("/com/ipvc/desktop/views/novo-funcionario.fxml", "/com/ipvc/desktop/style/gestao-utilizadores.css");
      }
     @FXML
     public void abrirModalEditarFuncionario() {

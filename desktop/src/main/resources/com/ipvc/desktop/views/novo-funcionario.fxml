@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.geometry.Pos?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.ipvc.desktop.controller.NovoFuncionarioController"
+            prefWidth="1000" prefHeight="600"
+            styleClass="gestao-root"
+            fx:id="border">
+
+    <!-- Topo com título e botão -->
+    <top>
+        <VBox spacing="10" styleClass="top-bar">
+            <!-- Linha 1: título + botão -->
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <Label text="Criação de Funcionários" styleClass="title"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button fx:id="btnNovo"
+                        text="➕ Criar Funcionário"
+                        onAction="#criarFuncionario"
+                        styleClass="add-button"/>
+            </HBox>
+
+            <!-- Linha 2: telefone / pesquisa / filtro -->
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <TextField fx:id="campoPesquisa"
+                           promptText="Pesquisar por nome ou email..."
+                           onKeyReleased="#filtrarUtilizadores"
+                           styleClass="search-bar"/>
+
+                <ComboBox fx:id="comboCargo"
+                          promptText="Filtrar por cargo"
+                          onAction="#filtrarUtilizadores"
+                          styleClass="filter-box"/>
+
+                <!-- Número de telefone no mesmo nível do campo de pesquisa -->
+                <TextField fx:id="numeroTelefone"
+                           promptText="Número de Telefone..."
+                           styleClass="search-bar"
+                           prefWidth="${btnNovo.width}"/>
+            </HBox>
+        </VBox>
+    </top>
+
+
+
+    <!-- Tabela de utilizadores -->
+    <center>
+        <VBox spacing="10">
+            <TableView fx:id="tabelaUtilizadores" styleClass="custom-table" prefHeight="500">
+                <columns>
+                    <TableColumn fx:id="colNome" text="Nome" prefWidth="300"/>
+                    <TableColumn fx:id="colEmail" text="Email" prefWidth="400"/>
+                    <TableColumn fx:id="colTipo" text="Cargo" prefWidth="200"/>
+                </columns>
+            </TableView>
+        </VBox>
+    </center>
+</BorderPane>
+
