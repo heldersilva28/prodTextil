@@ -21,6 +21,7 @@ public class DetalhesEncomendaModalController {
     @FXML private Label lblValorTotal;
     @FXML private TextArea lblTarefas; // Alterado para TextArea
     @FXML private TextArea lblEtapas; // Alterado para TextArea
+    @FXML private TextArea lblProdutos;
 
     public void carregarDetalhes(EncomendaDetalhes encomenda) {
         lblCliente.setText(encomenda.getClienteNome());
@@ -41,6 +42,14 @@ public class DetalhesEncomendaModalController {
                 .append(", Início: ").append(etapa.getDataInicio())
                 .append(", Fim: ").append(etapa.getDataFim()).append("\n"));
         lblEtapas.setText(etapas.toString());
+
+        StringBuilder produtos = new StringBuilder();
+        encomenda.getItensEncomenda().forEach(item -> produtos.append("- ")
+                .append(item.getProduto())
+                .append(" (Quantidade: ").append(item.getQuantidade()).append(")")
+                .append(" - Preço Unitário: ").append(item.getPrecoUnitario()).append(" €")
+                .append(" - Total Do Item: ").append(item.getTotal()).append(" €\n"));
+        lblProdutos.setText(produtos.toString());
 
         // Adicionar o CSS após a exibição da janela
         Platform.runLater(() -> {

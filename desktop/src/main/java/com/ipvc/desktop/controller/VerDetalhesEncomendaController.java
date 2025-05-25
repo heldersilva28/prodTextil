@@ -95,6 +95,14 @@ public class VerDetalhesEncomendaController {
                         String nomeEtapa = buscarNomeEtapa(etapa.getTipoEtapaId());
                         detalhes.append("  - ").append(nomeEtapa).append("\n");
                     });
+                    detalhes.append("Itens Encomenda:");
+                    encomenda.getItensEncomenda().forEach(itensEncomenda -> {
+                        detalhes.append("\n  - ")
+                                .append(itensEncomenda.getProduto())
+                                .append(" (Quantidade: ").append(itensEncomenda.getQuantidade()).append(")")
+                                .append(" - Preço Unitário: ").append(itensEncomenda.getPrecoUnitario()).append(" €")
+                                .append(" - Total Do Item : ").append(itensEncomenda.getProduto()).append(" ").append(itensEncomenda.getTotal()).append(" €");
+                    });
 
                     setText(detalhes.toString());
                 }

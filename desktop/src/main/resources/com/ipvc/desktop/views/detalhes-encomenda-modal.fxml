@@ -22,6 +22,8 @@
         <TextArea fx:id="lblTarefas" editable="false" wrapText="true" prefHeight="100" GridPane.rowIndex="4" GridPane.columnIndex="1" />
         <Label text="Etapas:" GridPane.rowIndex="5" GridPane.columnIndex="0" />
         <TextArea fx:id="lblEtapas" editable="false" wrapText="true" prefHeight="100" GridPane.rowIndex="5" GridPane.columnIndex="1" />
+        <Label text="Produtos:" GridPane.rowIndex="6" GridPane.columnIndex="0" />
+        <TextArea fx:id="lblProdutos" editable="false" wrapText="true" prefHeight="100" GridPane.rowIndex="6" GridPane.columnIndex="1" />
     </GridPane>
     <Button text="Fechar" onAction="#fechar" maxWidth="Infinity" />
 </VBox>

@@ -23,6 +23,8 @@ public class EncomendaDetalhes {
     // Informações de etapas
     private List<Etapa> etapas;
 
+    private List<ItensEncomenda> itensEncomenda; // Lista de itens da encomenda
+
     // Construtor padrão necessário para Jackson
     public EncomendaDetalhes() {}
 
@@ -37,7 +39,8 @@ public class EncomendaDetalhes {
             @JsonProperty("estadoNome") String estadoNome,
             @JsonProperty("valorTotal") Double valorTotal,
             @JsonProperty("tarefas") List<Tarefa> tarefas,
-            @JsonProperty("etapas") List<Etapa> etapas) {
+            @JsonProperty("etapas") List<Etapa> etapas,
+            @JsonProperty("itensEncomenda") List<ItensEncomenda> itensEncomenda) {
         this.id = id;
         this.clienteId = clienteId;
         this.clienteNome = clienteNome;
@@ -47,6 +50,7 @@ public class EncomendaDetalhes {
         this.valorTotal = valorTotal;
         this.tarefas = tarefas;
         this.etapas = etapas;
+        this.itensEncomenda = itensEncomenda; // Inicializa a lista de itens da encomenda
     }
 
     // Getters e Setters
@@ -120,6 +124,13 @@ public class EncomendaDetalhes {
 
     public void setEtapas(List<Etapa> etapas) {
         this.etapas = etapas;
+    }
+
+    public List<ItensEncomenda> getItensEncomenda() {
+        return itensEncomenda;
+    }
+    public void setItensEncomenda(List<ItensEncomenda> itensEncomenda) {
+        this.itensEncomenda = itensEncomenda;
     }
 
     // Classe interna para representar Tarefas
@@ -268,4 +279,63 @@ public class EncomendaDetalhes {
             this.dataFim = dataFim;
         }
     }
+
+    // Classe interna para representar ItensEncomenda
+    @JsonIgnoreProperties(ignoreUnknown = true) // Ignora propriedades desconhecidas
+    public static class ItensEncomenda {
+        private Integer encomendaId;
+        private String produto;
+        private Integer quantidade;
+        private Double precoUnitario;
+        private Double total; // Total calculado (quantidade * precoUnitario)
+
+        // Construtor padrão necessário para Jackson
+        public ItensEncomenda() {}
+
+        @JsonCreator
+        public ItensEncomenda(
+                @JsonProperty("encomenda_id") Integer encomendaId,
+                @JsonProperty("produto") String produto,
+                @JsonProperty("quantidade") Integer quantidade,
+                @JsonProperty("preco_unitario") Double precoUnitario,
+                @JsonProperty("total") Double total) {
+            this.encomendaId = encomendaId;
+            this.produto = produto;
+            this.quantidade = quantidade;
+            this.precoUnitario = precoUnitario;
+            this.total = total; // Calcula o total (quantidade * precoUnitario)
+        }
+        // Getters e Setters
+        public Integer getEncomendaId() {
+            return encomendaId;
+        }
+        public void setEncomendaId(Integer encomendaId) {
+            this.encomendaId = encomendaId;
+        }
+        public String getProduto() {
+            return produto;
+        }
+        public void setProduto(String produto) {
+            this.produto = produto;
+        }
+        public Integer getQuantidade() {
+            return quantidade;
+        }
+        public void setQuantidade(Integer quantidade) {
+            this.quantidade = quantidade;
+        }
+        public Double getPrecoUnitario() {
+            return precoUnitario;
+        }
+        public void setPrecoUnitario(Double precoUnitario) {
+            this.precoUnitario = precoUnitario;
+        }
+        public Double getTotal() {
+            return total;
+        }
+        public void setTotal(Double total) {
+            this.total = total;
+        }
+    }
+
 }
