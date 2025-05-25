@@ -60,7 +60,10 @@ public class ItensEncomendaClienteService {
                 item.getEncomenda().getId(),
                 item.getProduto(),
                 item.getQuantidade(),
-                item.getPrecoUnitario()
+                item.getPrecoUnitario(),
+                item.getQuantidade() != null && item.getPrecoUnitario() != null
+                        ? item.getQuantidade() * (item.getPrecoUnitario()).doubleValue()
+                        : 0.0
         );
     }
 }

@@ -1,6 +1,7 @@
 package com.ipvc.bll.dto;
 
 import com.ipvc.bll.models.EtapasProducao;
+import com.ipvc.bll.models.ItensEncomendaCliente;
 import com.ipvc.bll.models.TarefasProducao;
 
 import java.io.Serializable;
@@ -45,7 +46,8 @@ public class EncomendasClienteDTO {
             String estadoNome,
             BigDecimal valorTotal,
             List<TarefasProducaoDTO.TarefasProducaoResponseFullDTO> tarefas,
-            List<EtapasProducaoDTO.EtapaProducaoResponseDTO> etapas
+            List<EtapasProducaoDTO.EtapaProducaoResponseDTO> etapas,
+            List<ItensEncomendaClienteDTO.ItensEncomendaClienteResponseDTO> itensEncomenda
     ) implements Serializable {}
 
 }

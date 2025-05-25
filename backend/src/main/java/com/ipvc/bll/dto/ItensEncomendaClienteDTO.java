@@ -25,6 +25,7 @@ public class ItensEncomendaClienteDTO {
             Integer encomendaId,   // ID da encomenda
             String produto,        // Nome ou código do produto
             Integer quantidade,    // Quantidade do produto
-            BigDecimal precoUnitario // Preço unitário do produto
+            BigDecimal precoUnitario, // Preço unitário do produto
+            Double total // Total calculado (quantidade * precoUnitario)
     ) implements Serializable {}
 }

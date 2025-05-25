@@ -1,10 +1,7 @@
 package com.ipvc.bll.services;
 
-import com.ipvc.bll.dto.EncomendasClienteDTO;
+import com.ipvc.bll.dto.*;
 import com.ipvc.bll.dto.EncomendasClienteDTO.*;
-import com.ipvc.bll.dto.EncomendasClientesStatsDTO;
-import com.ipvc.bll.dto.EtapasProducaoDTO;
-import com.ipvc.bll.dto.TarefasProducaoDTO;
 import com.ipvc.bll.models.*;
 import com.ipvc.bll.repos.EncomendaClienteRepo;
 import com.ipvc.bll.repos.ClienteRepo;
@@ -157,6 +154,17 @@ public class EncomendasClienteService {
                     ))
                     .collect(Collectors.toList());
 
+            // 3) mapear os itens de encomenda
+            List<ItensEncomendaClienteDTO.ItensEncomendaClienteResponseDTO> itensEncomendaDTO = encomenda.getItensEncomendaClientes().stream()
+                    .map(i -> new ItensEncomendaClienteDTO.ItensEncomendaClienteResponseDTO(
+                            i.getEncomenda().getId(),
+                            i.getProduto(),
+                            i.getQuantidade(),
+                            i.getPrecoUnitario(),
+                            i.getQuantidade() * i.getPrecoUnitario().doubleValue()
+                    ))
+                    .collect(Collectors.toList());
+
             // 3) construir o DTO “full”
             EncomendaClienteFullResponseDTO dto = new EncomendaClienteFullResponseDTO(
                     encomenda.getId(),
@@ -167,7 +175,8 @@ public class EncomendasClienteService {
                     encomenda.getEstado().getNome(),
                     encomenda.getValorTotal(),
                     tarefasDTO,   // <-- aqui vai a **lista** de tarefas, não um cast
-                    etapasDTO     // <-- e a lista de etapas
+                    etapasDTO,     // <-- e a lista de etapas
+                    itensEncomendaDTO
             );
             resultado.add(dto);
         }
