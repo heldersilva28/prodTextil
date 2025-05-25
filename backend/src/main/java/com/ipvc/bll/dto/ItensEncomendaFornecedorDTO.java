@@ -24,7 +24,10 @@ public class ItensEncomendaFornecedorDTO {
     public record ItensEncomendaFornecedorResponseDTO(
             Integer encomendaId,  // ID da encomenda
             Integer materialId,   // ID do material
+            String materialNome,  // Nome do material
             BigDecimal quantidade, // Quantidade do material
-            BigDecimal precoUnitario // Preço unitário do material
+            BigDecimal precoUnitario, // Preço unitário do material
+            Double total // Total calculado (quantidade * precoUnitario)
+
     ) implements Serializable {}
 }

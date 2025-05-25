@@ -2,6 +2,7 @@ package com.ipvc.bll.services;
 
 import com.ipvc.bll.dto.EncomendasClientesStatsDTO;
 import com.ipvc.bll.dto.EncomendasFornecedorDTO.*;
+import com.ipvc.bll.dto.ItensEncomendaFornecedorDTO;
 import com.ipvc.bll.models.EncomendasFornecedor;
 import com.ipvc.bll.models.Fornecedor;
 import com.ipvc.bll.models.EstadosEncomenda;
@@ -107,5 +108,39 @@ public class EncomendasFornecedorService {
 
         dto.setPorMes(porMes);
         return dto;
+    }
+
+    public List<EncomendaFornecedorFullResponseDTO> obterEncomendasFornecedorPorId(Integer fornecedorId) {
+        List<EncomendasFornecedor> encomendas = encomendasFornecedorRepo.findByFornecedor_Id(fornecedorId);
+        if (encomendas.isEmpty()) {
+            throw new RuntimeException("Nenhuma encomenda encontrada para o fornecedor");
+        }
+        List<EncomendaFornecedorFullResponseDTO> resultado = new ArrayList<>();
+        for (EncomendasFornecedor encomenda : encomendas) {
+            List<ItensEncomendaFornecedorDTO.ItensEncomendaFornecedorResponseDTO> itens = encomenda.getItensEncomendaFornecedors().stream()
+                    .map(itensEncomendaFornecedor -> new ItensEncomendaFornecedorDTO.ItensEncomendaFornecedorResponseDTO(
+                            itensEncomendaFornecedor.getEncomenda().getId(),
+                            itensEncomendaFornecedor.getMaterial().getId(),
+                            itensEncomendaFornecedor.getMaterial().getNome(),
+                            itensEncomendaFornecedor.getQuantidade(),
+                            itensEncomendaFornecedor.getPrecoUnitario(),
+                            itensEncomendaFornecedor.getQuantidade() != null && itensEncomendaFornecedor.getPrecoUnitario() != null
+                                    ? itensEncomendaFornecedor.getQuantidade().multiply(itensEncomendaFornecedor.getPrecoUnitario()).doubleValue()
+                                    : 0.0
+                    ))
+                    .collect(Collectors.toList());
+
+            resultado.add(new EncomendaFornecedorFullResponseDTO(
+                    encomenda.getId(),
+                    encomenda.getFornecedor().getId(),
+                    encomenda.getFornecedor().getNome(),
+                    encomenda.getDataPedido(),
+                    encomenda.getEstado().getId(),
+                    encomenda.getEstado().getNome(),
+                    encomenda.getValorTotal(),
+                    itens
+            ));
+        }
+        return resultado;
     }
 }

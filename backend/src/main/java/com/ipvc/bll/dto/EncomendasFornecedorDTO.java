@@ -3,6 +3,7 @@ package com.ipvc.bll.dto;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 public class EncomendasFornecedorDTO {
 
@@ -30,5 +31,16 @@ public class EncomendasFornecedorDTO {
             Integer estadoId,
             String estadoNome,
             BigDecimal valorTotal
+    ) implements Serializable {}
+
+    public record EncomendaFornecedorFullResponseDTO(
+            Integer id,
+            Integer fornecedorId,
+            String fornecedorNome,
+            LocalDate dataPedido,
+            Integer estadoId,
+            String estadoNome,
+            BigDecimal valorTotal,
+            List<ItensEncomendaFornecedorDTO.ItensEncomendaFornecedorResponseDTO> itensEncomenda
     ) implements Serializable {}
 }

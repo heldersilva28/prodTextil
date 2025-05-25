@@ -66,8 +66,12 @@ public class ItensEncomendaFornecedorService {
         return new ItensEncomendaFornecedorResponseDTO(
                 item.getEncomenda().getId(),
                 item.getMaterial().getId(),
+                item.getMaterial().getNome(),
                 item.getQuantidade(),
-                item.getPrecoUnitario()
+                item.getPrecoUnitario(),
+                item.getQuantidade() != null && item.getPrecoUnitario() != null
+                        ? item.getQuantidade().multiply(item.getPrecoUnitario()).doubleValue()
+                        : 0.0
         );
     }
 }
