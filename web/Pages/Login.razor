@@ -1,0 +1,53 @@
+@page "/login"
+@layout AuthLayout
+@using System.ComponentModel.DataAnnotations
+@using Microsoft.AspNetCore.Components.Forms
+
+<div class="login-root">
+
+
+  <EditForm Model="@loginModel" OnValidSubmit="HandleLogin" class="login-form">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div>
+      <label>Email:</label>
+      <InputText @bind-Value="loginModel.Email" class="login-field" />
+        <ValidationMessage For="@(() => loginModel.Email)" class="error-label" />
+    </div>
+
+    <div>
+      <label>Password:</label>
+      <InputText @bind-Value="loginModel.Password" type="password" class="login-field" />
+    </div>
+
+    <button type="submit" class="login-button">Login</button>
+    <div class="error-label">@errorMessage</div>
+  </EditForm>
+    <div class="image-pane">
+      <!-- podes usar <img> ou background-image -->
+      <div class="overlay-text">
+        <div class="welcome-text">Bem-vindo!</div>
+        <div class="subtitle-text">Faz login para continuares</div>
+      </div>
+    </div>
+</div>
+
+@code {
+  private LoginModel loginModel = new();
+  private string errorMessage;
+
+  private async Task HandleLogin()
+  {
+    // Chama a tua API Spring Boot via HttpClient...
+    // Se falhar, define errorMessage
+  }
+
+  public class LoginModel
+  {
+     [Required, EmailAddress(ErrorMessage = "Email inválido")]
+    public string Email { get; set; }
+    [Required]
+    public string Password { get; set; }
+  }
+}
