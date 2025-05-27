@@ -2,52 +2,74 @@
 @layout AuthLayout
 @using System.ComponentModel.DataAnnotations
 @using Microsoft.AspNetCore.Components.Forms
+@using web.Models
+@using web.Services
+@inject AuthService AuthService
+@inject NavigationManager Navigation
 
 <div class="login-root">
 
-
   <EditForm Model="@loginModel" OnValidSubmit="HandleLogin" class="login-form">
     <DataAnnotationsValidator />
-    <ValidationSummary />
 
     <div>
       <label>Email:</label>
       <InputText @bind-Value="loginModel.Email" class="login-field" />
-        <ValidationMessage For="@(() => loginModel.Email)" class="error-label" />
+      <ValidationMessage For="@(() => loginModel.Email)" class="error-label" />
     </div>
 
     <div>
       <label>Password:</label>
       <InputText @bind-Value="loginModel.Password" type="password" class="login-field" />
+      <ValidationMessage For="@(() => loginModel.Password)" class="error-label" />
     </div>
 
     <button type="submit" class="login-button">Login</button>
-    <div class="error-label">@errorMessage</div>
+    @if (!string.IsNullOrEmpty(errorMessage))
+    {
+      <div class="error-label">@errorMessage</div>
+    }
   </EditForm>
-    <div class="image-pane">
-      <!-- podes usar <img> ou background-image -->
-      <div class="overlay-text">
-        <div class="welcome-text">Bem-vindo!</div>
-        <div class="subtitle-text">Faz login para continuares</div>
-      </div>
+
+  <div class="image-pane">
+    <!-- podes usar <img> ou background-image -->
+    <div class="overlay-text">
+      <div class="welcome-text">Bem-vindo!</div>
+      <div class="subtitle-text">Faz login para continuares</div>
     </div>
+  </div>
 </div>
 
 @code {
-  private LoginModel loginModel = new();
+  private LoginModel loginModel = new LoginModel();
   private string errorMessage;
 
   private async Task HandleLogin()
   {
-    // Chama a tua API Spring Boot via HttpClient...
-    // Se falhar, define errorMessage
+    var dto = new Web.Models.LoginRequest
+    {
+      Email = loginModel.Email,
+      Password = loginModel.Password
+    };
+
+    var response = await AuthService.LoginAsync(dto);
+    if (response.Success)
+    {
+      // Redireciona para a página principal ou guarda token
+      Navigation.NavigateTo("/");
+    }
+    else
+    {
+      errorMessage = response.Message;
+    }
   }
 
   public class LoginModel
   {
-     [Required, EmailAddress(ErrorMessage = "Email inválido")]
+    [Required(ErrorMessage = "O email é obrigatório"), EmailAddress(ErrorMessage = "Email inválido")]
     public string Email { get; set; }
-    [Required]
+
+    [Required(ErrorMessage = "A password é obrigatória")]
     public string Password { get; set; }
   }
 }

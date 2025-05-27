@@ -2,9 +2,12 @@
 @layout AuthLayout
 @using System.ComponentModel.DataAnnotations
 @using Microsoft.AspNetCore.Components.Forms
+@using web.Models
+@using web.Services
+@inject AuthService AuthService
+@inject NavigationManager Navigation
 
 <div class="login-root">
-
 
   <!-- Formulário de registo (usa mesmas classes do login) -->
   <EditForm Model="@registerModel" OnValidSubmit="HandleRegister" class="login-form">
@@ -12,78 +15,80 @@
 
     <div>
       <label>Nome:</label>
-      <InputText @bind-Value="registerModel.FullName" class="login-field"/>
+      <InputText @bind-Value="registerModel.FullName" class="login-field" />
       <ValidationMessage For="@(() => registerModel.FullName)" class="error-label" />
     </div>
     <div>
       <label>Email:</label>
       <InputText @bind-Value="registerModel.Email" class="login-field" />
-        <ValidationMessage For="@(() => registerModel.Email)" class="error-label" />
+      <ValidationMessage For="@(() => registerModel.Email)" class="error-label" />
     </div>
     <div>
       <label>Password:</label>
       <InputText @bind-Value="registerModel.Password" type="password" class="login-field" />
-        <ValidationMessage For="@(() => registerModel.Password)" class="error-label" />
+      <ValidationMessage For="@(() => registerModel.Password)" class="error-label" />
     </div>
     <div>
       <label>Confirmar Password:</label>
       <InputText @bind-Value="registerModel.ConfirmPassword" type="password" class="login-field" />
-        <ValidationMessage For="@(() => registerModel.ConfirmPassword)" class="error-label" />
+      <ValidationMessage For="@(() => registerModel.ConfirmPassword)" class="error-label" />
     </div>
 
     <button type="submit" class="login-button">Registar</button>
-    <div class="error-label">@errorMessage</div>
+    @if (!string.IsNullOrEmpty(errorMessage))
+    {
+      <div class="error-label">@errorMessage</div>
+    }
 
     <p class="forgot-link">
       Já tens conta? <a href="/login">Fazer login</a>
     </p>
   </EditForm>
-    <!-- Lado da imagem/texto, idêntico ao login -->
-    <div class="image-pane">
-      <div class="overlay-text">
-        <div class="welcome-text">Bem-vindo!</div>
-        <div class="subtitle-text">Cria a tua conta</div>
-      </div>
+
+  <!-- Lado da imagem/texto, idêntico ao login -->
+  <div class="image-pane">
+    <div class="overlay-text">
+      <div class="welcome-text">Bem-vindo!</div>
+      <div class="subtitle-text">Cria a tua conta</div>
     </div>
+  </div>
 </div>
 
 @code {
-  private RegisterModel registerModel = new();
+  private RegisterModel registerModel = new RegisterModel();
   private string errorMessage;
 
   private async Task HandleRegister()
   {
-    try
+    // Mapeia para DTO do backend, forçando TipoUtilizadorId = 4
+    var dto = new RegisterRequest
     {
-      // Exemplo de chamada à tua API Spring Boot
-      var response = await Http.PostAsJsonAsync("api/auth/register", registerModel);
-      if (response.IsSuccessStatusCode)
-      {
-        Navigation.NavigateTo("/login");
-      }
-      else
-      {
-        errorMessage = "Não foi possível registar. Verifica os dados.";
-      }
+      Nome = registerModel.FullName,
+      Email = registerModel.Email,
+      Password = registerModel.Password,
+      TipoUtilizadorId = 4
+    };
+
+    var response = await AuthService.RegisterAsync(dto);
+    if (response.Success)
+    {
+      Navigation.NavigateTo("/login");
     }
-    catch
+    else
     {
-      errorMessage = "Erro de ligação ao servidor.";
+      errorMessage = response.Message;
     }
   }
-
-  [Inject] HttpClient Http { get; set; }
-  [Inject] NavigationManager Navigation { get; set; }
 
   public class RegisterModel
   {
     [Required(ErrorMessage = "O nome é obrigatório")]
     public string FullName { get; set; }
 
-    [Required, EmailAddress(ErrorMessage = "Email inválido")]
+    [Required(ErrorMessage = "O email é obrigatório"), EmailAddress(ErrorMessage = "Email inválido")]
     public string Email { get; set; }
 
-    [Required]
+    [Required(ErrorMessage = "A password é obrigatória")]
     public string Password { get; set; }
 
     [Compare(nameof(Password), ErrorMessage = "As passwords não coincidem")]
