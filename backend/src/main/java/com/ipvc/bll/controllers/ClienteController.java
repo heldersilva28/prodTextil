@@ -61,9 +61,12 @@ public class ClienteController {
 
     @PostMapping
     @Operation(summary = "Criar um novo cliente", description = "Adiciona um novo cliente ao sistema")
-    public ResponseEntity<ClienteDTO.ClienteResponseDTO> createCliente(@RequestBody ClienteDTO.ClienteCreateDTO clienteDTO) {
+    public ResponseEntity<AuthResponse> createCliente(@RequestBody ClienteDTO.ClienteCreateDTO clienteDTO) {
         ClienteDTO.ClienteResponseDTO savedCliente = clienteService.saveCliente(clienteDTO);
-        return ResponseEntity.ok(savedCliente);
+        if (savedCliente == null) {
+            return ResponseEntity.badRequest().body(new AuthResponse("Erro ao criar cliente", false));
+        }
+        return ResponseEntity.ok(new AuthResponse("Cliente criado com sucesso",true));
     }
 
     @PutMapping("/{id}")

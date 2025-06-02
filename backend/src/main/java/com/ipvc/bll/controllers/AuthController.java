@@ -32,6 +32,9 @@ public class AuthController {
         if (userRepo.existsByEmail(request.email())) {
             return ResponseEntity.badRequest().body(new AuthResponse("Email já existe", false));
         }
+        if (userRepo.existsByUsername(request.nome())) {
+            return ResponseEntity.badRequest().body(new AuthResponse("Nome de utilizador já existe", false));
+        }
 
         boolean primeirosRegisto = userRepo.count() == 0;
 

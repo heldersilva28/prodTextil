@@ -52,7 +52,6 @@ public class ClienteService {
     public ClienteDTO.ClienteResponseDTO saveCliente(ClienteDTO.ClienteCreateDTO clienteDTO) {
         CodigosPostais codpostal = codpostalRepo.findByCodigo(clienteDTO.codpostalId())
                 .orElseThrow(() -> new RuntimeException("Código postal não encontrado"));
-
         Cliente cliente = new Cliente();
         cliente.setNome(clienteDTO.nome());
         cliente.setEmail(clienteDTO.email());
