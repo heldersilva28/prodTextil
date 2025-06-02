@@ -9,64 +9,74 @@
 
 <div class="login-root">
 
-  <!-- Formulário de registo (usa mesmas classes do login) -->
   <EditForm Model="@registerModel" OnValidSubmit="HandleRegister" class="login-form">
     <DataAnnotationsValidator />
 
-    <div>
-      <label>Nome:</label>
-      <InputText @bind-Value="registerModel.FullName" class="login-field" />
+    <h2 class="form-title">Criar Conta</h2>
+    <p class="form-subtitle">Preenche os teus dados para criares uma nova conta.</p>
+
+    <div class="form-group">
+      <label>Nome Completo:</label>
+      <InputText @bind-Value="registerModel.FullName" class="login-field" placeholder="O teu nome completo" disabled="@isLoading" />
       <ValidationMessage For="@(() => registerModel.FullName)" class="error-label" />
     </div>
-    <div>
+
+    <div class="form-group">
       <label>Email:</label>
-      <InputText @bind-Value="registerModel.Email" class="login-field" />
+      <InputText @bind-Value="registerModel.Email" class="login-field" placeholder="exemplo@email.com" disabled="@isLoading" />
       <ValidationMessage For="@(() => registerModel.Email)" class="error-label" />
     </div>
-    <div>
+
+    <div class="form-group">
       <label>Password:</label>
-      <InputText @bind-Value="registerModel.Password" type="password" class="login-field" />
+      <InputText @bind-Value="registerModel.Password" type="password" class="login-field" placeholder="••••••••" disabled="@isLoading" />
       <ValidationMessage For="@(() => registerModel.Password)" class="error-label" />
     </div>
-    <div>
+
+    <div class="form-group">
       <label>Confirmar Password:</label>
-      <InputText @bind-Value="registerModel.ConfirmPassword" type="password" class="login-field" />
+      <InputText @bind-Value="registerModel.ConfirmPassword" type="password" class="login-field" placeholder="••••••••" disabled="@isLoading" />
       <ValidationMessage For="@(() => registerModel.ConfirmPassword)" class="error-label" />
     </div>
 
-    <div>
+    <div class="form-group">
       <label>Telefone:</label>
-      <InputNumber @bind-Value="registerModel.Telefone" class="login-field" />
+      <InputNumber @bind-Value="registerModel.Telefone" class="login-field" placeholder="912345678" disabled="@isLoading" />
       <ValidationMessage For="@(() => registerModel.Telefone)" class="error-label" />
     </div>
 
-    <div>
+    <div class="form-group">
       <label>Morada:</label>
-      <InputText @bind-Value="registerModel.Morada" class="login-field" />
+      <InputText @bind-Value="registerModel.Morada" class="login-field" placeholder="A tua morada completa" disabled="@isLoading" />
       <ValidationMessage For="@(() => registerModel.Morada)" class="error-label" />
     </div>
-    <div>
+
+    <div class="form-group">
       <label>Código Postal:</label>
-      <InputText @bind-Value="registerModel.CodigoPostal" class="login-field" />
+      <InputText @bind-Value="registerModel.CodigoPostal" class="login-field" placeholder="1000001" disabled="@isLoading" />
       <ValidationMessage For="@(() => registerModel.CodigoPostal)" class="error-label" />
     </div>
 
-    <button type="submit" class="login-button">Registar</button>
+    <button type="submit" class="login-button" disabled="@isLoading">
+      @if (isLoading)
+      {
+        <span class="loading-spinner"></span>
+      }
+      @(isLoading ? "A registar..." : "Criar Conta")
+    </button>
+
     @if (!string.IsNullOrEmpty(errorMessage))
     {
       <div class="error-label">@errorMessage</div>
     }
 
-    <p class="forgot-link">
-      Já tens conta? <a href="/login">Fazer login</a>
-    </p>
+    <a href="/login" class="forgot-link">Já tens conta? Fazer login aqui</a>
   </EditForm>
 
-  <!-- Lado da imagem/texto, idêntico ao login -->
   <div class="image-pane">
     <div class="overlay-text">
-      <div class="welcome-text">Bem-vindo!</div>
-      <div class="subtitle-text">Cria a tua conta</div>
+      <div class="welcome-text">Junta-te a nós!</div>
+      <div class="subtitle-text">Cria a tua conta e começa a tua jornada</div>
     </div>
   </div>
 </div>
@@ -74,57 +84,64 @@
 @code {
   private RegisterModel registerModel = new RegisterModel();
   private string errorMessage;
+  private bool isLoading = false;
 
   private async Task HandleRegister()
   {
+    isLoading = true;
     errorMessage = null;
 
-    // 1) Verifica se o código postal existe
-    bool cpExiste = await AuthService.GetCodigoPostalAsync(registerModel.CodigoPostal);
-    if (!cpExiste)
+    try
     {
-      errorMessage = "Código postal não encontrado.";
-      
-      return; // sai sem tentar criar o cliente
-    }
+      // 1) Verifica se o código postal existe
+      bool cpExiste = await AuthService.GetCodigoPostalAsync(registerModel.CodigoPostal);
+      if (!cpExiste)
+      {
+        errorMessage = "Código postal não encontrado.";
+        return;
+      }
 
-    // 2) Regista primeiro o utilizador
-    var dto = new RegisterRequest
-    {
-      Nome             = registerModel.FullName,
-      Email            = registerModel.Email,
-      Password         = registerModel.Password,
-      TipoUtilizadorId = 4
-    };
-    var response = await AuthService.RegisterAsync(dto);
-    if (!response.Success)
-    {
-      errorMessage = response.Message;
-      return;
-    }
+      // 2) Regista primeiro o utilizador
+      var dto = new RegisterRequest
+      {
+        Nome             = registerModel.FullName,
+        Email            = registerModel.Email,
+        Password         = registerModel.Password,
+        TipoUtilizadorId = 4
+      };
+      var response = await AuthService.RegisterAsync(dto);
+      if (!response.Success)
+      {
+        errorMessage = response.Message;
+        return;
+      }
 
-    // 3) Só depois de teres o utilizador criado, regista o cliente
-    var dtoCliente = new ClientRequest
-    {
-      Nome         = registerModel.FullName,
-      Email        = registerModel.Email,
-      Telefone     = registerModel.Telefone,
-      Morada       = registerModel.Morada,
-      codpostalId  = registerModel.CodigoPostal
-    };
-    var responseCliente = await AuthService.RegisterClientAsync(dtoCliente);
-    if (!responseCliente.Success)
-    {
-      Console.WriteLine($"Message: {responseCliente.Message}");
-      Console.WriteLine($"Success: {responseCliente.Success}");
-      // podes repassar a mensagem de erro do backend, se existir
-      errorMessage = responseCliente.Message;
-      Console.WriteLine($"Erro ao registar cliente: {errorMessage}");
-      return;
-    }
+      // 3) Só depois de teres o utilizador criado, regista o cliente
+      var dtoCliente = new ClientRequest
+      {
+        Nome         = registerModel.FullName,
+        Email        = registerModel.Email,
+        Telefone     = registerModel.Telefone,
+        Morada       = registerModel.Morada,
+        codpostalId  = registerModel.CodigoPostal
+      };
+      var responseCliente = await AuthService.RegisterClientAsync(dtoCliente);
+      if (!responseCliente.Success)
+      {
+        Console.WriteLine($"Message: {responseCliente.Message}");
+        Console.WriteLine($"Success: {responseCliente.Success}");
+        errorMessage = responseCliente.Message;
+        Console.WriteLine($"Erro ao registar cliente: {errorMessage}");
+        return;
+      }
 
-    // 4) Se tudo correr bem, redireciona
-    Navigation.NavigateTo("/login");
+      // 4) Se tudo correr bem, redireciona
+      Navigation.NavigateTo("/login");
+    }
+    finally
+    {
+      isLoading = false;
+    }
   }
 
   public class RegisterModel

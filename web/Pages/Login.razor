@@ -12,30 +12,41 @@
   <EditForm Model="@loginModel" OnValidSubmit="HandleLogin" class="login-form">
     <DataAnnotationsValidator />
 
-    <div>
+    <h2 class="form-title">Iniciar Sessão</h2>
+    <p class="form-subtitle">Bem-vindo de volta! Insere os teus dados para continuares.</p>
+
+    <div class="form-group">
       <label>Email:</label>
-      <InputText @bind-Value="loginModel.Email" class="login-field" />
+      <InputText @bind-Value="loginModel.Email" class="login-field" placeholder="exemplo@email.com" disabled="@isLoading" />
       <ValidationMessage For="@(() => loginModel.Email)" class="error-label" />
     </div>
 
-    <div>
+    <div class="form-group">
       <label>Password:</label>
-      <InputText @bind-Value="loginModel.Password" type="password" class="login-field" />
+      <InputText @bind-Value="loginModel.Password" type="password" class="login-field" placeholder="••••••••" disabled="@isLoading" />
       <ValidationMessage For="@(() => loginModel.Password)" class="error-label" />
     </div>
 
-    <button type="submit" class="login-button">Login</button>
+    <button type="submit" class="login-button" disabled="@isLoading">
+      @if (isLoading)
+      {
+        <span class="loading-spinner"></span>
+      }
+      @(isLoading ? "A entrar..." : "Entrar")
+    </button>
+    
     @if (!string.IsNullOrEmpty(errorMessage))
     {
       <div class="error-label">@errorMessage</div>
     }
+
+    <a href="/" class="forgot-link">Não tens conta? Registar aqui</a>
   </EditForm>
 
   <div class="image-pane">
-    <!-- podes usar <img> ou background-image -->
     <div class="overlay-text">
-      <div class="welcome-text">Bem-vindo!</div>
-      <div class="subtitle-text">Faz login para continuares</div>
+      <div class="welcome-text">Bem-vindo de volta!</div>
+      <div class="subtitle-text">Faz login para acederes à tua conta</div>
     </div>
   </div>
 </div>
@@ -43,24 +54,34 @@
 @code {
   private LoginModel loginModel = new LoginModel();
   private string errorMessage;
+  private bool isLoading = false;
 
   private async Task HandleLogin()
   {
-    var dto = new web.Models.LoginRequest
-    {
-      Email = loginModel.Email,
-      Password = loginModel.Password
-    };
+    isLoading = true;
+    errorMessage = null;
 
-    var response = await AuthService.LoginAsync(dto);
-    if (response.Success)
+    try
     {
-      // Redireciona para a página principal ou guarda token
-      Navigation.NavigateTo("/orders");
+      var dto = new web.Models.LoginRequest
+      {
+        Email = loginModel.Email,
+        Password = loginModel.Password
+      };
+
+      var response = await AuthService.LoginAsync(dto);
+      if (response.Success)
+      {
+        Navigation.NavigateTo("/orders");
+      }
+      else
+      {
+        errorMessage = response.Message;
+      }
     }
-    else
+    finally
     {
-      errorMessage = response.Message;
+      isLoading = false;
     }
   }
 
