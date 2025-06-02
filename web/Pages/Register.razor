@@ -34,6 +34,23 @@
       <ValidationMessage For="@(() => registerModel.ConfirmPassword)" class="error-label" />
     </div>
 
+    <div>
+      <label>Telefone:</label>
+      <InputNumber @bind-Value="registerModel.Telefone" class="login-field" />
+      <ValidationMessage For="@(() => registerModel.Telefone)" class="error-label" />
+    </div>
+
+    <div>
+      <label>Morada:</label>
+      <InputText @bind-Value="registerModel.Morada" class="login-field" />
+      <ValidationMessage For="@(() => registerModel.Morada)" class="error-label" />
+    </div>
+    <div>
+      <label>Código Postal:</label>
+      <InputText @bind-Value="registerModel.CodigoPostal" class="login-field" />
+      <ValidationMessage For="@(() => registerModel.CodigoPostal)" class="error-label" />
+    </div>
+
     <button type="submit" class="login-button">Registar</button>
     @if (!string.IsNullOrEmpty(errorMessage))
     {
@@ -60,24 +77,54 @@
 
   private async Task HandleRegister()
   {
-    // Mapeia para DTO do backend, forçando TipoUtilizadorId = 4
+    errorMessage = null;
+
+    // 1) Verifica se o código postal existe
+    bool cpExiste = await AuthService.GetCodigoPostalAsync(registerModel.CodigoPostal);
+    if (!cpExiste)
+    {
+      errorMessage = "Código postal não encontrado.";
+      
+      return; // sai sem tentar criar o cliente
+    }
+
+    // 2) Regista primeiro o utilizador
     var dto = new RegisterRequest
     {
-      Nome = registerModel.FullName,
-      Email = registerModel.Email,
-      Password = registerModel.Password,
+      Nome             = registerModel.FullName,
+      Email            = registerModel.Email,
+      Password         = registerModel.Password,
       TipoUtilizadorId = 4
     };
-
     var response = await AuthService.RegisterAsync(dto);
-    if (response.Success)
-    {
-      Navigation.NavigateTo("/login");
-    }
-    else
+    if (!response.Success)
     {
       errorMessage = response.Message;
+      return;
     }
+
+    // 3) Só depois de teres o utilizador criado, regista o cliente
+    var dtoCliente = new ClientRequest
+    {
+      Nome         = registerModel.FullName,
+      Email        = registerModel.Email,
+      Telefone     = registerModel.Telefone,
+      Morada       = registerModel.Morada,
+      codpostalId  = registerModel.CodigoPostal
+    };
+    var responseCliente = await AuthService.RegisterClientAsync(dtoCliente);
+    if (!responseCliente.Success)
+    {
+      Console.WriteLine($"Message: {responseCliente.Message}");
+      Console.WriteLine($"Success: {responseCliente.Success}");
+      // podes repassar a mensagem de erro do backend, se existir
+      errorMessage = responseCliente.Message;
+      Console.WriteLine($"Erro ao registar cliente: {errorMessage}");
+      return;
+    }
+
+    // 4) Se tudo correr bem, redireciona
+    Navigation.NavigateTo("/login");
   }
 
   public class RegisterModel
@@ -93,5 +140,16 @@
 
     [Compare(nameof(Password), ErrorMessage = "As passwords não coincidem")]
     public string ConfirmPassword { get; set; }
+
+    [Required(ErrorMessage = "O telefone é obrigatório")]
+    [RegularExpression("^[0-9]+$", ErrorMessage = "O telefone deve conter apenas números")]
+    [Range(100000000, 999999999, ErrorMessage = "O telefone deve ter exatamente 9 dígitos")]
+    public int Telefone { get; set; }
+
+    [Required(ErrorMessage = "A morada é obrigatória")]
+    public string Morada { get; set; }
+
+    [Required(ErrorMessage = "O código postal é obrigatório")]
+    public string CodigoPostal { get; set; }
   }
 }
