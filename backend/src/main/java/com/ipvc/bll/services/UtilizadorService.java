@@ -1,5 +1,6 @@
 package com.ipvc.bll.services;
 
+import com.ipvc.bll.dto.ClienteDTO;
 import com.ipvc.bll.dto.FuncionarioDTO;
 import com.ipvc.bll.dto.UtilizadorDTO;
 import com.ipvc.bll.dto.TiposUtilizadorDTO;
@@ -21,11 +22,13 @@ public class UtilizadorService {
     private final UtilizadorRepo utilizadorRepo;
     private final TipoUtilizadorRepo tiposUtilizadorRepo;
     private final FuncionarioService funcionarioService;
+    private final ClienteService clienteService;
 
-    public UtilizadorService(UtilizadorRepo utilizadorRepo, TipoUtilizadorRepo tiposUtilizadorRepo, FuncionarioService funcionarioService) {
+    public UtilizadorService(UtilizadorRepo utilizadorRepo, TipoUtilizadorRepo tiposUtilizadorRepo, FuncionarioService funcionarioService, ClienteService clienteService) {
         this.utilizadorRepo = utilizadorRepo;
         this.tiposUtilizadorRepo = tiposUtilizadorRepo;
         this.funcionarioService = funcionarioService;
+        this.clienteService = clienteService;
     }
 
     public List<UtilizadorDTO.UtilizadorResponseDTO> getAllUtilizadores() {
@@ -34,8 +37,14 @@ public class UtilizadorService {
 
     public List<UtilizadorDTO.UtilizadorResponseDTO> getAllUtilizadoresSemFuncionarioSemAdmin() {
         List<FuncionarioDTO.FuncionarioResponseDTO> funcionarios = funcionarioService.getAllFuncionarios();
+        List<UtilizadorDTO.UtilizadorResponseDTO> u = getAllUtilizadores();
         // Filtrar os utilizadores que não são funcionários e não são administradores
         List<Integer> idsFuncionarios = new ArrayList<>();
+        for (UtilizadorDTO.UtilizadorResponseDTO utilizador : u) {
+            if (utilizador.tipoUtilizadorId() == 4) {
+                idsFuncionarios.add(utilizador.id());
+            }
+        }
         for (FuncionarioDTO.FuncionarioResponseDTO funcionario : funcionarios) {
             idsFuncionarios.add(funcionario.utilizadorId());
         }

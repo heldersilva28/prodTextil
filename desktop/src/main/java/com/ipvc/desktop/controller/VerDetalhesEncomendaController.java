@@ -1,6 +1,7 @@
 package com.ipvc.desktop.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.ipvc.desktop.models.EncomendaDetalhes;
@@ -23,6 +24,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.List;
+import java.util.ArrayList;
 
 public class VerDetalhesEncomendaController {
 
@@ -56,21 +58,50 @@ public class VerDetalhesEncomendaController {
                 .thenApply(HttpResponse::body)
                 .thenAccept(response -> {
                     try {
-                        // Verifique se a resposta é um erro
-                        if (response.startsWith("{") && response.contains("\"status\":404")) {
+                        // Verificar se a resposta é um erro
+                        JsonNode rootNode = mapper.readTree(response);
+
+                        // Verificar se a resposta contém um objeto de erro
+                        if (rootNode.has("status") && (rootNode.get("status").asInt() == 404 || rootNode.get("status").asInt() == 500)) {
+                            String errorMessage = "Nenhuma encomenda encontrada para este cliente.";
+                            Platform.runLater(() -> mostrarAlerta(errorMessage));
+                            return;
+                        }
+
+                        // Se chegou aqui, é porque a resposta deve ser uma lista de encomendas
+                        List<EncomendaDetalhes> encomendas;
+
+                        // Verificar se é um array ou objeto único
+                        if (rootNode.isArray()) {
+                            encomendas = mapper.readValue(response, new TypeReference<List<EncomendaDetalhes>>() {});
+                        } else {
+                            // Se for um objeto único, criar uma lista com esse único objeto
+                            EncomendaDetalhes encomenda = mapper.readValue(response, EncomendaDetalhes.class);
+                            encomendas = new ArrayList<>();
+                            encomendas.add(encomenda);
+                        }
+
+                        if (encomendas.isEmpty()) {
                             Platform.runLater(() -> mostrarAlerta("Nenhuma encomenda encontrada para este cliente."));
                             return;
                         }
 
-                        // Desserializar a resposta como uma lista de EncomendaDetalhes
-                        List<EncomendaDetalhes> encomendas = mapper.readValue(response, new TypeReference<>() {});
                         Platform.runLater(() -> listaEncomendas.getItems().setAll(encomendas));
                     } catch (Exception e) {
                         e.printStackTrace();
-                        Platform.runLater(() -> mostrarAlerta("Erro ao processar os detalhes das encomendas."));
+                        Platform.runLater(() -> mostrarAlerta("Erro ao processar os detalhes das encomendas: " + e.getMessage()));
                     }
+                })
+                .exceptionally(ex -> {
+                    ex.printStackTrace();
+                    Platform.runLater(() -> mostrarAlerta("Erro na comunicação com o servidor: " + ex.getMessage()));
+                    return null;
                 });
 
+        configureListCellFactory();
+    }
+
+    private void configureListCellFactory() {
         listaEncomendas.setCellFactory(param -> new ListCell<>() {
             @Override
             protected void updateItem(EncomendaDetalhes encomenda, boolean empty) {
@@ -85,24 +116,44 @@ public class VerDetalhesEncomendaController {
                             .append("Valor Total: ").append(encomenda.getValorTotal()).append(" €\n")
                             .append("Tarefas:\n");
 
-                    encomenda.getTarefas().forEach(tarefa -> detalhes.append("  - ")
-                            .append(tarefa.getDescricaoNome())
-                            .append(" (").append(tarefa.getEstado()).append(")")
-                            .append(" - Funcionário: ").append(tarefa.getFuncionarioNome()).append("\n"));
+                    if (encomenda.getTarefas() != null) {
+                        encomenda.getTarefas().forEach(tarefa -> detalhes.append("  - ")
+                                .append(tarefa.getDescricaoNome())
+                                .append(" (").append(tarefa.getEstado()).append(")")
+                                .append(" - Funcionário: ").append(tarefa.getFuncionarioNome()).append("\n"));
+                    } else {
+                        detalhes.append("  Sem tarefas\n");
+                    }
 
                     detalhes.append("Etapas:\n");
-                    encomenda.getEtapas().forEach(etapa -> {
-                        String nomeEtapa = buscarNomeEtapa(etapa.getTipoEtapaId());
-                        detalhes.append("  - ").append(nomeEtapa).append("\n");
-                    });
+                    if (encomenda.getEtapas() != null) {
+                        encomenda.getEtapas().forEach(etapa -> {
+                            String nomeEtapa = buscarNomeEtapa(etapa.getTipoEtapaId());
+                            detalhes.append("  - ").append(nomeEtapa).append("\n");
+                        });
+                    } else {
+                        detalhes.append("  Sem etapas\n");
+                    }
+
                     detalhes.append("Itens Encomenda:");
-                    encomenda.getItensEncomenda().forEach(itensEncomenda -> {
-                        detalhes.append("\n  - ")
-                                .append(itensEncomenda.getProduto())
-                                .append(" (Quantidade: ").append(itensEncomenda.getQuantidade()).append(")")
-                                .append(" - Preço Unitário: ").append(itensEncomenda.getPrecoUnitario()).append(" €")
-                                .append(" - Total Do Item : ").append(itensEncomenda.getProduto()).append(" ").append(itensEncomenda.getTotal()).append(" €");
-                    });
+                    if (encomenda.getItensEncomenda() != null) {
+                        encomenda.getItensEncomenda().forEach(itensEncomenda -> {
+                            detalhes.append("\n  - ")
+                                    .append(itensEncomenda.getProduto())
+                                    .append(" (Quantidade: ").append(itensEncomenda.getQuantidade()).append(")")
+                                    .append(" - Preço Unitário: ").append(itensEncomenda.getPrecoUnitario()).append(" €");
+
+                            if (itensEncomenda.getTotal() != null && itensEncomenda.getTotal() > 0) {
+                                detalhes.append(" - Total Do Item: ").append(itensEncomenda.getTotal()).append(" €");
+                            } else {
+                                // Calcular o total manualmente
+                                double total = itensEncomenda.getQuantidade() * itensEncomenda.getPrecoUnitario();
+                                detalhes.append(" - Total Do Item: ").append(total).append(" €");
+                            }
+                        });
+                    } else {
+                        detalhes.append("\n  Sem itens");
+                    }
 
                     setText(detalhes.toString());
                 }

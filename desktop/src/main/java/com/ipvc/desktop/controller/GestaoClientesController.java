@@ -134,7 +134,7 @@ public class GestaoClientesController {
             Parent root = loader.load();
 
             VerDetalhesEncomendaController controller = loader.getController();
-            String apiUrl = "http://localhost:8080/api/encomendas-clientes/" + 2 + "/encomendas";
+            String apiUrl = "http://localhost:8080/api/encomendas-clientes/" + selecionado.getId() + "/encomendas";
             controller.carregarDetalhes(apiUrl);
 
             Scene scene = new Scene(root);
