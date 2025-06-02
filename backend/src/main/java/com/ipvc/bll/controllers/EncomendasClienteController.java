@@ -63,6 +63,12 @@ public class EncomendasClienteController {
         return ResponseEntity.ok(encomendasClienteService.obterEstatisticas());
     }
 
+    @GetMapping("/{id}/estatisticas")
+    @Operation(summary = "Estatísticas de encomendas de um cliente", description = "Retorna estatísticas específicas sobre as encomendas de um cliente pelo ID")
+    public ResponseEntity<EncomendasClientesStatsDTO> obterEstatisticasPorCliente(@PathVariable Integer id) {
+        return ResponseEntity.ok(encomendasClienteService.obterEstatisticasCliente(id));
+    }
+
     @GetMapping("/{id}/encomendas")
     @Operation(summary = "Buscar uma encomenda de um cliente", description = "Retorna os detalhes das encomendas pelo ID do Cliente")
     public ResponseEntity<List<EncomendaClienteFullResponseDTO>> obterEncomendas(@PathVariable Integer id) {

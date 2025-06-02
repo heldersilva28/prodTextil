@@ -20,4 +20,12 @@ public interface EncomendaClienteRepo extends JpaRepository<EncomendasCliente, I
     @Query("SELECT MONTH(e.dataEncomenda), COUNT(e) FROM EncomendasCliente e GROUP BY MONTH(e.dataEncomenda) ORDER BY MONTH(e.dataEncomenda)")
     List<Object[]> contarPorMes();
 
+    long countByCliente_Id(Integer clienteId);
+
+    @Query("SELECT COUNT(e) FROM EncomendasCliente e WHERE e.estado.id = :estadoId AND e.cliente.id = :clienteId")
+    long contarPorEstadoECliente(Integer estadoId, Integer clienteId);
+
+    @Query("SELECT MONTH(e.dataEncomenda) as mes, COUNT(e) as quantidade FROM EncomendasCliente e WHERE e.cliente.id = :clienteId GROUP BY MONTH(e.dataEncomenda)")
+    List<Object[]> contarPorMesECliente(Integer clienteId);
+
 }

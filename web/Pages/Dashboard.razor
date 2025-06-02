@@ -1,0 +1,616 @@
+@page "/dashboard"
+@layout MainLayout
+@using web.Models
+@using System.Text.Json
+@inject HttpClient Http
+
+<PageTitle>Dashboard</PageTitle>
+
+<div class="orders-dashboard-background">
+    <div class="dashboard-container">
+        <div class="dashboard-header">
+            <h1 class="dashboard-title">Dashboard</h1>
+            <p class="dashboard-subtitle">Visão geral das estatísticas</p>
+        </div>
+        
+        @if (isLoading)
+        {
+            <div class="loading-state">
+                <div class="loading-spinner"></div>
+                <p>Carregando estatísticas...</p>
+            </div>
+        }
+        else if (errorMessage != null)
+        {
+            <div class="error-state">
+                <div class="error-icon">⚠️</div>
+                <h3>Ops! Algo deu errado</h3>
+                <p>@errorMessage</p>
+                <button @onclick="LoadStatistics" class="retry-button">
+                    <span class="retry-icon">🔄</span>
+                    Tentar novamente
+                </button>
+            </div>
+        }
+        else if (statistics != null)
+        {
+            <div class="dashboard-content">
+                <div class="stats-section">
+                    <div class="stats-grid">
+                        <div class="stat-card total-card">
+                            <div class="stat-header">
+                                <div class="stat-icon total-icon">
+                                    <svg viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/>
+                                    </svg>
+                                </div>
+                            </div>
+                            <div class="stat-content">
+                                <span class="stat-label">Total de Encomendas</span>
+                                <span class="stat-number">@statistics.Total</span>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card pending-card">
+                            <div class="stat-header">
+                                <div class="stat-icon pending-icon">
+                                    <svg viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z"/>
+                                </svg>
+                                </div>
+                            </div>
+                            <div class="stat-content">
+                                <span class="stat-label">Pendentes</span>
+                                <span class="stat-number">@statistics.Pendentes</span>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card completed-card">
+                            <div class="stat-header">
+                                <div class="stat-icon completed-icon">
+                                    <svg viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,12 0 0,0 12,2M11,16.5L6.5,12L7.91,10.59L11,13.67L16.59,8.09L18,9.5L11,16.5Z"/>
+                                    </svg>
+                                </div>
+                            </div>
+                            <div class="stat-content">
+                                <span class="stat-label">Concluídas</span>
+                                <span class="stat-number">@statistics.Concluidas</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chart-section">
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <h2>Evolução Mensal</h2>
+                        </div>
+                        
+                        <div class="chart-content">
+                            <div class="chart-wrapper">
+                                <div class="chart-grid">
+                                    @for (int i = 4; i >= 0; i--)
+                                    {
+                                        <div class="grid-line">
+                                        </div>
+                                    }
+                                </div>
+                                
+                                <div class="monthly-chart">
+                                    @if (statistics.PorMes != null)
+                                    {
+                                        @foreach (var month in statistics.PorMes)
+                                        {
+                                            <div class="month-column" @onmouseenter="() => ShowTooltip(month)" @onmouseleave="HideTooltip">
+                                                <div class="bar-container">
+                                                    <div class="bar" style="height: @(GetBarHeight(month.Value))px">
+                                                        <div class="bar-fill"></div>
+                                                    </div>
+                                                </div>
+                                                <div class="month-info">
+                                                    <span class="month-label">@GetMonthAbbreviation(month.Key)</span>
+                                                    <span class="month-value">@month.Value</span>
+                                                </div>
+                                            </div>
+                                        }
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<style>
+    .dashboard-container {
+        padding: 24px;
+        margin: 0 auto;
+        min-height: 100vh;
+        position: relative;
+        z-index: 1;
+    }
+
+    .dashboard-header {
+        margin-bottom: 32px;
+    }
+
+    .dashboard-title {
+        color: #1e293b;
+        margin: 0 0 8px 0;
+        font-size: 2.5rem;
+        font-weight: 700;
+        letter-spacing: -0.025em;
+    }
+
+    .dashboard-subtitle {
+        color: #64748b;
+        margin: 0;
+        font-size: 1.125rem;
+        font-weight: 400;
+    }
+
+    .dashboard-content {
+        display: flex;
+        flex-direction: column;
+        gap: 32px;
+    }
+
+    .stats-section {
+        width: 100%;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 24px;
+    }
+
+    .stat-card {
+        background: white;
+        border-radius: 16px;
+        padding: 24px;
+        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+        border: 1px solid #e2e8f0;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .stat-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: var(--accent-color);
+    }
+
+    .stat-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+
+    .total-card {
+        --accent-color: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .pending-card {
+        --accent-color: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    }
+
+    .completed-card {
+        --accent-color: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    }
+
+    .stat-header {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        margin-bottom: 16px;
+    }
+
+    .stat-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+    }
+
+    .stat-icon svg {
+        width: 24px;
+        height: 24px;
+    }
+
+    .total-icon {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .pending-icon {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    }
+
+    .completed-icon {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    }
+
+    .stat-content {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .stat-label {
+        color: #64748b;
+        font-size: 0.875rem;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .stat-number {
+        color: #1e293b;
+        font-size: 2.25rem;
+        font-weight: 700;
+        line-height: 1;
+    }
+
+    .chart-section {
+        width: 100%;
+    }
+
+    .chart-container {
+        background: white;
+        border-radius: 16px;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+        overflow: hidden;
+    }
+
+    .chart-header {
+        padding: 24px 24px 0 24px;
+        border-bottom: 1px solid #f1f5f9;
+        margin-bottom: 24px;
+    }
+
+    .chart-header h2 {
+        color: #1e293b;
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin: 0;
+    }
+
+    .chart-content {
+        padding: 0 24px 24px 24px;
+    }
+
+    .chart-wrapper {
+        position: relative;
+        height: 300px;
+        padding-left: 0; /* Remove space for grid labels */
+    }
+
+    .chart-grid {
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 60px;
+        right: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        pointer-events: none;
+    }
+
+    .grid-line {
+        display: flex;
+        align-items: center;
+        border-top: 1px solid #f1f5f9;
+        position: relative;
+        width: 100%;
+    }
+
+    .grid-line:first-child {
+        border-top: 1px solid #e2e8f0;
+    }
+
+    .monthly-chart {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 240px;
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-around;
+        padding: 0 0 60px 0;
+    }
+
+    .month-column {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        flex: 1;
+        max-width: 80px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .month-column:hover {
+        transform: scale(1.05);
+    }
+
+    .bar-container {
+        display: flex;
+        align-items: flex-end;
+        height: 180px;
+        margin-bottom: 16px;
+        position: relative;
+        width: 100%;
+        justify-content: center;
+    }
+
+    .bar {
+        width: 40px;
+        background: #e2e8f0;
+        border-radius: 8px 8px 0 0;
+        min-height: 4px;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.4s ease;
+        display: flex;
+        align-items: flex-end;
+    }
+
+    .bar-fill {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 100%;
+        background: linear-gradient(180deg, #3b82f6 0%, #1d4ed8 100%);
+        border-radius: 8px 8px 0 0;
+        transition: all 0.4s ease;
+    }
+
+    .month-column:hover .bar-fill {
+        background: linear-gradient(180deg, #2563eb 0%, #1e40af 100%);
+    }
+
+    .month-info {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .month-label {
+        font-size: 0.875rem;
+        color: #64748b;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .month-value {
+        font-size: 0.75rem;
+        color: #94a3b8;
+        font-weight: 600;
+    }
+
+    .loading-state {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 80px 20px;
+        text-align: center;
+    }
+
+    .loading-spinner {
+        width: 40px;
+        height: 40px;
+        border: 3px solid #e2e8f0;
+        border-top: 3px solid #3b82f6;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-bottom: 16px;
+    }
+
+    @@keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    .loading-state p {
+        color: #64748b;
+        font-size: 1.125rem;
+        margin: 0;
+    }
+
+    .error-state {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 80px 20px;
+        text-align: center;
+        background: white;
+        border-radius: 16px;
+        border: 1px solid #fecaca;
+        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+    }
+
+    .error-icon {
+        font-size: 3rem;
+        margin-bottom: 16px;
+    }
+
+    .error-state h3 {
+        color: #dc2626;
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin: 0 0 8px 0;
+    }
+
+    .error-state p {
+        color: #7f1d1d;
+        font-size: 1rem;
+        margin: 0 0 24px 0;
+        max-width: 400px;
+    }
+
+    .retry-button {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: #dc2626;
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .retry-button:hover {
+        background: #b91c1c;
+        transform: translateY(-1px);
+    }
+
+    .retry-icon {
+        animation: rotate 2s linear infinite paused;
+    }
+
+    .retry-button:hover .retry-icon {
+        animation-play-state: running;
+    }
+
+    @@keyframes rotate {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+
+    @@media (max-width: 768px) {
+        .dashboard-container {
+            padding: 16px;
+        }
+
+        .dashboard-title {
+            font-size: 2rem;
+        }
+
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .chart-wrapper {
+            padding-left: 0;
+        }
+
+        .monthly-chart {
+            left: 0;
+        }
+    }
+</style>
+
+@code {
+    private DashboardStatistics? statistics;
+    private bool isLoading = true;
+    private string? errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadStatistics();
+    }
+
+    private async Task LoadStatistics()
+    {
+        try
+        {
+            isLoading = true;
+            this.errorMessage = null;
+            StateHasChanged();
+
+            var response = await Http.GetAsync("encomendas-clientes/2/estatisticas");
+            
+            if (response.IsSuccessStatusCode)
+            {
+                var jsonContent = await response.Content.ReadAsStringAsync();
+                
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                };
+
+                statistics = JsonSerializer.Deserialize<DashboardStatistics>(jsonContent, options);
+            }
+            else
+            {
+                errorMessage = $"Erro na resposta da API: {response.StatusCode}";
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.Message;
+        }
+        finally
+        {
+            isLoading = false;
+            StateHasChanged();
+        }
+    }
+
+    private double GetBarHeight(int value)
+    {
+        if (statistics == null || statistics.PorMes == null || !statistics.PorMes.Any()) 
+            return 4;
+        
+        var maxValue = statistics.PorMes.Values.Max();
+        
+        if (maxValue == 0) 
+            return 4;
+        
+        var heightPixels = Math.Max(4, (double)value / maxValue * 180);
+        
+        return heightPixels;
+    }
+
+    private string GetMonthAbbreviation(string monthName)
+    {
+        return monthName switch
+        {
+            "Janeiro" => "Jan",
+            "Fevereiro" => "Fev",
+            "Março" => "Mar",
+            "Abril" => "Abr",
+            "Maio" => "Mai",
+            "Junho" => "Jun",
+            "Julho" => "Jul",
+            "Agosto" => "Ago",
+            "Setembro" => "Set",
+            "Outubro" => "Out",
+            "Novembro" => "Nov",
+            "Dezembro" => "Dez",
+            _ => monthName.Substring(0, Math.Min(3, monthName.Length))
+        };
+    }
+
+    private void ShowTooltip(KeyValuePair<string, int> month)
+    {
+        // Tooltip functionality can be added here
+    }
+
+    private void HideTooltip()
+    {
+        // Tooltip functionality can be added here
+    }
+}

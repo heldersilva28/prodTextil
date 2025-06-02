@@ -116,6 +116,36 @@ public class EncomendasClienteService {
         return dto;
     }
 
+    public EncomendasClientesStatsDTO obterEstatisticasCliente(Integer clienteId) {
+        EncomendasClientesStatsDTO dto = new EncomendasClientesStatsDTO();
+
+        // Contar apenas encomendas do cliente específico
+        dto.setTotal(encomendasClienteRepo.countByCliente_Id(clienteId));
+        dto.setPendentes(encomendasClienteRepo.contarPorEstadoECliente(1, clienteId));  // estado_id = 1
+        dto.setConcluidas(encomendasClienteRepo.contarPorEstadoECliente(2, clienteId)); // estado_id = 2
+
+        Map<String, Integer> porMes = new LinkedHashMap<>();
+
+        // Inicializar todos os meses com zero
+        for (Month mes : Month.values()) {
+            String nomeMes = mes.getDisplayName(TextStyle.FULL, new Locale("pt", "PT"));
+            porMes.put(nomeMes, 0);
+        }
+
+        // Obter contagem por mês apenas para o cliente específico
+        List<Object[]> resultados = encomendasClienteRepo.contarPorMesECliente(clienteId);
+
+        for (Object[] linha : resultados) {
+            int mes = (int) linha[0];
+            int quantidade = ((Number) linha[1]).intValue();
+            String nomeMes = Month.of(mes).getDisplayName(TextStyle.FULL, new Locale("pt", "PT"));
+            porMes.put(nomeMes, quantidade);
+        }
+
+        dto.setPorMes(porMes);
+        return dto;
+    }
+
 
     public List<EncomendaClienteFullResponseDTO> obterEncomendasClientePorId(Integer clienteId) {
         List<EncomendasCliente> encomendas = encomendaClienteRepo.findByCliente_Id(clienteId);
