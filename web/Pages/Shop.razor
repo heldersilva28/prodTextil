@@ -1,0 +1,385 @@
+@page "/shop"
+@using System.Globalization
+
+<link href="css/shop.css" rel="stylesheet" />
+
+<div class="shop-container">
+    <!-- Header Empresarial -->
+    <div class="shop-header">
+        <div class="container">
+            <div class="d-flex align-items-center justify-content-between flex-wrap">
+                <div class="brand-logo">
+                    <h1>ProdTextil B2B</h1>
+                    <div class="brand-subtitle">Soluções Têxteis para Empresas</div>
+                </div>
+
+                <div class="search-container">
+                    <div class="search-box">
+                        <input 
+                            type="text"
+                            class="form-control"
+                            placeholder="Pesquisar por SKU, nome ou categoria..."
+                            @bind="Search"
+                            @bind:event="oninput" />
+                        <i class="bi bi-search search-icon"></i>
+                    </div>
+                </div>
+
+                <div class="header-actions">
+                    <button class="cart-toggle" @onclick="ToggleCart">
+                        <i class="bi bi-cart3 fs-5"></i>
+                        @if (CartItems.Count > 0)
+                        {
+                            <span class="badge-counter">@CartItems.Count</span>
+                        }
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Toolbar com filtros e ações -->
+        <div class="shop-toolbar">
+            <div class="results-info">
+                <strong>@FilteredProducts.Count()</strong> produtos encontrados
+                @if (!string.IsNullOrWhiteSpace(Search))
+                {
+                    <span class="text-muted">para "@Search"</span>
+                }
+            </div>
+        </div>
+
+        <!-- Grid de produtos -->
+        <div class="product-grid">
+            @foreach (var product in FilteredProducts)
+            {
+                <div class="product-card">
+                    <div class="product-image-container">
+                        <img 
+                            src="@product.Image" 
+                            alt="@product.Name" 
+                            class="product-image"
+                            onerror="this.src='images/placeholder.png';" />
+                        <div class="product-badge">
+                            @GetProductCategory(product.Sku)
+                        </div>
+                    </div>
+
+                    <div class="product-info">
+                        <div class="product-header">
+                            <div class="product-sku">@product.Sku</div>
+                            <h3 class="product-title">@product.Name</h3>
+                        </div>
+
+                        <div class="product-details">
+                            <div class="detail-item">
+                                <span class="detail-label">Poliéster</span>
+                                <span class="detail-value">@product.PolyesterPercentage%</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Preço Unit.</span>
+                                <span class="detail-value price-value">€@product.Price.ToString("F2")</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Disponível</span>
+                                <span class="detail-value text-success">Em Stock</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Prazo</span>
+                                <span class="detail-value">2-3 dias</span>
+                            </div>
+                        </div>
+
+                        <div class="product-actions">
+                            <div class="quantity-control">
+                                <button class="quantity-btn" type="button" @onclick="() => DecrementQuantity(product)">
+                                    <i class="bi bi-dash"></i>
+                                </button>
+                                <input 
+                                    type="text" 
+                                    class="quantity-input"
+                                    @bind="Quantities[product.Id]" 
+                                    @bind:event="oninput" 
+                                    onkeypress="return /[0-9]/.test(event.key)" />
+                                <button class="quantity-btn" type="button" @onclick="() => IncrementQuantity(product)">
+                                    <i class="bi bi-plus"></i>
+                                </button>
+                            </div>
+
+                            <button 
+                                class="add-to-cart-btn"
+                                @onclick="() => AddToCart(product)">
+                                <i class="bi bi-cart-plus"></i>
+                                Adicionar ao Carrinho
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Drawer do carrinho empresarial -->
+@if (CartVisible)
+{
+    <div class="cart-drawer @GetCartDrawerClass()">
+        <div class="drawer-header">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <h2 class="drawer-title">Carrinho de Compras</h2>
+                    <div class="drawer-subtitle">@CartItems.Count item(s) selecionado(s)</div>
+                </div>
+                <button class="btn-close" @onclick="ToggleCart"></button>
+            </div>
+        </div>
+
+        <div class="drawer-body">
+            @if (CartItems.Count == 0)
+            {
+                <div class="empty-state">
+                    <div class="empty-state-icon">
+                        <i class="bi bi-cart"></i>
+                    </div>
+                    <h3>Carrinho Vazio</h3>
+                    <p>Adicione produtos ao seu carrinho para continuar com o pedido.</p>
+                </div>
+            }
+            else
+            {
+                <div class="cart-items">
+                    @foreach (var item in CartItems)
+                    {
+                        <div class="cart-item">
+                            <img src="@item.Product.Image" alt="@item.Product.Name" class="item-image" />
+                            <div class="item-details">
+                                <div class="item-name">@item.Product.Name</div>
+                                <div class="item-sku">SKU: @item.Product.Sku</div>
+                                <div class="item-quantity">Quantidade: @item.Quantity un.</div>
+                            </div>
+                            <div class="item-price">
+                                <div class="item-unit-price">€@item.Product.Price.ToString("F2") /un.</div>
+                                <div class="item-total-price">€@((item.Product.Price * item.Quantity).ToString("F2"))</div>
+                            </div>
+                            <button class="remove-item" @onclick="() => RemoveFromCart(item.Product)">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                    }
+                </div>
+
+                <div class="cart-summary">
+                    <div class="summary-row">
+                        <span class="summary-label">Subtotal:</span>
+                        <span class="summary-value">€@CartSubtotal.ToString("F2")</span>
+                    </div>
+                    <div class="summary-row">
+                        <span class="summary-label">IVA (23%):</span>
+                        <span class="summary-value">€@CartTax.ToString("F2")</span>
+                    </div>
+                    <div class="summary-row summary-total">
+                        <span class="summary-label">Total:</span>
+                        <span class="summary-value">€@CartTotal.ToString("F2")</span>
+                    </div>
+                    
+                    <button class="create-order-btn" @onclick="CreateOrder">
+                        <i class="bi bi-check-circle me-2"></i>
+                        Finalizar Pedido
+                    </button>
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="drawer-backdrop @GetBackdropClass()" @onclick="ToggleCart"></div>
+}
+
+@code {
+    // -------------------------------------------------- MODELO/DADOS
+    public record Product(int Id, string Sku, string Name, string Image, int PolyesterPercentage, decimal Price, int MinOrderQuantity);
+    public class CartItem
+    {
+        public Product Product { get; set; }
+        public int Quantity { get; set; }
+    }
+
+    private List<Product> Products { get; } = new()
+    {
+        new Product(1, "TS-1001", "T-Shirt Básica Premium", "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=400", 65, 4.20m, 50),
+        new Product(2, "HD-2001", "Hoodie Corporate", "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=400", 80, 12.80m, 25),
+        new Product(3, "PK-3001", "Polo Empresarial", "https://images.unsplash.com/photo-1586790170083-2f9ceadc732d?q=80&w=400", 55, 6.75m, 100),
+        new Product(4, "SW-4001", "Sweatshirt Professional", "https://images.unsplash.com/photo-1434389677669-e08b4cac3105?q=80&w=400", 70, 15.50m, 30),
+        new Product(5, "JK-5001", "Jacket Corporate", "https://images.unsplash.com/photo-1551698618-1dfe5d97d256?q=80&w=400", 90, 25.90m, 20),
+        new Product(6, "TS-1002", "T-Shirt Tech Performance", "https://images.unsplash.com/photo-1503341455253-b2e723bb3dbb?q=80&w=400", 85, 8.45m, 75)
+    };
+
+    // -------------------------------------------------- ESTADO
+    private Dictionary<int, int> Quantities { get; set; }
+    private List<CartItem> CartItems { get; } = new();
+    private string Search { get; set; } = string.Empty;
+    private bool CartOpen { get; set; }
+    private bool CartVisible { get; set; }
+    private bool CartClosing { get; set; }
+
+    protected override void OnInitialized()
+    {
+        // Inicializa todas as quantidades com o MOQ de cada produto
+        Quantities = Products.ToDictionary(p => p.Id, p => p.MinOrderQuantity);
+    }
+
+    // -------------------------------------------------- PROPRIEDADES CALCULADAS
+    private IEnumerable<Product> FilteredProducts => string.IsNullOrWhiteSpace(Search)
+        ? Products
+        : Products.Where(p => p.Name.Contains(Search, StringComparison.OrdinalIgnoreCase) ||
+                               p.Sku.Contains(Search, StringComparison.OrdinalIgnoreCase));
+
+    private decimal CartSubtotal => CartItems.Sum(ci => ci.Product.Price * ci.Quantity);
+    private decimal CartTax => CartSubtotal * 0.23m;
+    private decimal CartTotal => CartSubtotal + CartTax;
+
+    // -------------------------------------------------- MÉTODOS
+    private string GetProductCategory(string sku)
+    {
+        return sku switch
+        {
+            var s when s.StartsWith("TS") => "T-Shirts",
+            var s when s.StartsWith("HD") => "Hoodies",
+            var s when s.StartsWith("PK") => "Polos",
+            var s when s.StartsWith("SW") => "Sweatshirts",
+            var s when s.StartsWith("JK") => "Jackets",
+            _ => "Outros"
+        };
+    }
+
+    private void IncrementQuantity(Product product)
+    {
+        if (Quantities.ContainsKey(product.Id))
+            Quantities[product.Id] += product.MinOrderQuantity;
+    }
+
+    private void DecrementQuantity(Product product)
+    {
+        if (Quantities.ContainsKey(product.Id) && Quantities[product.Id] > product.MinOrderQuantity)
+            Quantities[product.Id] = Math.Max(product.MinOrderQuantity, Quantities[product.Id] - product.MinOrderQuantity);
+    }
+
+    private void ValidateQuantity(Product product)
+    {
+        if (Quantities.ContainsKey(product.Id))
+        {
+            var currentQuantity = Quantities[product.Id];
+            if (currentQuantity < product.MinOrderQuantity)
+            {
+                Quantities[product.Id] = product.MinOrderQuantity;
+            }
+            else
+            {
+                // Ajusta para o múltiplo mais próximo do MOQ
+                var remainder = currentQuantity % product.MinOrderQuantity;
+                if (remainder != 0)
+                {
+                    Quantities[product.Id] = currentQuantity - remainder + product.MinOrderQuantity;
+                }
+            }
+        }
+    }
+
+    private bool CanAddToCart(Product product)
+    {
+        var quantity = Quantities[product.Id];
+        return quantity >= product.MinOrderQuantity && quantity % product.MinOrderQuantity == 0;
+    }
+
+    private async Task ToggleCart()
+    {
+        if (CartOpen)
+        {
+            // Iniciar animação de fechamento
+            CartClosing = true;
+            CartOpen = false;
+            StateHasChanged();
+            
+            // Aguardar a animação completar antes de ocultar o drawer
+            await Task.Delay(300); // Tempo da transição CSS
+            
+            CartVisible = false;
+            CartClosing = false;
+        }
+        else
+        {
+            // Abrir o drawer
+            CartVisible = true;
+            CartClosing = false;
+            StateHasChanged();
+            
+            // Pequeno delay para garantir que o elemento está no DOM
+            await Task.Delay(10);
+            
+            CartOpen = true;
+        }
+        
+        StateHasChanged();
+    }
+
+    private string GetCartDrawerClass()
+    {
+        if (CartClosing) return "closing";
+        if (CartOpen) return "open";
+        return "";
+    }
+
+    private string GetBackdropClass()
+    {
+        if (CartClosing) return "hiding";
+        if (CartOpen) return "show";
+        return "";
+    }
+
+    private void AddToCart(Product product)
+    {
+        if (!CanAddToCart(product))
+        {
+            ValidateQuantity(product);
+            return;
+        }
+
+        var quantity = Quantities[product.Id];
+        var existing = CartItems.FirstOrDefault(ci => ci.Product.Id == product.Id);
+        
+        if (existing is not null)
+        {
+            existing.Quantity += quantity;
+        }
+        else
+        {
+            CartItems.Add(new CartItem
+            {
+                Product = product,
+                Quantity = quantity
+            });
+        }
+
+        // Abrir o carrinho se não estiver aberto
+        if (!CartOpen && !CartVisible)
+        {
+            _ = Task.Run(async () => await ToggleCart());
+        }
+    }
+
+    private void RemoveFromCart(Product product)
+    {
+        var item = CartItems.FirstOrDefault(ci => ci.Product.Id == product.Id);
+        if (item is not null)
+            CartItems.Remove(item);
+    }
+
+    private async Task CreateOrder()
+    {
+        // Implementar lógica de criação de pedido
+        CartItems.Clear();
+        await ToggleCart(); // Usar o método async para fechar com animação
+        
+        // Aqui poderia mostrar uma mensagem de sucesso ou redirecionar
+    }
+}
