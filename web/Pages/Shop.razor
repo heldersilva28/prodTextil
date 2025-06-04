@@ -4,13 +4,13 @@
 <link href="css/shop.css" rel="stylesheet" />
 
 <div class="shop-container">
-    <!-- Header Empresarial -->
+    <!-- Premium Header with Glass Morphism -->
     <div class="shop-header">
         <div class="container">
             <div class="d-flex align-items-center justify-content-between flex-wrap">
                 <div class="brand-logo">
-                    <h1>ProdTextil B2B</h1>
-                    <div class="brand-subtitle">Soluções Têxteis para Empresas</div>
+                    <h1>ProdTextil</h1>
+                    <div class="brand-subtitle">Premium B2B Textile Solutions</div>
                 </div>
 
                 <div class="search-container">
@@ -27,7 +27,8 @@
 
                 <div class="header-actions">
                     <button class="cart-toggle" @onclick="ToggleCart">
-                        <i class="bi bi-cart3 fs-5"></i>
+                        <i class="bi bi-bag-check fs-5"></i>
+                        <span class="ms-2 d-none d-md-inline">Carrinho</span>
                         @if (CartItems.Count > 0)
                         {
                             <span class="badge-counter">@CartItems.Count</span>
@@ -39,10 +40,11 @@
     </div>
 
     <div class="container">
-        <!-- Toolbar com filtros e ações -->
+        <!-- Premium Toolbar -->
         <div class="shop-toolbar">
             <div class="results-info">
-                <strong>@FilteredProducts.Count()</strong> produtos encontrados
+                <i class="bi bi-grid-3x3-gap me-2"></i>
+                <strong>@FilteredProducts.Count()</strong> produtos premium encontrados
                 @if (!string.IsNullOrWhiteSpace(Search))
                 {
                     <span class="text-muted">para "@Search"</span>
@@ -50,7 +52,7 @@
             </div>
         </div>
 
-        <!-- Grid de produtos -->
+        <!-- Premium Product Grid -->
         <div class="product-grid">
             @foreach (var product in FilteredProducts)
             {
@@ -78,23 +80,29 @@
                                 <span class="detail-value">@product.PolyesterPercentage%</span>
                             </div>
                             <div class="detail-item">
-                                <span class="detail-label">Preço Unit.</span>
+                                <span class="detail-label">Preço Unitário s/IVA</span>
                                 <span class="detail-value price-value">€@product.Price.ToString("F2")</span>
                             </div>
                             <div class="detail-item">
-                                <span class="detail-label">Disponível</span>
-                                <span class="detail-value text-success">Em Stock</span>
+                                <span class="detail-label">Disponibilidade</span>
+                                <span class="detail-value text-success">
+                                    <i class="bi bi-check-circle me-1"></i>
+                                    Em Stock
+                                </span>
                             </div>
                             <div class="detail-item">
-                                <span class="detail-label">Prazo</span>
-                                <span class="detail-value">2-3 dias</span>
+                                <span class="detail-label">Entrega</span>
+                                <span class="detail-value">
+                                    <i class="bi bi-truck me-1"></i>
+                                    2-3 dias
+                                </span>
                             </div>
                         </div>
 
                         <div class="product-actions">
                             <div class="quantity-control">
                                 <button class="quantity-btn" type="button" @onclick="() => DecrementQuantity(product)">
-                                    <i class="bi bi-dash"></i>
+                                    <i class="bi bi-dash-lg"></i>
                                 </button>
                                 <input 
                                     type="text" 
@@ -103,14 +111,14 @@
                                     @bind:event="oninput" 
                                     onkeypress="return /[0-9]/.test(event.key)" />
                                 <button class="quantity-btn" type="button" @onclick="() => IncrementQuantity(product)">
-                                    <i class="bi bi-plus"></i>
+                                    <i class="bi bi-plus-lg"></i>
                                 </button>
                             </div>
 
                             <button 
                                 class="add-to-cart-btn"
                                 @onclick="() => AddToCart(product)">
-                                <i class="bi bi-cart-plus"></i>
+                                <i class="bi bi-cart-plus-fill"></i>
                                 Adicionar ao Carrinho
                             </button>
                         </div>
@@ -121,17 +129,24 @@
     </div>
 </div>
 
-<!-- Drawer do carrinho empresarial -->
+<!-- Premium Cart Drawer -->
 @if (CartVisible)
 {
     <div class="cart-drawer @GetCartDrawerClass()">
         <div class="drawer-header">
             <div class="d-flex justify-content-between align-items-start">
                 <div>
-                    <h2 class="drawer-title">Carrinho de Compras</h2>
-                    <div class="drawer-subtitle">@CartItems.Count item(s) selecionado(s)</div>
+                    <h2 class="drawer-title">
+                        <i class="bi bi-bag-check me-2"></i>
+                        Carrinho
+                    </h2>
+                    <div class="drawer-subtitle">
+                        @CartItems.Count item@(CartItems.Count != 1 ? "s" : "") selecionado@(CartItems.Count != 1 ? "s" : "")
+                    </div>
                 </div>
-                <button class="btn-close" @onclick="ToggleCart"></button>
+                <button class="btn-close" @onclick="ToggleCart">
+                    <i class="bi bi-x-lg"></i>
+                </button>
             </div>
         </div>
 
@@ -140,10 +155,10 @@
             {
                 <div class="empty-state">
                     <div class="empty-state-icon">
-                        <i class="bi bi-cart"></i>
+                        <i class="bi bi-bag"></i>
                     </div>
                     <h3>Carrinho Vazio</h3>
-                    <p>Adicione produtos ao seu carrinho para continuar com o pedido.</p>
+                    <p>Adicione produtos ao seu carrinho para continuar com o pedido empresarial.</p>
                 </div>
             }
             else
@@ -155,15 +170,21 @@
                             <img src="@item.Product.Image" alt="@item.Product.Name" class="item-image" />
                             <div class="item-details">
                                 <div class="item-name">@item.Product.Name</div>
-                                <div class="item-sku">SKU: @item.Product.Sku</div>
-                                <div class="item-quantity">Quantidade: @item.Quantity un.</div>
+                                <div class="item-sku">
+                                    <i class="bi bi-tag me-1"></i>
+                                    SKU: @item.Product.Sku
+                                </div>
+                                <div class="item-quantity">
+                                    <i class="bi bi-box me-1"></i>
+                                    Quantidade: @item.Quantity un.
+                                </div>
                             </div>
                             <div class="item-price">
                                 <div class="item-unit-price">€@item.Product.Price.ToString("F2") /un.</div>
                                 <div class="item-total-price">€@((item.Product.Price * item.Quantity).ToString("F2"))</div>
                             </div>
                             <button class="remove-item" @onclick="() => RemoveFromCart(item.Product)">
-                                <i class="bi bi-trash"></i>
+                                <i class="bi bi-trash3"></i>
                             </button>
                         </div>
                     }
@@ -171,20 +192,29 @@
 
                 <div class="cart-summary">
                     <div class="summary-row">
-                        <span class="summary-label">Subtotal:</span>
+                        <span class="summary-label">
+                            <i class="bi bi-calculator me-1"></i>
+                            Subtotal:
+                        </span>
                         <span class="summary-value">€@CartSubtotal.ToString("F2")</span>
                     </div>
                     <div class="summary-row">
-                        <span class="summary-label">IVA (23%):</span>
+                        <span class="summary-label">
+                            <i class="bi bi-percent me-1"></i>
+                            IVA (23%):
+                        </span>
                         <span class="summary-value">€@CartTax.ToString("F2")</span>
                     </div>
                     <div class="summary-row summary-total">
-                        <span class="summary-label">Total:</span>
+                        <span class="summary-label">
+                            <i class="bi bi-currency-euro me-1"></i>
+                            Total:
+                        </span>
                         <span class="summary-value">€@CartTotal.ToString("F2")</span>
                     </div>
                     
                     <button class="create-order-btn" @onclick="CreateOrder">
-                        <i class="bi bi-check-circle me-2"></i>
+                        <i class="bi bi-check-circle-fill me-2"></i>
                         Finalizar Pedido
                     </button>
                 </div>
@@ -206,7 +236,7 @@
 
     private List<Product> Products { get; } = new()
     {
-        new Product(1, "TS-1001", "T-Shirt Básica Premium", "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=400", 65, 4.20m, 50),
+        new Product(1, "TS-1001", "T-Shirt Básica", "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=400", 65, 4.20m, 50),
         new Product(2, "HD-2001", "Hoodie Corporate", "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=400", 80, 12.80m, 25),
         new Product(3, "PK-3001", "Polo Empresarial", "https://images.unsplash.com/photo-1586790170083-2f9ceadc732d?q=80&w=400", 55, 6.75m, 100),
         new Product(4, "SW-4001", "Sweatshirt Professional", "https://images.unsplash.com/photo-1434389677669-e08b4cac3105?q=80&w=400", 70, 15.50m, 30),

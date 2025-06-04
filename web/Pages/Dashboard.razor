@@ -6,93 +6,190 @@
 
 <PageTitle>Dashboard</PageTitle>
 
-<div class="orders-dashboard-background">
+<div class="dashboard-premium">
+    <div class="dashboard-background-effects">
+        <div class="floating-shape shape-1"></div>
+        <div class="floating-shape shape-2"></div>
+        <div class="floating-shape shape-3"></div>
+        <div class="floating-shape shape-4"></div>
+    </div>
+    
     <div class="dashboard-container">
+        <!-- Premium Header -->
         <div class="dashboard-header">
-            <h1 class="dashboard-title">Dashboard</h1>
-            <p class="dashboard-subtitle">Visão geral das estatísticas</p>
+            <div class="header-content">
+                <div class="header-badge">
+                    <span class="badge-icon">📊</span>
+                    <span class="badge-text">Analytics Dashboard</span>
+                </div>
+                <h1 class="dashboard-title">Painel Executivo</h1>
+                <p class="dashboard-subtitle">Insights avançados e métricas de performance em tempo real</p>
+            </div>
+            <div class="header-accent"></div>
         </div>
         
         @if (isLoading)
         {
-            <div class="loading-state">
-                <div class="loading-spinner"></div>
-                <p>Carregando estatísticas...</p>
+            <div class="loading-state glass-morphism">
+                <div class="loading-animation">
+                    <div class="loading-rings">
+                        <div class="ring ring-1"></div>
+                        <div class="ring ring-2"></div>
+                        <div class="ring ring-3"></div>
+                    </div>
+                    <div class="loading-content">
+                        <h3 class="loading-title">Carregando Analytics</h3>
+                        <p class="loading-subtitle">Processando dados em tempo real...</p>
+                        <div class="loading-progress">
+                            <div class="progress-bar"></div>
+                        </div>
+                    </div>
+                </div>
             </div>
         }
         else if (errorMessage != null)
         {
-            <div class="error-state">
-                <div class="error-icon">⚠️</div>
-                <h3>Ops! Algo deu errado</h3>
-                <p>@errorMessage</p>
-                <button @onclick="LoadStatistics" class="retry-button">
-                    <span class="retry-icon">🔄</span>
-                    Tentar novamente
-                </button>
+            <div class="error-state glass-morphism">
+                <div class="error-animation">
+                    <div class="error-icon-wrapper">
+                        <div class="error-icon">
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12,2C17.53,2 22,6.47 22,12C22,17.53 17.53,22 12,22C6.47,22 2,17.53 2,12C2,6.47 6.47,2 12,2M15.59,7L12,10.59L8.41,7L7,8.41L10.59,12L7,15.59L8.41,17L12,13.41L15.59,17L17,15.59L13.41,12L17,8.41L15.59,7Z"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="error-content">
+                        <h3 class="error-title">Falha na Conexão</h3>
+                        <p class="error-message">@errorMessage</p>
+                        <button @onclick="LoadStatistics" class="retry-button premium-btn">
+                            <span class="btn-icon">
+                                <svg viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M17.65,6.35C16.2,4.9 14.21,4 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20C15.73,20 18.84,17.45 19.73,14H17.65C16.83,16.33 14.61,18 12,18A6,6 0 0,1 6,12A6,6 0 0,1 12,6C13.66,6 15.14,6.69 16.22,7.78L13,11H20V4L17.65,6.35Z"/>
+                                </svg>
+                            </span>
+                            <span class="btn-text">Reconectar</span>
+                        </button>
+                    </div>
+                </div>
             </div>
         }
         else if (statistics != null)
         {
             <div class="dashboard-content">
+                <!-- Premium Stats Section -->
                 <div class="stats-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Métricas Principais</h2>
+                        <div class="section-subtitle">Indicadores de performance atualizados</div>
+                    </div>
+                    
                     <div class="stats-grid">
-                        <div class="stat-card total-card">
+                        <div class="stat-card total-card premium-card" data-stat="total">
+                            <div class="card-background"></div>
                             <div class="stat-header">
-                                <div class="stat-icon total-icon">
-                                    <svg viewBox="0 0 24 24" fill="currentColor">
-                                        <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/>
-                                    </svg>
+                                <div class="stat-icon-wrapper total-theme">
+                                    <div class="icon-background"></div>
+                                    <div class="stat-icon">
+                                        <svg viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M3,3H21V5H3V3M3,7H21V9H3V7M3,11H21V13H3V11M3,15H21V17H3V15M3,19H21V21H3V19Z"/>
+                                        </svg>
+                                    </div>
+                                </div>
+                                <div class="stat-trend">
+                                    <span class="trend-icon">↗</span>
                                 </div>
                             </div>
                             <div class="stat-content">
+                                <div class="stat-number-wrapper">
+                                    <span class="stat-number" data-value="@statistics.Total">@statistics.Total</span>
+                                    <div class="number-accent"></div>
+                                </div>
                                 <span class="stat-label">Total de Encomendas</span>
-                                <span class="stat-number">@statistics.Total</span>
+                                <div class="stat-progress">
+                                    <div class="progress-track">
+                                        <div class="progress-fill total-progress"></div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         
-                        <div class="stat-card pending-card">
+                        <div class="stat-card pending-card premium-card" data-stat="pending">
+                            <div class="card-background"></div>
                             <div class="stat-header">
-                                <div class="stat-icon pending-icon">
-                                    <svg viewBox="0 0 24 24" fill="currentColor">
-                                        <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z"/>
-                                </svg>
+                                <div class="stat-icon-wrapper pending-theme">
+                                    <div class="icon-background"></div>
+                                    <div class="stat-icon">
+                                        <svg viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z"/>
+                                        </svg>
+                                    </div>
+                                </div>
+                                <div class="stat-trend">
+                                    <span class="trend-icon">⏳</span>
                                 </div>
                             </div>
                             <div class="stat-content">
-                                <span class="stat-label">Pendentes</span>
-                                <span class="stat-number">@statistics.Pendentes</span>
+                                <div class="stat-number-wrapper">
+                                    <span class="stat-number" data-value="@statistics.Pendentes">@statistics.Pendentes</span>
+                                    <div class="number-accent"></div>
+                                </div>
+                                <span class="stat-label">Em Processamento</span>
+                                <div class="stat-progress">
+                                    <div class="progress-track">
+                                        <div class="progress-fill pending-progress"></div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         
-                        <div class="stat-card completed-card">
+                        <div class="stat-card completed-card premium-card" data-stat="completed">
+                            <div class="card-background"></div>
                             <div class="stat-header">
-                                <div class="stat-icon completed-icon">
-                                    <svg viewBox="0 0 24 24" fill="currentColor">
-                                        <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,12 0 0,0 12,2M11,16.5L6.5,12L7.91,10.59L11,13.67L16.59,8.09L18,9.5L11,16.5Z"/>
-                                    </svg>
+                                <div class="stat-icon-wrapper completed-theme">
+                                    <div class="icon-background"></div>
+                                    <div class="stat-icon">
+                                        <svg viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,16.5L6.5,12L7.91,10.59L11,13.67L16.59,8.09L18,9.5L11,16.5Z"/>
+                                        </svg>
+                                    </div>
+                                </div>
+                                <div class="stat-trend">
+                                    <span class="trend-icon">✓</span>
                                 </div>
                             </div>
                             <div class="stat-content">
-                                <span class="stat-label">Concluídas</span>
-                                <span class="stat-number">@statistics.Concluidas</span>
+                                <div class="stat-number-wrapper">
+                                    <span class="stat-number" data-value="@statistics.Concluidas">@statistics.Concluidas</span>
+                                    <div class="number-accent"></div>
+                                </div>
+                                <span class="stat-label">Finalizadas</span>
+                                <div class="stat-progress">
+                                    <div class="progress-track">
+                                        <div class="progress-fill completed-progress"></div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
+                <!-- Premium Chart Section -->
                 <div class="chart-section">
-                    <div class="chart-container">
+                    <div class="chart-container glass-morphism">
                         <div class="chart-header">
-                            <h2>Evolução Mensal</h2>
+                            <div class="chart-title-section">
+                                <h2 class="chart-title">Análise Temporal</h2>
+                                <p class="chart-subtitle">Evolução mensal das encomendas</p>
+                            </div>
                         </div>
                         
                         <div class="chart-content">
                             <div class="chart-wrapper">
                                 <div class="chart-grid">
-                                    @for (int i = 4; i >= 0; i--)
+                                    @for (int i = 0; i < 5; i++)
                                     {
                                         <div class="grid-line">
+                                            <div class="grid-dash"></div>
                                         </div>
                                     }
                                 </div>
@@ -100,17 +197,28 @@
                                 <div class="monthly-chart">
                                     @if (statistics.PorMes != null)
                                     {
-                                        @foreach (var month in statistics.PorMes)
+                                        @for (int i = 0; i < statistics.PorMes.Count; i++)
                                         {
-                                            <div class="month-column" @onmouseenter="() => ShowTooltip(month)" @onmouseleave="HideTooltip">
+                                            var month = statistics.PorMes.ElementAt(i);
+                                            <div class="month-column" 
+                                                 style="animation-delay: @(i * 0.1)s"
+                                                 @onmouseenter="() => ShowTooltip(month)" 
+                                                 @onmouseleave="HideTooltip">
+                                                
+                                                <div class="bar-value-top">@month.Value</div>
+                                                
                                                 <div class="bar-container">
                                                     <div class="bar" style="height: @(GetBarHeight(month.Value))px">
-                                                        <div class="bar-fill"></div>
+                                                        <div class="bar-fill">
+                                                            <div class="bar-glow"></div>
+                                                            <div class="bar-shine"></div>
+                                                        </div>
                                                     </div>
                                                 </div>
+                                                
                                                 <div class="month-info">
                                                     <span class="month-label">@GetMonthAbbreviation(month.Key)</span>
-                                                    <span class="month-value">@month.Value</span>
+                                                    <div class="month-indicator"></div>
                                                 </div>
                                             </div>
                                         }
@@ -126,183 +234,639 @@
 </div>
 
 <style>
-    .dashboard-container {
-        padding: 24px;
-        margin: 0 auto;
-        min-height: 100vh;
-        position: relative;
-        z-index: 1;
+    :root {
+        --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        --success-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        --warning-gradient: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        --danger-gradient: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        --glass-bg: rgba(255, 255, 255, 0.25);
+        --glass-border: rgba(255, 255, 255, 0.18);
+        --backdrop-blur: blur(20px);
+        --shadow-soft: 0 8px 32px rgba(31, 38, 135, 0.37);
+        --shadow-hover: 0 15px 35px rgba(31, 38, 135, 0.4);
+        --transition-smooth: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        --border-radius: 24px;
+        --spacing-xs: 0.5rem;
+        --spacing-sm: 1rem;
+        --spacing-md: 1.5rem;
+        --spacing-lg: 2rem;
+        --spacing-xl: 3rem;
     }
 
+    .dashboard-premium {
+        min-height: 100vh;
+        background: linear-gradient(135deg, #e3f2fd 0%, #57b3ff 10%);
+        background-size: 400% 400%;
+        
+        position: relative;
+        overflow-x: hidden;
+    }
+
+    .dashboard-background-effects {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    .floating-shape {
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(20px);
+        animation: float 6s ease-in-out infinite;
+    }
+
+    .shape-1 {
+        width: 200px;
+        height: 200px;
+        top: 10%;
+        left: 10%;
+        animation-delay: 0s;
+    }
+
+    .shape-2 {
+        width: 150px;
+        height: 150px;
+        top: 60%;
+        right: 15%;
+        animation-delay: 2s;
+    }
+
+    .shape-3 {
+        width: 100px;
+        height: 100px;
+        bottom: 20%;
+        left: 20%;
+        animation-delay: 4s;
+    }
+
+    .shape-4 {
+        width: 80px;
+        height: 80px;
+        top: 30%;
+        right: 30%;
+        animation-delay: 1s;
+    }
+
+    @@keyframes float {
+        0%, 100% { transform: translateY(0px) rotate(0deg); }
+        33% { transform: translateY(-20px) rotate(120deg); }
+        66% { transform: translateY(10px) rotate(240deg); }
+    }
+
+    @@keyframes gradientShift {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    .glass-morphism {
+        background: var(--glass-bg);
+        backdrop-filter: var(--backdrop-blur);
+        -webkit-backdrop-filter: var(--backdrop-blur);
+        border: 1px solid var(--glass-border);
+        box-shadow: var(--shadow-soft);
+        border-radius: var(--border-radius);
+    }
+
+    .dashboard-container {
+        position: relative;
+        z-index: 1;
+        padding: var(--spacing-xl) var(--spacing-lg);
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    /* Premium Header */
     .dashboard-header {
-        margin-bottom: 32px;
+        margin-bottom: var(--spacing-xl);
+        position: relative;
+        padding: var(--spacing-lg);
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(20px);
+        border-radius: var(--border-radius);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        overflow: hidden;
+    }
+
+    .header-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .header-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--spacing-xs);
+        background: rgba(255, 255, 255, 0.25);
+        backdrop-filter: blur(10px);
+        padding: 8px 16px;
+        border-radius: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        margin-bottom: var(--spacing-sm);
+        font-size: 0.875rem;
+        font-weight: 700;
+        color: white;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
     }
 
     .dashboard-title {
-        color: #1e293b;
-        margin: 0 0 8px 0;
-        font-size: 2.5rem;
-        font-weight: 700;
-        letter-spacing: -0.025em;
+        font-size: clamp(2.5rem, 5vw, 3.5rem);
+        font-weight: 900;
+        background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin: 0 0 var(--spacing-sm);
+        line-height: 1.1;
+        letter-spacing: -0.02em;
     }
 
     .dashboard-subtitle {
-        color: #64748b;
+        font-size: 1.25rem;
+        color: rgba(255, 255, 255, 0.9);
+        font-weight: 500;
         margin: 0;
-        font-size: 1.125rem;
-        font-weight: 400;
+        line-height: 1.5;
     }
 
+    .header-accent {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: var(--primary-gradient);
+    }
+
+    /* Premium Loading State */
+    .loading-state {
+        padding: var(--spacing-xl);
+        margin: var(--spacing-lg) 0;
+        text-align: center;
+    }
+
+    .loading-animation {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--spacing-lg);
+    }
+
+    .loading-rings {
+        position: relative;
+        width: 120px;
+        height: 120px;
+    }
+
+    .ring {
+        position: absolute;
+        border: 4px solid transparent;
+        border-radius: 50%;
+        animation: spin 2s linear infinite;
+    }
+
+    .ring-1 {
+        width: 120px;
+        height: 120px;
+        border-top-color: #667eea;
+        animation-duration: 2s;
+    }
+
+    .ring-2 {
+        width: 90px;
+        height: 90px;
+        top: 15px;
+        left: 15px;
+        border-top-color: #764ba2;
+        animation-duration: 1.5s;
+        animation-direction: reverse;
+    }
+
+    .ring-3 {
+        width: 60px;
+        height: 60px;
+        top: 30px;
+        left: 30px;
+        border-top-color: #f093fb;
+        animation-duration: 1s;
+    }
+
+    @@keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    .loading-content {
+        max-width: 400px;
+    }
+
+    .loading-title {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: white;
+        margin: 0 0 var(--spacing-xs);
+    }
+
+    .loading-subtitle {
+        font-size: 1.125rem;
+        color: rgba(255, 255, 255, 0.8);
+        margin: 0 0 var(--spacing-md);
+    }
+
+    .loading-progress {
+        width: 100%;
+        height: 4px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 2px;
+        overflow: hidden;
+    }
+
+    .progress-bar {
+        height: 100%;
+        background: var(--primary-gradient);
+        border-radius: 2px;
+        animation: loadingProgress 2s ease-in-out infinite;
+    }
+
+    @@keyframes loadingProgress {
+        0% { width: 0%; }
+        50% { width: 70%; }
+        100% { width: 100%; }
+    }
+
+    /* Premium Error State */
+    .error-state {
+        padding: var(--spacing-xl);
+        margin: var(--spacing-lg) 0;
+        text-align: center;
+    }
+
+    .error-animation {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--spacing-lg);
+    }
+
+    .error-icon-wrapper {
+        width: 120px;
+        height: 120px;
+        background: var(--danger-gradient);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        animation: pulse 2s infinite;
+    }
+
+    .error-icon {
+        width: 60px;
+        height: 60px;
+        color: white;
+    }
+
+    .error-content {
+        max-width: 400px;
+    }
+
+    .error-title {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: white;
+        margin: 0 0 var(--spacing-xs);
+    }
+
+    .error-message {
+        font-size: 1.125rem;
+        color: rgba(255, 255, 255, 0.8);
+        margin: 0 0 var(--spacing-lg);
+    }
+
+    .premium-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--spacing-xs);
+        background: var(--primary-gradient);
+        color: white;
+        border: none;
+        padding: var(--spacing-sm) var(--spacing-lg);
+        border-radius: 20px;
+        font-weight: 700;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: var(--transition-smooth);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    .premium-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+    }
+
+    .btn-icon {
+        width: 20px;
+        height: 20px;
+    }
+
+    /* Dashboard Content */
     .dashboard-content {
         display: flex;
         flex-direction: column;
-        gap: 32px;
+        gap: var(--spacing-xl);
     }
 
-    .stats-section {
-        width: 100%;
+    /* Premium Stats Section */
+    .section-header {
+        margin-bottom: var(--spacing-lg);
+        text-align: center;
+    }
+
+    .section-title {
+        font-size: 2rem;
+        font-weight: 800;
+        color: white;
+        margin: 0 0 var(--spacing-xs);
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .section-subtitle {
+        font-size: 1.125rem;
+        color: rgba(255, 255, 255, 0.8);
+        margin: 0;
     }
 
     .stats-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-        gap: 24px;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: var(--spacing-lg);
     }
 
-    .stat-card {
-        background: white;
-        border-radius: 16px;
-        padding: 24px;
-        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-        border: 1px solid #e2e8f0;
-        transition: all 0.3s ease;
+    .premium-card {
+        background: rgba(255, 255, 255, 0.25);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        border-radius: var(--border-radius);
+        padding: var(--spacing-lg);
         position: relative;
         overflow: hidden;
+        transition: var(--transition-smooth);
+        animation: slideInUp 0.6s ease-out;
+        animation-fill-mode: backwards;
     }
 
-    .stat-card::before {
-        content: '';
+    .premium-card:nth-child(1) { animation-delay: 0.1s; }
+    .premium-card:nth-child(2) { animation-delay: 0.2s; }
+    .premium-card:nth-child(3) { animation-delay: 0.3s; }
+
+    @@keyframes slideInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .premium-card:hover {
+        transform: translateY(-8px);
+        box-shadow: var(--shadow-hover);
+        background: rgba(255, 255, 255, 0.35);
+    }
+
+    .card-background {
         position: absolute;
         top: 0;
         left: 0;
         right: 0;
-        height: 4px;
-        background: var(--accent-color);
+        bottom: 0;
+        opacity: 0;
+        transition: var(--transition-smooth);
     }
 
-    .stat-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    .total-card .card-background {
+        background: var(--primary-gradient);
     }
 
-    .total-card {
-        --accent-color: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    .pending-card .card-background {
+        background: var(--warning-gradient);
     }
 
-    .pending-card {
-        --accent-color: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    .completed-card .card-background {
+        background: var(--success-gradient);
     }
 
-    .completed-card {
-        --accent-color: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    .premium-card:hover .card-background {
+        opacity: 0.1;
     }
 
     .stat-header {
         display: flex;
-        justify-content: flex-start;
+        justify-content: space-between;
         align-items: center;
-        margin-bottom: 16px;
+        margin-bottom: var(--spacing-md);
     }
 
-    .stat-icon {
-        width: 48px;
-        height: 48px;
-        border-radius: 12px;
+    .stat-icon-wrapper {
+        width: 64px;
+        height: 64px;
+        border-radius: 20px;
         display: flex;
         align-items: center;
         justify-content: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .icon-background {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        border-radius: 20px;
+    }
+
+    .total-theme .icon-background {
+        background: var(--primary-gradient);
+    }
+
+    .pending-theme .icon-background {
+        background: var(--warning-gradient);
+    }
+
+    .completed-theme .icon-background {
+        background: var(--success-gradient);
+    }
+
+    .stat-icon {
+        width: 32px;
+        height: 32px;
         color: white;
+        position: relative;
+        z-index: 2;
     }
 
-    .stat-icon svg {
-        width: 24px;
-        height: 24px;
-    }
-
-    .total-icon {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    }
-
-    .pending-icon {
-        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-    }
-
-    .completed-icon {
-        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    .stat-trend {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        font-size: 1.25rem;
+        color: white;
     }
 
     .stat-content {
         display: flex;
         flex-direction: column;
-        gap: 8px;
+        gap: var(--spacing-xs);
     }
 
-    .stat-label {
-        color: #64748b;
-        font-size: 0.875rem;
-        font-weight: 500;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
+    .stat-number-wrapper {
+        position: relative;
+        display: inline-block;
     }
 
     .stat-number {
-        color: #1e293b;
-        font-size: 2.25rem;
-        font-weight: 700;
+        font-size: 3rem;
+        font-weight: 900;
+        color: white;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         line-height: 1;
+        counter-reset: number var(--value, 0);
     }
 
-    .chart-section {
+    .number-accent {
+        position: absolute;
+        bottom: -8px;
+        left: 0;
+        width: 60px;
+        height: 4px;
+        border-radius: 2px;
+    }
+
+    .total-card .number-accent {
+        background: var(--primary-gradient);
+    }
+
+    .pending-card .number-accent {
+        background: var(--warning-gradient);
+    }
+
+    .completed-card .number-accent {
+        background: var(--success-gradient);
+    }
+
+    .stat-label {
+        font-size: 1rem;
+        color: rgba(255, 255, 255, 0.9);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-top: var(--spacing-xs);
+    }
+
+    .stat-progress {
+        margin-top: var(--spacing-sm);
+    }
+
+    .progress-track {
         width: 100%;
-    }
-
-    .chart-container {
-        background: white;
-        border-radius: 16px;
-        border: 1px solid #e2e8f0;
-        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+        height: 6px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 3px;
         overflow: hidden;
     }
 
-    .chart-header {
-        padding: 24px 24px 0 24px;
-        border-bottom: 1px solid #f1f5f9;
-        margin-bottom: 24px;
+    .progress-fill {
+        height: 100%;
+        border-radius: 3px;
+        background: var(--primary-gradient);
+        animation: fillProgress 1.5s ease-out;
+        animation-delay: 0.5s;
+        animation-fill-mode: backwards;
     }
 
-    .chart-header h2 {
-        color: #1e293b;
-        font-size: 1.5rem;
-        font-weight: 600;
+    .total-progress {
+        width: 100%;
+        background: var(--primary-gradient);
+    }
+
+    .pending-progress {
+        width: 60%;
+        background: var(--warning-gradient);
+    }
+
+    .completed-progress {
+        width: 80%;
+        background: var(--success-gradient);
+    }
+
+    @@keyframes fillProgress {
+        from { width: 0%; }
+        to { width: var(--progress-width, 100%); }
+    }
+
+    /* Premium Chart Section */
+    .chart-container {
+        padding: var(--spacing-lg);
+        animation: slideInUp 0.8s ease-out;
+        animation-delay: 0.4s;
+        animation-fill-mode: backwards;
+    }
+
+    .chart-header {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: var(--spacing-lg);
+        flex-wrap: wrap;
+        gap: var(--spacing-md);
+    }
+
+    .chart-title {
+        font-size: 1.75rem;
+        font-weight: 800;
+        color: white;
         margin: 0;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .chart-subtitle {
+        font-size: 1rem;
+        color: rgba(255, 255, 255, 0.8);
+        margin: 4px 0 0 0;
     }
 
     .chart-content {
-        padding: 0 24px 24px 24px;
+        position: relative;
     }
 
     .chart-wrapper {
         position: relative;
-        height: 300px;
-        padding-left: 0; /* Remove space for grid labels */
+        height: 400px;
+        padding: var(--spacing-md) 0;
     }
 
     .chart-grid {
         position: absolute;
-        left: 0;
         top: 0;
-        bottom: 60px;
+        left: 0;
         right: 0;
+        bottom: 80px;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
@@ -310,15 +874,15 @@
     }
 
     .grid-line {
-        display: flex;
-        align-items: center;
-        border-top: 1px solid #f1f5f9;
-        position: relative;
         width: 100%;
+        height: 1px;
+        position: relative;
     }
 
-    .grid-line:first-child {
-        border-top: 1px solid #e2e8f0;
+    .grid-dash {
+        width: 100%;
+        height: 1px;
+        background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.2) 20%, rgba(255, 255, 255, 0.2) 80%, transparent 100%);
     }
 
     .monthly-chart {
@@ -326,11 +890,11 @@
         bottom: 0;
         left: 0;
         right: 0;
-        height: 240px;
+        height: 320px;
         display: flex;
         align-items: flex-end;
         justify-content: space-around;
-        padding: 0 0 60px 0;
+        padding-bottom: 80px;
     }
 
     .month-column {
@@ -340,7 +904,9 @@
         flex: 1;
         max-width: 80px;
         cursor: pointer;
-        transition: all 0.3s ease;
+        transition: var(--transition-smooth);
+        animation: slideInUp 0.6s ease-out;
+        animation-fill-mode: backwards;
     }
 
     .month-column:hover {
@@ -350,23 +916,29 @@
     .bar-container {
         display: flex;
         align-items: flex-end;
-        height: 180px;
-        margin-bottom: 16px;
+        height: 240px;
+        margin-bottom: var(--spacing-md);
         position: relative;
         width: 100%;
         justify-content: center;
     }
 
     .bar {
-        width: 40px;
-        background: #e2e8f0;
-        border-radius: 8px 8px 0 0;
-        min-height: 4px;
+        width: 32px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 16px 16px 4px 4px;
+        min-height: 8px;
         position: relative;
         overflow: hidden;
-        transition: all 0.4s ease;
-        display: flex;
-        align-items: flex-end;
+        transition: var(--transition-smooth);
+        animation: growBar 1s ease-out;
+        animation-delay: 1s;
+        animation-fill-mode: backwards;
+    }
+
+    @@keyframes growBar {
+        from { height: 8px; }
+        to { height: var(--bar-height); }
     }
 
     .bar-fill {
@@ -375,149 +947,173 @@
         left: 0;
         right: 0;
         height: 100%;
-        background: linear-gradient(180deg, #3b82f6 0%, #1d4ed8 100%);
-        border-radius: 8px 8px 0 0;
-        transition: all 0.4s ease;
+        background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+        border-radius: 16px 16px 4px 4px;
+        position: relative;
+        overflow: hidden;
     }
 
-    .month-column:hover .bar-fill {
-        background: linear-gradient(180deg, #2563eb 0%, #1e40af 100%);
+    .bar-glow {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.3) 0%, transparent 50%);
+        border-radius: 16px 16px 4px 4px;
+    }
+
+    .bar-shine {
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(45deg, transparent 40%, rgba(255, 255, 255, 0.3) 50%, transparent 60%);
+        animation: shine 3s ease-in-out infinite;
+        animation-delay: 2s;
+    }
+
+    @@keyframes shine {
+        0% { transform: translateX(-100%) translateY(-100%); }
+        50% { transform: translateX(0%) translateY(0%); }
+        100% { transform: translateX(100%) translateY(100%); }
+    }
+
+    .bar-value-top {
+        position: absolute;
+        top: -35px;
+        left: 50%;
+        transform: translateX(-50%);
+        color: white;
+        font-size: 0.875rem;
+        font-weight: 700;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        z-index: 10;
+        pointer-events: none;
+        background: none;
+        padding: 0;
+        border-radius: 0;
+        opacity: 1;
+    }
+
+    .bar-value {
+        display: none;
     }
 
     .month-info {
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 4px;
+        gap: 6px;
     }
 
     .month-label {
         font-size: 0.875rem;
-        color: #64748b;
-        font-weight: 600;
+        color: rgba(255, 255, 255, 0.9);
+        font-weight: 700;
         text-transform: uppercase;
+        letter-spacing: 1px;
     }
 
-    .month-value {
-        font-size: 0.75rem;
-        color: #94a3b8;
-        font-weight: 600;
-    }
-
-    .loading-state {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        padding: 80px 20px;
-        text-align: center;
-    }
-
-    .loading-spinner {
-        width: 40px;
-        height: 40px;
-        border: 3px solid #e2e8f0;
-        border-top: 3px solid #3b82f6;
-        border-radius: 50%;
-        animation: spin 1s linear infinite;
-        margin-bottom: 16px;
-    }
-
-    @@keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-    }
-
-    .loading-state p {
-        color: #64748b;
-        font-size: 1.125rem;
-        margin: 0;
-    }
-
-    .error-state {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        padding: 80px 20px;
-        text-align: center;
+    .month-indicator {
+        width: 6px;
+        height: 6px;
         background: white;
-        border-radius: 16px;
-        border: 1px solid #fecaca;
-        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+        border-radius: 50%;
+        opacity: 0.6;
+        transition: var(--transition-smooth);
     }
 
-    .error-icon {
-        font-size: 3rem;
-        margin-bottom: 16px;
+    .month-column:hover .month-indicator {
+        opacity: 1;
+        transform: scale(1.5);
     }
 
-    .error-state h3 {
-        color: #dc2626;
-        font-size: 1.5rem;
-        font-weight: 600;
-        margin: 0 0 8px 0;
-    }
-
-    .error-state p {
-        color: #7f1d1d;
-        font-size: 1rem;
-        margin: 0 0 24px 0;
-        max-width: 400px;
-    }
-
-    .retry-button {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        background: #dc2626;
+    .chart-tooltip {
+        position: absolute;
+        background: rgba(0, 0, 0, 0.9);
         color: white;
-        border: none;
-        padding: 12px 24px;
+        padding: var(--spacing-sm);
         border-radius: 8px;
+        pointer-events: none;
+        opacity: 0;
+        transition: var(--transition-smooth);
+        z-index: 10;
+    }
+
+    .tooltip-content {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .tooltip-title {
+        font-weight: 600;
+        font-size: 0.875rem;
+    }
+
+    .tooltip-value {
+        font-weight: 800;
         font-size: 1rem;
-        font-weight: 500;
-        cursor: pointer;
-        transition: all 0.2s ease;
+        color: #4facfe;
     }
 
-    .retry-button:hover {
-        background: #b91c1c;
-        transform: translateY(-1px);
-    }
-
-    .retry-icon {
-        animation: rotate 2s linear infinite paused;
-    }
-
-    .retry-button:hover .retry-icon {
-        animation-play-state: running;
-    }
-
-    @@keyframes rotate {
-        from { transform: rotate(0deg); }
-        to { transform: rotate(360deg); }
+    /* Responsive Design */
+    @@media (max-width: 1200px) {
+        .stats-grid {
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        }
     }
 
     @@media (max-width: 768px) {
         .dashboard-container {
-            padding: 16px;
+            padding: var(--spacing-lg) var(--spacing-sm);
         }
 
         .dashboard-title {
-            font-size: 2rem;
+            font-size: 2.5rem;
         }
 
         .stats-grid {
             grid-template-columns: 1fr;
+            gap: var(--spacing-md);
+        }
+
+        .chart-header {
+            flex-direction: column;
+            align-items: flex-start;
         }
 
         .chart-wrapper {
-            padding-left: 0;
+            height: 300px;
         }
 
         .monthly-chart {
-            left: 0;
+            height: 220px;
+            padding-bottom: 60px;
+        }
+
+        .bar-container {
+            height: 160px;
+        }
+
+        .floating-shape {
+            display: none;
+        }
+    }
+
+    @@media (max-width: 480px) {
+        .premium-card {
+            padding: var(--spacing-md);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+        }
+
+        .bar {
+            width: 24px;
         }
     }
 </style>
@@ -572,14 +1168,14 @@
     private double GetBarHeight(int value)
     {
         if (statistics == null || statistics.PorMes == null || !statistics.PorMes.Any()) 
-            return 4;
+            return 8;
         
         var maxValue = statistics.PorMes.Values.Max();
         
         if (maxValue == 0) 
-            return 4;
+            return 8;
         
-        var heightPixels = Math.Max(4, (double)value / maxValue * 180);
+        var heightPixels = Math.Max(8, (double)value / maxValue * 240);
         
         return heightPixels;
     }
@@ -606,11 +1202,11 @@
 
     private void ShowTooltip(KeyValuePair<string, int> month)
     {
-        // Tooltip functionality can be added here
+        // Tooltip functionality can be enhanced with JavaScript interop
     }
 
     private void HideTooltip()
     {
-        // Tooltip functionality can be added here
+        // Tooltip functionality can be enhanced with JavaScript interop
     }
 }

@@ -4,268 +4,298 @@
 @using web.Models
 @inject HttpClient Http
 
-<div class="orders-dashboard-background">
-    <div class="container-fluid py-4">
-        <div class="d-flex align-items-center justify-content-between mb-4">
-            <div>
-                <h1 class="h3 mb-1 text-dark fw-bold">Minhas Encomendas</h1>
-                <p class="text-muted mb-0">Acompanhe o estado das suas encomendas</p>
-            </div>
-            <div class="d-flex align-items-center gap-3">
-                <!-- Premium Enhanced Month Filter -->
-                <div class="month-filter-container">
-                    <div class="filter-wrapper">
-                        <div class="input-group filter-group">
-                            <span class="input-group-text filter-icon-wrapper">
-                                <i class="bi bi-calendar3 filter-icon"></i>
-                            </span>
-                            <select id="monthFilter" 
-                                    class="form-select month-filter-select" 
-                                    @onchange="OnMonthFilterChanged"
-                                    title="Filtrar encomendas por mês"
-                                    @onfocus="OnFilterFocus"
-                                    @onblur="OnFilterBlur">
-                                <option value="" class="filter-option-default">Todos os meses</option>
-                                @foreach (var month in availableMonths)
-                                {
-                                    <option value="@month.Value" 
-                                            selected="@(selectedMonth == month.Value)"
-                                            class="filter-option">
-                                        @month.Text
-                                    </option>
-                                }
-                            </select>
-                            <div class="filter-highlight"></div>
-                        </div>
+<div class="orders-dashboard-premium">
+    <div class="container-fluid">
+        <div class="floating-shape shape-1"></div>
+        <div class="floating-shape shape-2"></div>
+        <div class="floating-shape shape-3"></div>
+        <div class="floating-shape shape-4"></div>
+        <!-- Premium Header Section -->
+        <div class="dashboard-header">
+            <div class="header-content">
+                <div class="header-text">
+                    <div class="header-badge">
+                        <span class="badge-icon">📦</span>
+                        <span class="badge-text">Gestão de Encomendas</span>
                     </div>
+                    <h1 class="display-title">Painel de Encomendas</h1>
+                    <p class="subtitle">Monitorize e gira as suas encomendas com total controlo</p>
                 </div>
-                @if (filteredOrders?.Any() == true)
-                {
-                    <div class="orders-count-badge @(filteredOrders.Count > 0 ? "pulse-animation" : "")">
-                        <div class="count-icon-wrapper">
-                            <i class="bi bi-bag-check count-icon"></i>
-                        </div>
-                        <div class="count-text">
-                            <span class="count-number">@filteredOrders.Count</span>
-                            <span class="count-label">@(filteredOrders.Count == 1 ? "encomenda" : "encomendas")</span>
+                
+                <div class="header-controls">
+                    <!-- Ultra Premium Filter -->
+                    <div class="filter-section">
+                        <div class="filter-container glass-morphism">
+                            <div class="filter-icon-section">
+                                <div class="icon-wrapper">
+                                    <i class="bi bi-funnel-fill filter-icon"></i>
+                                </div>
+                            </div>
+                            <div class="filter-content">
+                                <label class="filter-label">Período</label>
+                                <select class="premium-select" @onchange="OnMonthFilterChanged" value="@selectedMonth">
+                                    <option value="" class="select-option">Todos os períodos</option>
+                                    @foreach (var month in availableMonths)
+                                    {
+                                        <option value="@month.Value" class="select-option">@month.Text</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="filter-accent"></div>
                         </div>
                     </div>
-                }
+
+                    <!-- Premium Stats Card -->
+                    @if (filteredOrders?.Any() == true)
+                    {
+                        <div class="stats-card glass-morphism">
+                            <div class="stats-icon-wrapper">
+                                <div class="stats-icon-bg">
+                                    <i class="bi bi-graph-up-arrow stats-icon"></i>
+                                </div>
+                            </div>
+                            <div class="stats-content">
+                                <div class="stats-number">@filteredOrders.Count</div>
+                                <div class="stats-label">@(filteredOrders.Count == 1 ? "Encomenda" : "Encomendas")</div>
+                                <div class="stats-value">@filteredOrders.Sum(o => o.ValorTotal).ToString("C")</div>
+                            </div>
+                            <div class="stats-trend">
+                                <i class="bi bi-arrow-up-right trend-icon"></i>
+                            </div>
+                        </div>
+                    }
+                </div>
             </div>
         </div>
 
-        @if (orders == null)
-        {
-            <div class="d-flex justify-content-center align-items-center py-5">
-                <div class="text-center">
-                    <div class="spinner-border text-primary mb-3" role="status" style="width: 3rem; height: 3rem;">
-                        <span class="visually-hidden">Carregando encomendas...</span>
-                    </div>
-                    <p class="text-muted">Carregando as suas encomendas...</p>
-                </div>
-            </div>
-        }
-        else if (!filteredOrders.Any())
-        {
-            <div class="row justify-content-center">
-                <div class="col-md-6">
-                    <div class="alert alert-light border-0 text-center py-5">
-                        <div class="mb-3">
-                            <i class="bi bi-bag-x fs-1 text-muted"></i>
+        <!-- Content Section -->
+        <div class="dashboard-content">
+            @if (orders == null)
+            {
+                <div class="loading-section">
+                    <div class="loading-container glass-morphism">
+                        <div class="loading-spinner">
+                            <div class="spinner-ring"></div>
+                            <div class="spinner-ring"></div>
+                            <div class="spinner-ring"></div>
                         </div>
-                        <h5 class="mb-2">
+                        <h3 class="loading-title">Carregando Encomendas</h3>
+                        <p class="loading-subtitle">A sincronizar os seus dados...</p>
+                    </div>
+                </div>
+            }
+            else if (!filteredOrders.Any())
+            {
+                <div class="empty-state">
+                    <div class="empty-container glass-morphism">
+                        <div class="empty-icon-wrapper">
+                            <div class="empty-icon-bg">
+                                <i class="bi bi-inbox empty-icon"></i>
+                            </div>
+                        </div>
+                        <h3 class="empty-title">
                             @if (string.IsNullOrEmpty(selectedMonth))
                             {
                                 <text>Nenhuma encomenda encontrada</text>
                             }
                             else
                             {
-                                <text>Nenhuma encomenda encontrada para @GetSelectedMonthText()</text>
+                                <text>Nenhuma encomenda para @GetSelectedMonthText()</text>
                             }
-                        </h5>
-                        <p class="text-muted mb-0">
+                        </h3>
+                        <p class="empty-subtitle">
                             @if (string.IsNullOrEmpty(selectedMonth))
                             {
-                                <text>Ainda não realizou nenhuma encomenda ou não há encomendas associadas ao seu perfil.</text>
+                                <text>As suas próximas encomendas aparecerão aqui</text>
                             }
                             else
                             {
-                                <text>Não há encomendas para o mês selecionado. Tente selecionar outro mês.</text>
+                                <text>Tente selecionar um período diferente</text>
                             }
                         </p>
+                        <button class="btn-premium" @onclick="ClearMonthFilter">
+                            <i class="bi bi-arrow-clockwise me-2"></i>
+                            Ver Todas
+                        </button>
                     </div>
                 </div>
-            </div>
-        }
-        else
-        {
-            <div class="row g-4">
-                @foreach (var order in filteredOrders)
-                {
-                    <div class="col-12 col-lg-6 col-xl-4">
-                        <div class="card order-card h-100 border-0 shadow-sm" @onclick="() => OpenOrderDetails(order)" style="cursor: pointer;">
-                            <div class="card-header bg-white border-bottom-0 py-3">
-                                <div class="d-flex justify-content-between align-items-start">
-                                    <div>
-                                        <div class="text-muted small mb-1">Data da encomenda</div>
-                                        <div class="fw-semibold">@order.DataEncomenda.ToString("dd/MM/yyyy")</div>
-                                    </div>
-                                    <span class="badge @GetStatusBadgeClass(order.EstadoNome)">@order.EstadoNome</span>
-                                </div>
-                            </div>
-                            
-                            <div class="card-body py-3">
-                                <div class="mb-3">
-                                    <h6 class="card-subtitle text-muted mb-2">Itens da encomenda</h6>
-                                    <div class="table-responsive">
-                                        <table class="table table-sm mb-0">
-                                            <thead>
-                                                <tr class="border-bottom">
-                                                    <th class="border-0 fw-medium text-muted small">Produto</th>
-                                                    <th class="border-0 fw-medium text-muted small text-center">Qtd</th>
-                                                    <th class="border-0 fw-medium text-muted small text-end">Preço</th>
-                                                    <th class="border-0 fw-medium text-muted small text-end">Total</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach (var item in order.ItensEncomenda)
-                                                {
-                                                    <tr>
-                                                        <td class="border-0 py-2">
-                                                            <div class="fw-medium">@item.Produto</div>
-                                                        </td>
-                                                        <td class="border-0 py-2 text-center">
-                                                            <span class="badge bg-light text-dark">@item.Quantidade</span>
-                                                        </td>
-                                                        <td class="border-0 py-2 text-end text-muted">@item.PrecoUnitario.ToString("C")</td>
-                                                        <td class="border-0 py-2 text-end fw-medium">@item.Total.ToString("C")</td>
-                                                    </tr>
-                                                }
-                                            </tbody>
-                                        </table>
+            }
+            else
+            {
+                <div class="orders-grid">
+                    @foreach (var order in filteredOrders)
+                    {
+                        <div class="order-card-wrapper" @onclick="() => OpenOrderDetails(order)">
+                            <div class="order-card premium-card">
+                                <!-- Card Header -->
+                                <div class="card-header-premium">
+                                    <div class="order-meta">
+                                        <div class="order-date">
+                                            <i class="bi bi-calendar4-week date-icon"></i>
+                                            <span class="date-text">@order.DataEncomenda.ToString("dd MMM yyyy")</span>
+                                        </div>
+                                        <div class="order-status">
+                                            <span class="status-badge @GetStatusClass(order.EstadoNome)">
+                                                <span class="status-indicator"></span>
+                                                @order.EstadoNome
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            
-                            <div class="card-footer bg-light border-top-0 py-3">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <span class="text-muted">Valor Total</span>
-                                    <span class="h6 mb-0 text-success fw-bold">@order.ValorTotal.ToString("C")</span>
+
+                                <!-- Card Content -->
+                                <div class="card-content-premium">
+                                    <div class="order-summary">
+                                        <div class="summary-item">
+                                            <span class="summary-label">Itens</span>
+                                            <span class="summary-value">@order.ItensEncomenda.Sum(x => x.Quantidade)</span>
+                                        </div>
+                                        <div class="summary-divider"></div>
+                                        <div class="summary-item">
+                                            <span class="summary-label">Valor</span>
+                                            <span class="summary-value primary">@order.ValorTotal.ToString("C")</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Products Preview -->
+                                    <div class="products-preview">
+                                        @foreach (var item in order.ItensEncomenda.Take(3))
+                                        {
+                                            <div class="product-item">
+                                                <div class="product-info">
+                                                    <span class="product-name">@item.Produto</span>
+                                                    <span class="product-quantity">×@item.Quantidade</span>
+                                                </div>
+                                                <span class="product-total">@item.Total.ToString("C")</span>
+                                            </div>
+                                        }
+                                        @if (order.ItensEncomenda.Count > 3)
+                                        {
+                                            <div class="more-products">
+                                                <span class="more-text">+@(order.ItensEncomenda.Count - 3) mais</span>
+                                            </div>
+                                        }
+                                    </div>
                                 </div>
+
+                                <!-- Card Action -->
+                                <div class="card-action">
+                                    <button class="view-details-btn">
+                                        <span class="btn-text">Ver Detalhes</span>
+                                        <i class="bi bi-arrow-right btn-icon"></i>
+                                    </button>
+                                </div>
+
+                                <!-- Card Accent -->
+                                <div class="card-accent"></div>
                             </div>
                         </div>
-                    </div>
-                }
-            </div>
-        }
+                    }
+                </div>
+            }
+        </div>
     </div>
 </div>
 
-<!-- Order Details Modal -->
+<!-- Ultra Premium Modal -->
 @if (selectedOrder != null)
 {
-    <div class="modal fade show order-modal" style="display: block;" tabindex="-1" @onclick="CloseOrderDetails">
-        <div class="modal-dialog modal-lg modal-dialog-centered" @onclick:stopPropagation="true">
-            <div class="modal-content order-modal-content">
-                <div class="modal-header border-0 pb-0">
-                    <div class="w-100">
-                        <div class="d-flex justify-content-between align-items-start mb-3">
-                            <div>
-                                <h4 class="modal-title fw-bold text-dark mb-1">Detalhes da Encomenda</h4>
-                                <p class="text-muted mb-0">Encomenda realizada em @selectedOrder.DataEncomenda.ToString("dd/MM/yyyy 'às' HH:mm")</p>
-                            </div>
-                        </div>
-                        <div class="d-flex align-items-center gap-3">
-                            <span class="badge @GetStatusBadgeClass(selectedOrder.EstadoNome) fs-6">@selectedOrder.EstadoNome</span>
-                            <div class="text-muted small">
-                                <i class="bi bi-calendar3 me-1"></i>
-                                @selectedOrder.DataEncomenda.ToString("dd/MM/yyyy")
-                            </div>
-                        </div>
+    <div class="modal-overlay" @onclick="CloseOrderDetails">
+        <div class="modal-container premium-modal" @onclick:stopPropagation="true">
+            <!-- Modal Header -->
+            <div class="modal-header-premium">
+                <div class="modal-title-section">
+                    <div class="modal-badge">
+                        <i class="bi bi-receipt-cutoff badge-icon"></i>
+                        <span class="badge-text">Detalhes da Encomenda</span>
                     </div>
+                    <h2 class="modal-title">Encomenda #@selectedOrder.DataEncomenda.ToString("yyyyMMdd")</h2>
+                    <p class="modal-subtitle">@selectedOrder.DataEncomenda.ToString("dd 'de' MMMM 'de' yyyy 'às' HH:mm")</p>
                 </div>
-                
-                <div class="modal-body pt-3">
-                    <!-- Order Summary -->
-                    <div class="row mb-4">
-                        <div class="col-md-6">
-                            <div class="info-card">
-                                <h6 class="fw-semibold text-muted mb-2">
-                                    <i class="bi bi-bag me-2"></i>Resumo da Encomenda
-                                </h6>
-                                <div class="d-flex justify-content-between mb-2">
-                                    <span>Total de itens:</span>
-                                    <span class="fw-medium">@selectedOrder.ItensEncomenda.Sum(x => x.Quantidade)</span>
-                                </div>
-                                <div class="d-flex justify-content-between">
-                                    <span>Valor total:</span>
-                                    <span class="fw-bold text-success fs-5">@selectedOrder.ValorTotal.ToString("C")</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="info-card">
-                                <h6 class="fw-semibold text-muted mb-2">
-                                    <i class="bi bi-truck me-2"></i>Estado da Encomenda
-                                </h6>
-                                <div class="d-flex align-items-center">
-                                    <div class="status-indicator @GetStatusIndicatorClass(selectedOrder.EstadoNome)"></div>
-                                    <span class="fw-medium">@selectedOrder.EstadoNome</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <button class="close-btn glass-morphism" @onclick="CloseOrderDetails">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
 
-                    <!-- Order Items -->
-                    <div class="mb-4">
-                        <h6 class="fw-semibold text-muted mb-3">
-                            <i class="bi bi-list-ul me-2"></i>Itens da Encomenda
-                        </h6>
-                        <div class="table-responsive">
-                            <table class="table table-borderless order-items-table">
-                                <thead>
-                                    <tr class="table-light">
-                                        <th class="fw-semibold">Produto</th>
-                                        <th class="fw-semibold text-center">Quantidade</th>
-                                        <th class="fw-semibold text-end">Preço Unitário</th>
-                                        <th class="fw-semibold text-end">Total</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var item in selectedOrder.ItensEncomenda)
-                                    {
-                                        <tr class="order-item-row">
-                                            <td>
-                                                <div class="fw-medium">@item.Produto</div>
-                                            </td>
-                                            <td class="text-center">
-                                                <span class="quantity-badge">@item.Quantidade</span>
-                                            </td>
-                                            <td class="text-end text-muted">@item.PrecoUnitario.ToString("C")</td>
-                                            <td class="text-end fw-medium">@item.Total.ToString("C")</td>
-                                        </tr>
-                                    }
-                                </tbody>
-                                <tfoot>
-                                    <tr class="table-light border-top">
-                                        <td colspan="3" class="fw-semibold text-end">Total Geral:</td>
-                                        <td class="text-end fw-bold text-success fs-5">@selectedOrder.ValorTotal.ToString("C")</td>
-                                    </tr>
-                                </tfoot>
-                            </table>
+            <!-- Modal Content -->
+            <div class="modal-content-premium">
+                <!-- Status Section -->
+                <div class="status-section glass-morphism">
+                    <div class="status-header">
+                        <h3 class="section-title">Estado da Encomenda</h3>
+                        <div class="status-badge-large @GetStatusClass(selectedOrder.EstadoNome)">
+                            <div class="status-indicator-large"></div>
+                            <span class="status-text">@selectedOrder.EstadoNome</span>
                         </div>
                     </div>
                 </div>
-                
-                <div class="modal-footer border-0 pt-0">
-                    <button type="button" class="btn btn-danger" @onclick="CloseOrderDetails">
-                        <i class="bi bi-x-lg me-2"></i>Fechar
-                    </button>
+
+                <!-- Summary Section -->
+                <div class="summary-section glass-morphism">
+                    <h3 class="section-title">Resumo</h3>
+                    <div class="summary-grid">
+                        <div class="summary-card">
+                            <div class="summary-icon">
+                                <i class="bi bi-box-seam"></i>
+                            </div>
+                            <div class="summary-data">
+                                <span class="summary-number">@selectedOrder.ItensEncomenda.Sum(x => x.Quantidade)</span>
+                                <span class="summary-text">Itens</span>
+                            </div>
+                        </div>
+                        <div class="summary-card">
+                            <div class="summary-icon">
+                                <i class="bi bi-currency-euro"></i>
+                            </div>
+                            <div class="summary-data">
+                                <span class="summary-number">@selectedOrder.ValorTotal.ToString("C")</span>
+                                <span class="summary-text">Total</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Products Section -->
+                <div class="products-section glass-morphism">
+                    <h3 class="section-title">Produtos</h3>
+                    <div class="products-table">
+                        <div class="table-header">
+                            <span class="header-cell product-col">Produto</span>
+                            <span class="header-cell qty-col">Qtd</span>
+                            <span class="header-cell price-col">Preço Unit.</span>
+                            <span class="header-cell total-col">Total</span>
+                        </div>
+                        <div class="table-body">
+                            @foreach (var item in selectedOrder.ItensEncomenda)
+                            {
+                                <div class="table-row">
+                                    <span class="table-cell product-col">
+                                        <div class="product-cell">
+                                            <div class="product-icon">
+                                                <i class="bi bi-box"></i>
+                                            </div>
+                                            <span class="product-name-modal">@item.Produto</span>
+                                        </div>
+                                    </span>
+                                    <span class="table-cell qty-col">
+                                        <span class="qty-badge">@item.Quantidade</span>
+                                    </span>
+                                    <span class="table-cell price-col">@item.PrecoUnitario.ToString("C")</span>
+                                    <span class="table-cell total-col">@item.Total.ToString("C")</span>
+                                </div>
+                            }
+                        </div>
+                        <div class="table-footer">
+                            <div class="total-row">
+                                <span class="total-label">Total Geral</span>
+                                <span class="total-amount">@selectedOrder.ValorTotal.ToString("C")</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="modal-backdrop fade show"></div>
 }
 
 @code {
@@ -410,18 +440,7 @@
         StateHasChanged();
     }
 
-    private string GetStatusBadgeClass(string status)
-    {
-        return status?.ToLower() switch
-        {
-            "pendente" or "em processamento" or "aguardando" => "order-status-badge-pending",
-            "concluída" or "concluida" or "finalizada" or "entregue" => "order-status-badge-completed",
-            "cancelada" or "cancelado" => "order-status-badge-cancelled",
-            _ => "order-status-badge-default"
-        };
-    }
-
-    private string GetStatusIndicatorClass(string status)
+    private string GetStatusClass(string status)
     {
         return status?.ToLower() switch
         {
@@ -434,319 +453,1060 @@
 }
 
 <style>
-    .month-filter-container {
+    :root {
+        --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        --success-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        --warning-gradient: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        --danger-gradient: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        --dark-gradient: linear-gradient(135deg, #2c3e50 0%, #3498db 25%, #9b59b6 50%, #e74c3c 75%, #f39c12 100%);
+        --glass-bg: rgba(255, 255, 255, 0.25);
+        --glass-border: rgba(255, 255, 255, 0.18);
+        --backdrop-blur: blur(20px);
+        --shadow-soft: 0 8px 32px rgba(31, 38, 135, 0.37);
+        --shadow-hover: 0 15px 35px rgba(31, 38, 135, 0.4);
+        --transition-smooth: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        --border-radius: 24px;
+        --spacing-xs: 0.5rem;
+        --spacing-sm: 1rem;
+        --spacing-md: 1.5rem;
+        --spacing-lg: 2rem;
+        --spacing-xl: 3rem;
+    }
+
+    .orders-dashboard-premium {
+        min-height: 100vh;
+        background: linear-gradient(135deg, #e3f2fd 0%, #57b3ff 10%);
+        background-size: 400% 400%;
+        
         position: relative;
-        display: flex;
-        flex-direction: column;
-        gap: 0.5rem;
+        overflow-x: hidden;
     }
 
-    .filter-wrapper {
-        display: flex;
-        align-items: center;
-        position: relative;
-    }
-
-    .filter-group {
-        position: relative;
-        overflow: visible;
-        border-radius: 16px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        height: 60px; /* Match orders counter height */
-        border: 2px solid #dee2e6;
-        background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
-    }
-
-    .filter-group:hover {
-        box-shadow: 0 6px 20px rgba(0,0,0,0.12);
-        transform: translateY(-1px);
-        border-color: #b6d7ff;
-    }
-
-    .filter-group:focus-within {
-        box-shadow: 0 8px 25px rgba(13, 110, 253, 0.25);
-        transform: translateY(-2px);
-        border-color: #86b7fe;
-    }
-
-    .filter-icon-wrapper {
-        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-        border: none;
-        border-radius: 16px 0 0 16px;
-        padding: 0 1rem;
-        transition: all 0.3s ease;
-        position: relative;
-        overflow: hidden;
-        height: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 60px; /* Match icon wrapper in orders counter */
-    }
-
-    .filter-icon-wrapper::before {
+    .orders-dashboard-premium::before {
         content: '';
         position: absolute;
         top: 0;
         left: 0;
         right: 0;
         bottom: 0;
-        background: linear-gradient(135deg, rgba(13, 110, 253, 0.1) 0%, rgba(13, 110, 253, 0.05) 100%);
-        opacity: 0;
-        transition: opacity 0.3s ease;
+
+        pointer-events: none;
     }
 
-    .filter-group:focus-within .filter-icon-wrapper::before {
-        opacity: 1;
+    @@keyframes gradientShift {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
     }
 
-    .filter-icon {
-        color: #6c757d;
-        transition: all 0.3s ease;
-        font-size: 1.1rem;
-        z-index: 1;
-        position: relative;
-    }
-
-    .filter-group:focus-within .filter-icon {
-        color: #0d6efd;
-        transform: scale(1.1);
-    }
-
-    .month-filter-select {
-        min-width: 200px;
-        background: transparent;
-        border: none;
-        border-radius: 0 16px 16px 0;
-        padding: 1rem 2rem 1rem 1rem;
-        font-weight: 600;
-        color: #495057;
-        cursor: pointer;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        position: relative;
-        z-index: 2;
-        height: 100%;
-        font-size: 0.95rem;
-        display: flex;
-        align-items: center;
-    }
-
-    .month-filter-select:focus {
-        outline: none;
-        background: transparent;
-        color: #0d6efd;
-        font-weight: 700;
-    }
-
-    .month-filter-select:hover {
-        background: transparent;
-        color: #0d6efd;
-    }
-
-    .filter-option-default {
-        font-weight: 700;
-        color: #6c757d;
-        background: #f8f9fa;
-        padding: 0.75rem 1rem;
-    }
-
-    .filter-option {
-        padding: 0.75rem 1rem;
-        transition: all 0.2s ease;
-        font-weight: 500;
-    }
-
-    .filter-option:hover {
-        background: linear-gradient(135deg, #e3f2fd 0%, #f8f9fa 100%);
-        color: #0d6efd;
-        font-weight: 600;
-    }
-
-    .filter-highlight {
+        .floating-shape {
         position: absolute;
-        bottom: 0;
-        left: 0;
-        height: 4px;
-        width: 0;
-        background: linear-gradient(90deg, #0d6efd, #6610f2);
-        border-radius: 2px;
-        transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        z-index: 3;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(20px);
+        animation: float 6s ease-in-out infinite;
     }
 
-    .filter-group:focus-within .filter-highlight {
-        width: 100%;
+    .shape-1 {
+        width: 200px;
+        height: 200px;
+        top: 10%;
+        left: 10%;
+        animation-delay: 0s;
     }
 
-    .orders-count-badge {
+    .shape-2 {
+        width: 150px;
+        height: 150px;
+        top: 60%;
+        right: 15%;
+        animation-delay: 2s;
+    }
+
+    .shape-3 {
+        width: 100px;
+        height: 100px;
+        bottom: 20%;
+        left: 20%;
+        animation-delay: 4s;
+    }
+
+    .shape-4 {
+        width: 80px;
+        height: 80px;
+        top: 30%;
+        right: 30%;
+        animation-delay: 1s;
+    }
+
+    @@keyframes float {
+        0%, 100% { transform: translateY(0px) rotate(0deg); }
+        33% { transform: translateY(-20px) rotate(120deg); }
+        66% { transform: translateY(10px) rotate(240deg); }
+    }
+
+    .glass-morphism {
+        background: var(--glass-bg);
+        backdrop-filter: var(--backdrop-blur);
+        -webkit-backdrop-filter: var(--backdrop-blur);
+        border: 1px solid var(--glass-border);
+        box-shadow: var(--shadow-soft);
+        border-radius: var(--border-radius);
+    }
+
+    /* Dashboard Header */
+    .dashboard-header {
+        padding: var(--spacing-xl) var(--spacing-lg) var(--spacing-lg);
+        position: relative;
+    }
+
+    .header-content {
+        max-width: 1400px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: var(--spacing-lg);
+    }
+
+    .header-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--spacing-xs);
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(10px);
+        padding: var(--spacing-xs) var(--spacing-sm);
+        border-radius: 50px;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        margin-bottom: var(--spacing-sm);
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: white;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .display-title {
+        font-size: clamp(2.5rem, 5vw, 4rem);
+        font-weight: 800;
         background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
-        border: 2px solid #dee2e6;
-        border-radius: 16px;
-        padding: 0.75rem 1rem;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin: 0 0 var(--spacing-sm);
+        line-height: 1.1;
+        letter-spacing: -0.02em;
+    }
+
+    .subtitle {
+        font-size: 1.25rem;
+        color: rgba(255, 255, 255, 0.8);
+        font-weight: 400;
+        margin: 0;
+        line-height: 1.5;
+    }
+
+    .header-controls {
+        display: flex;
+        align-items: flex-start;
+        gap: var(--spacing-md);
+        flex-shrink: 0;
+    }
+
+    /* Premium Filter */
+    .filter-container {
         display: flex;
         align-items: center;
-        gap: 0.75rem;
-        height: 60px; /* Explicit height for consistency */
-        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        padding: var(--spacing-sm);
+        min-width: 280px;
+        transition: var(--transition-smooth);
         position: relative;
         overflow: hidden;
     }
 
-    .orders-count-badge::before {
+    .filter-container::before {
         content: '';
         position: absolute;
         top: 0;
         left: -100%;
         width: 100%;
         height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-        transition: left 0.5s ease;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        transition: left 0.6s ease;
     }
 
-    .orders-count-badge:hover::before {
+    .filter-container:hover::before {
         left: 100%;
     }
 
-    .orders-count-badge:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 6px 20px rgba(0,0,0,0.12);
-        border-color: #b6d7ff;
+    .filter-container:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-hover);
     }
 
-    .count-icon-wrapper {
-        width: 44px;
-        height: 44px;
-        background: linear-gradient(135deg, #1976d2 0%, #0d47a1 100%);
+    .filter-icon-section {
+        margin-right: var(--spacing-sm);
+    }
+
+    .icon-wrapper {
+        width: 48px;
+        height: 48px;
+        background: var(--primary-gradient);
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
-        box-shadow: 0 2px 8px rgba(25, 135, 84, 0.3);
-        animation: bounce 2s infinite;
-        flex-shrink: 0;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
     }
 
-    .count-icon {
+    .filter-icon {
         color: white;
         font-size: 1.2rem;
-        font-weight: bold;
     }
 
-    .count-text {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        justify-content: center;
+    .filter-content {
+        flex: 1;
     }
 
-    .count-number {
-        font-size: 1.25rem;
-        font-weight: 700;
-        color: #495057;
-        line-height: 1.2;
-    }
-
-    .count-label {
-        font-size: 0.8rem;
-        color: #6c757d;
+    .filter-label {
+        display: block;
+        font-size: 0.75rem;
+        color: rgba(255, 255, 255, 0.8);
         font-weight: 600;
         text-transform: uppercase;
-        letter-spacing: 0.5px;
+        letter-spacing: 1px;
+        margin-bottom: 4px;
+    }
+
+    .premium-select {
+        width: 100%;
+        background: transparent;
+        border: none;
+        color: white;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        outline: none;
+        appearance: none;
+        padding-right: 20px;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='white' viewBox='0 0 16 16'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right center;
+        background-size: 16px;
+    }
+
+    /* Premium Stats Card */
+    .stats-card {
+        display: flex;
+        align-items: center;
+        padding: var(--spacing-sm);
+        min-width: 200px;
+        transition: var(--transition-smooth);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .stats-card:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-hover);
+    }
+
+    .stats-icon-wrapper {
+        margin-right: var(--spacing-sm);
+    }
+
+    .stats-icon-bg {
+        width: 48px;
+        height: 48px;
+        background: var(--success-gradient);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 15px rgba(79, 172, 254, 0.4);
+    }
+
+    .stats-icon {
+        color: white;
+        font-size: 1.2rem;
+    }
+
+    .stats-content {
+        flex: 1;
+    }
+
+    .stats-number {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: white;
         line-height: 1;
     }
 
-    .pulse-animation {
+    .stats-label {
+        font-size: 0.75rem;
+        color: rgba(255, 255, 255, 0.8);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 2px;
+    }
+
+    .stats-value {
+        font-size: 0.875rem;
+        color: rgba(255, 255, 255, 0.9);
+        font-weight: 600;
+    }
+
+    /* Dashboard Content */
+    .dashboard-content {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 var(--spacing-lg) var(--spacing-xl);
+    }
+
+    /* Loading State */
+    .loading-section {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 60vh;
+    }
+
+    .loading-container {
+        text-align: center;
+        padding: var(--spacing-xl);
+        max-width: 400px;
+        width: 100%;
+    }
+
+    .loading-spinner {
+        position: relative;
+        width: 80px;
+        height: 80px;
+        margin: 0 auto var(--spacing-lg);
+    }
+
+    .spinner-ring {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        border: 3px solid transparent;
+        border-top: 3px solid #667eea;
+        border-radius: 50%;
+        animation: spin 2s linear infinite;
+    }
+
+    .spinner-ring:nth-child(2) {
+        animation-delay: -0.4s;
+        border-top-color: #764ba2;
+    }
+
+    .spinner-ring:nth-child(3) {
+        animation-delay: -0.8s;
+        border-top-color: #f093fb;
+    }
+
+    @@keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    .loading-tirgba(0, 0, 0, 0.8)
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: white;
+        margin-bottom: var(--spacing-xs);
+    }
+
+    .loading-subtitle {
+        color: rgba(255, 255, 255, 0.8);
+        margin: 0;
+    }
+
+    /* Empty State */
+    .empty-state {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 60vh;
+    }
+
+    .empty-container {
+        text-align: center;
+        padding: var(--spacing-xl);
+        max-width: 500px;
+        width: 100%;
+    }
+
+    .empty-icon-wrapper {
+        margin-bottom: var(--spacing-lg);
+    }
+
+    .empty-icon-bg {
+        width: 120px;
+        height: 120px;
+        background: var(--warning-gradient);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto;
+        box-shadow: 0 8px 30px rgba(67, 233, 123, 0.4);
+    }
+
+    .empty-icon {
+        font-size: 3rem;
+        color: white;
+    }
+
+    .empty-title {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: white;
+        margin-bottom: var(--spacing-sm);
+    }
+
+    .empty-subtitle {
+        color: rgba(255, 255, 255, 0.8);
+        margin-bottom: var(--spacing-lg);
+        font-size: 1.1rem;
+    }
+
+    .btn-premium {
+        background: var(--primary-gradient);
+        border: none;
+        padding: var(--spacing-sm) var(--spacing-lg);
+        border-radius: 50px;
+        color: white;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        cursor: pointer;
+        transition: var(--transition-smooth);
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-premium:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+    }
+
+    /* Orders Grid */
+    .orders-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+        gap: var(--spacing-lg);
+    }
+
+    .order-card-wrapper {
+        cursor: pointer;
+        transition: var(--transition-smooth);
+    }
+
+    .order-card-wrapper:hover {
+        transform: translateY(-8px);
+    }
+
+    /* Enhanced Card Styling */
+    .premium-card {
+        background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+        backdrop-filter: var(--backdrop-blur);
+        border: 1px solid var(--glass-border);
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow-soft);
+        transition: var(--transition-smooth);
+        overflow: hidden;
+        position: relative;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .premium-card:hover {
+        background: linear-gradient(135deg, #e1f5fe 0%, #b3e5fc 100%);
+        box-shadow: var(--shadow-hover);
+        border-color: rgba(255, 255, 255, 0.3);
+    }
+
+    .card-header-premium {
+        padding: var(--spacing-md);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .order-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .order-date {
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-xs);
+        color: rgba(0, 0, 0, 0.9);
+        font-weight: 600;
+    }
+
+    .date-icon {
+        font-size: 1.1rem;
+        color: #667eea;
+    }
+
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--spacing-xs);
+        padding: 6px 16px;
+        border-radius: 50px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        position: relative;
+    }
+
+    .status-indicator {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
         animation: pulse 2s infinite;
     }
 
-    /* Animations */
-    @@keyframes pulse {
-        0%, 100% {
-            transform: scale(1);
-        }
-        50% {
-            transform: scale(1.02);
-        }
+    .status-pending {
+        background: rgba(255, 193, 7, 0.2);
+        color: #ffc107;
+        border: 1px solid rgba(255, 193, 7, 0.3);
     }
 
-    @@keyframes bounce {
-        0%, 100% {
-            transform: translateY(0);
-        }
-        50% {
-            transform: translateY(-2px);
-        }
+    .status-pending .status-indicator {
+        background: #ffc107;
+    }
+
+    .status-completed {
+        background: rgba(40, 167, 69, 0.2);
+        color: #28a745;
+        border: 1px solid rgba(40, 167, 69, 0.3);
+    }
+
+    .status-completed .status-indicator {
+        background: #28a745;
+    }
+
+    .status-cancelled {
+        background: rgba(220, 53, 69, 0.2);
+        color: #dc3545;
+        border: 1px solid rgba(220, 53, 69, 0.3);
+    }
+
+    .status-cancelled .status-indicator {
+        background: #dc3545;
+    }
+
+    .card-content-premium {
+        padding: var(--spacing-md);
+        flex: 1;
+    }
+
+    .order-summary {
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-md);
+        margin-bottom: var(--spacing-md);
+        padding: var(--spacing-sm);
+        background: rgba(0, 0, 0, 0.1);
+        border-radius: 16px;
+    }
+
+    .summary-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        flex: 1;
+    }
+
+    .summary-label {
+        font-size: 0.75rem;
+        color: rgba(0, 0, 0, 0.7);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 4px;
+    }
+
+    .summary-value {
+        font-size: 1.25rem;
+        font-weight: 800;
+        color: black;
+    }
+
+    .summary-value.primary {
+        color: black;
+    }
+
+    .summary-divider {
+        width: 1px;
+        height: 30px;
+        background: rgba(0, 0, 0, 0.2);
+    }
+
+    .products-preview {
+        space-y: var(--spacing-xs);
+    }
+
+    .product-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: var(--spacing-xs) 0;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    .product-item:last-child {
+        border-bottom: none;
+    }
+
+    .product-info {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+    }
+
+    .product-name {
+        font-weight: 600;
+        color: black;
+        font-size: 0.9rem;
+    }
+
+    .product-quantity {
+        font-size: 0.75rem;
+        color: rgba(0, 0, 0, 0.7);
+        font-weight: 500;
+    }
+
+    .product-total {
+        font-weight: 700;
+        color: #000000;
+    }
+
+    .more-products {
+        padding: var(--spacing-xs) 0;
+        text-align: center;
+    }
+
+    .more-text {
+        font-size: 0.75rem;
+        color: rgba(255, 255, 255, 0.6);
+        font-style: italic;
+    }
+
+    .card-action {
+        padding: var(--spacing-md);
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .view-details-btn {
+        width: 100%;
+        background: var(--primary-gradient);
+        border: none;
+        padding: var(--spacing-sm);
+        border-radius: 16px;
+        color: white;
+        font-weight: 600;
+        cursor: pointer;
+        transition: var(--transition-smooth);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: var(--spacing-xs);
+    }
+
+    .view-details-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.5);
+    }
+
+    .card-accent {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: var(--primary-gradient);
+    }
+
+    /* Premium Modal */
+    .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.8);
+        backdrop-filter: blur(10px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+        padding: var(--spacing-md);
+    }
+
+    .premium-modal {
+        background: var(--glass-bg);
+        backdrop-filter: var(--backdrop-blur);
+        border: 1px solid var(--glass-border);
+        border-radius: var(--border-radius);
+        max-width: 800px;
+        width: 100%;
+        max-height: 90vh;
+        overflow-y: auto;
+        box-shadow: var(--shadow-hover);
+    }
+
+    .modal-header-premium {
+        padding: var(--spacing-lg);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+
+    .modal-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--spacing-xs);
+        background: rgba(255, 255, 255, 0.2);
+        padding: 4px 12px;
+        border-radius: 50px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: white;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: var(--spacing-sm);
+    }
+
+    .modal-title {
+        font-size: 1.75rem;
+        font-weight: 800;
+        color: white;
+        margin: 0 0 var(--spacing-xs);
+    }
+
+    .modal-subtitle {
+        color: rgba(255, 255, 255, 0.8);
+        margin: 0;
+    }
+
+    .close-btn {
+        width: 48px;
+        height: 48px;
+        border: none;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: var(--transition-smooth);
+        color: white;
+        font-size: 1.2rem;
+    }
+
+    .close-btn:hover {
+        transform: scale(1.1);
+        background: rgba(255, 255, 255, 0.2);
+    }
+
+    .modal-content-premium {
+        padding: var(--spacing-lg);
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-lg);
+    }
+
+    .section-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: white;
+        margin-bottom: var(--spacing-md);
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-xs);
+    }
+
+    .section-title::before {
+        content: '';
+        width: 4px;
+        height: 24px;
+        background: var(--primary-gradient);
+        border-radius: 2px;
+    }
+
+    .status-section,
+    .summary-section,
+    .products-section {
+        padding: var(--spacing-lg);
+    }
+
+    .status-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .status-badge-large {
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-sm);
+        padding: var(--spacing-sm) var(--spacing-md);
+        border-radius: 16px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .status-indicator-large {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        animation: pulse 2s infinite;
+    }
+
+    .summary-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: var(--spacing-md);
+    }
+
+    .summary-card {
+        background: rgba(255, 255, 255, 0.1);
+        padding: var(--spacing-md);
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-md);
+        transition: var(--transition-smooth);
+    }
+
+    .summary-card:hover {
+        background: rgba(255, 255, 255, 0.15);
+        transform: translateY(-2px);
+    }
+
+    .summary-icon {
+        width: 48px;
+        height: 48px;
+        background: var(--primary-gradient);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.2rem;
+    }
+
+    .summary-data {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .summary-number {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: white;
+        line-height: 1;
+    }
+
+    .summary-text {
+        font-size: 0.75rem;
+        color: rgba(255, 255, 255, 0.7);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    /* Products Table */
+    .products-table {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 16px;
+        overflow: hidden;
+    }
+
+    .table-header {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1.2fr 1.2fr;
+        gap: var(--spacing-md);
+        padding: var(--spacing-md);
+        background: rgba(255, 255, 255, 0.1);
+        font-weight: 700;
+        color: white;
+        font-size: 0.875rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .table-body {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .table-row {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1.2fr 1.2fr;
+        gap: var(--spacing-md);
+        padding: var(--spacing-md);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        transition: var(--transition-smooth);
+    }
+
+    .table-row:hover {
+        background: rgba(255, 255, 255, 0.05);
+    }
+
+    .table-row:last-child {
+        border-bottom: none;
+    }
+
+    .product-cell {
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-sm);
+    }
+
+    .product-icon {
+        width: 32px;
+        height: 32px;
+        background: var(--secondary-gradient);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 0.875rem;
+    }
+
+    .product-name-modal {
+        font-weight: 600;
+        color: white;
+    }
+
+    .qty-badge {
+        background: var(--primary-gradient);
+        color: white;
+        padding: 4px 12px;
+        border-radius: 50px;
+        font-size: 0.875rem;
+        font-weight: 600;
+    }
+
+    .table-cell {
+        display: flex;
+        align-items: center;
+        color: rgba(255, 255, 255, 0.9);
+        font-weight: 500;
+    }
+
+    .table-footer {
+        padding: var(--spacing-md);
+        background: rgba(255, 255, 255, 0.1);
+        border-top: 2px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .total-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .total-label {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: white;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .total-amount {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: #ffffff;
     }
 
     /* Responsive Design */
-    @@media (max-width: 768px) {
-        .filter-group {
-            height: 50px;
-        }
-
-        .orders-count-badge {
-            height: 50px;
-            padding: 0.5rem 0.75rem;
-            gap: 0.5rem;
-        }
-
-        .filter-icon-wrapper {
-            width: 50px;
-        }
-
-        .month-filter-select {
-            min-width: 160px;
-            font-size: 0.875rem;
-            padding: 0.75rem 1.5rem 0.75rem 0.75rem;
-        }
-
-        .count-icon-wrapper {
-            width: 36px;
-            height: 36px;
-        }
-
-        .count-icon {
-            font-size: 1rem;
-        }
-
-        .count-number {
-            font-size: 1.1rem;
-        }
-
-        .count-label {
-            font-size: 0.75rem;
+    @@media (max-width: 1200px) {
+        .orders-grid {
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
         }
     }
 
-    /* Dark mode support */
-    @@media (prefers-color-scheme: dark) {
-        .filter-group {
-            background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
-            border-color: #4a5568;
-            box-shadow: 0 4px 12px rgba(255,255,255,0.1);
-        }
-        
-        .month-filter-select {
-            color: #e2e8f0;
-        }
-        
-        .filter-icon-wrapper {
-            background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
+    @@media (max-width: 768px) {
+        .dashboard-header {
+            padding: var(--spacing-lg) var(--spacing-sm);
         }
 
-        .orders-count-badge {
-            background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
-            border-color: #4a5568;
+        .header-content {
+            flex-direction: column;
+            gap: var(--spacing-md);
         }
 
-        .count-number {
-            color: #e2e8f0;
+        .header-controls {
+            width: 100%;
+            flex-direction: column;
         }
 
-        .count-label {
-            color: #a0aec0;
+        .filter-container,
+        .stats-card {
+            min-width: auto;
+            width: 100%;
+        }
+
+        .display-title {
+            font-size: 2.5rem;
+        }
+
+        .orders-grid {
+            grid-template-columns: 1fr;
+            gap: var(--spacing-md);
+        }
+
+        .dashboard-content {
+            padding: 0 var(--spacing-sm) var(--spacing-lg);
+        }
+
+        .premium-modal {
+            margin: var(--spacing-sm);
+            max-height: calc(100vh - 2rem);
+        }
+
+        .table-header,
+        .table-row {
+            grid-template-columns: 1.5fr 0.8fr 1fr 1fr;
+            gap: var(--spacing-xs);
+        }
+
+        .modal-header-premium {
+            flex-direction: column;
+            gap: var(--spacing-md);
+        }
+
+        .close-btn {
+            align-self: flex-end;
+        }
+    }
+
+    @@media (max-width: 480px) {
+        .orders-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .table-header,
+        .table-row {
+            grid-template-columns: 1fr;
+            gap: var(--spacing-xs);
+        }
+
+        .summary-grid {
+            grid-template-columns: 1fr;
         }
     }
 </style>
