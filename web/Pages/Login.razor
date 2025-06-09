@@ -8,22 +8,31 @@
 @inject NavigationManager Navigation
 
 <div class="login-root">
+  <div class="image-pane">
+    <div class="overlay-text">
+      <div class="brand-logo">PT</div>
+      <div class="welcome-text">Bem-vindo de volta</div>
+      <div class="subtitle-text">Acede à tua conta e continua a construir o futuro do teu negócio</div>
+    </div>
+  </div>
 
   <EditForm Model="@loginModel" OnValidSubmit="HandleLogin" class="login-form">
     <DataAnnotationsValidator />
 
-    <h2 class="form-title">Iniciar Sessão</h2>
-    <p class="form-subtitle">Bem-vindo de volta! Insere os teus dados para continuares.</p>
+    <h1 class="form-title">Iniciar Sessão</h1>
+    <p class="form-subtitle">Acede à tua conta profissional para continuares</p>
 
     <div class="form-group">
-      <label>Email:</label>
-      <InputText @bind-Value="loginModel.Email" class="login-field" placeholder="exemplo@email.com" disabled="@isLoading" />
+      <label>Email</label>
+      <InputText @bind-Value="loginModel.Email" class="login-field" placeholder="exemplo@empresa.com" disabled="@isLoading" />
+      <div class="field-line"></div>
       <ValidationMessage For="@(() => loginModel.Email)" class="error-label" />
     </div>
 
     <div class="form-group">
-      <label>Password:</label>
-      <InputText @bind-Value="loginModel.Password" type="password" class="login-field" placeholder="••••••••" disabled="@isLoading" />
+      <label>Password</label>
+      <InputText @bind-Value="loginModel.Password" type="password" class="login-field" placeholder="A tua password" disabled="@isLoading" />
+      <div class="field-line"></div>
       <ValidationMessage For="@(() => loginModel.Password)" class="error-label" />
     </div>
 
@@ -32,23 +41,18 @@
       {
         <span class="loading-spinner"></span>
       }
-      @(isLoading ? "A entrar..." : "Entrar")
+      <span>@(isLoading ? "A entrar..." : "Entrar")</span>
     </button>
     
     @if (!string.IsNullOrEmpty(errorMessage))
     {
-      <div class="error-label">@errorMessage</div>
+      <div class="error-label" style="margin-top: 20px; text-align: center;">@errorMessage</div>
     }
 
-    <a href="/" class="forgot-link">Não tens conta? Registar aqui</a>
-  </EditForm>
-
-  <div class="image-pane">
-    <div class="overlay-text">
-      <div class="welcome-text">Bem-vindo de volta!</div>
-      <div class="subtitle-text">Faz login para acederes à tua conta</div>
+    <div style="text-align: center; margin-top: 32px;">
+      <a href="/" class="forgot-link">Não tens conta? Criar conta</a>
     </div>
-  </div>
+  </EditForm>
 </div>
 
 @code {

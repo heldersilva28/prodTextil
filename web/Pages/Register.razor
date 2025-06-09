@@ -8,53 +8,138 @@
 @inject NavigationManager Navigation
 
 <div class="login-root">
+  <div class="image-pane">
+    <div class="overlay-text">
+      <div class="brand-logo">PT</div>
+      <div class="welcome-text">Junta-te à excelência</div>
+      <div class="subtitle-text">
+        Cria a tua conta profissional e acede a soluções premium para o teu negócio
+      </div>
+    </div>
+  </div>
 
   <EditForm Model="@registerModel" OnValidSubmit="HandleRegister" class="login-form">
     <DataAnnotationsValidator />
 
-    <h2 class="form-title">Criar Conta</h2>
-    <p class="form-subtitle">Preenche os teus dados para criares uma nova conta.</p>
+    <h1 class="form-title">Criar Conta</h1>
+    <p class="form-subtitle">
+      Preenche os dados para acederes às nossas soluções B2B premium
+    </p>
 
-    <div class="form-group">
-      <label>Nome Completo:</label>
-      <InputText @bind-Value="registerModel.FullName" class="login-field" placeholder="O teu nome completo" disabled="@isLoading" />
-      <ValidationMessage For="@(() => registerModel.FullName)" class="error-label" />
+    <div class="form-group-row">
+      <div class="form-group">
+        <label>Nome Completo</label>
+        <InputText
+          @bind-Value="registerModel.FullName"
+          class="login-field"
+          placeholder="Nome profissional"
+          disabled="@isLoading" />
+        <div class="field-line"></div>
+        <ValidationMessage
+          For="@(() => registerModel.FullName)"
+          class="error-label" />
+      </div>
+
+      <div class="form-group">
+        <label>Email Corporativo</label>
+        <InputText
+          @bind-Value="registerModel.Email"
+          class="login-field"
+          placeholder="exemplo@empresa.com"
+          disabled="@isLoading" />
+        <div class="field-line"></div>
+        <ValidationMessage
+          For="@(() => registerModel.Email)"
+          class="error-label" />
+      </div>
+    </div>
+
+    <div class="form-group-row">
+      <div class="form-group">
+        <label>Password</label>
+        <!-- ◀ Mantemos <input> puro para @bind:event + @oninput -->
+        <input
+          type="password"
+          class="login-field"
+          placeholder="Password segura"
+          disabled="@isLoading"
+          @bind="registerModel.Password"
+          @oninput="AtualizarForcaSenha" />
+        <div class="field-line"></div>
+
+        <!-- Barra de força da password -->
+        <div class="strength-bar-container">
+          <div
+            class="strength-bar @CssForcaSenha"
+            style="width:@(PasswordScore * 20)%;">
+          </div>
+        </div>
+
+        <ValidationMessage
+          For="@(() => registerModel.Password)"
+          class="error-label" />
+      </div>
+
+      <div class="form-group">
+        <label>Confirmar Password</label>
+        <InputText
+          @bind-Value="registerModel.ConfirmPassword"
+          type="password"
+          class="login-field"
+          placeholder="Repetir password"
+          disabled="@isLoading" />
+        <div class="field-line"></div>
+        <ValidationMessage
+          For="@(() => registerModel.ConfirmPassword)"
+          class="error-label" />
+      </div>
+    </div>
+
+    <div class="premium-divider"></div>
+
+    <div class="form-group-row">
+      <div class="form-group">
+        <label>Telefone</label>
+        <InputText
+          @bind-Value="registerModel.Telefone"
+          class="login-field"
+          placeholder="912 345 678"
+          disabled="@isLoading"
+          oninput="this.value = this.value.Replace(&quot;[^0-9]&quot;, &quot;&quot;);"
+          maxlength="9" />
+        <div class="field-line"></div>
+        <ValidationMessage
+          For="@(() => registerModel.Telefone)"
+          class="error-label" />
+      </div>
+
+      <div class="form-group">
+        <label>Código Postal</label>
+        <InputText
+          @bind-Value="registerModel.CodigoPostal"
+          class="login-field"
+          placeholder="1000001"
+          disabled="@isLoading"
+          oninput="this.value = this.value.Replace(&quot;[^0-9]&quot;, &quot;&quot;);"
+          maxlength="7" />
+        <div class="field-line"></div>
+        <ValidationMessage
+          For="@(() => registerModel.CodigoPostal)"
+          class="error-label" />
+      </div>
     </div>
 
     <div class="form-group">
-      <label>Email:</label>
-      <InputText @bind-Value="registerModel.Email" class="login-field" placeholder="exemplo@email.com" disabled="@isLoading" />
-      <ValidationMessage For="@(() => registerModel.Email)" class="error-label" />
-    </div>
-
-    <div class="form-group">
-      <label>Password:</label>
-      <InputText @bind-Value="registerModel.Password" type="password" class="login-field" placeholder="••••••••" disabled="@isLoading" />
-      <ValidationMessage For="@(() => registerModel.Password)" class="error-label" />
-    </div>
-
-    <div class="form-group">
-      <label>Confirmar Password:</label>
-      <InputText @bind-Value="registerModel.ConfirmPassword" type="password" class="login-field" placeholder="••••••••" disabled="@isLoading" />
-      <ValidationMessage For="@(() => registerModel.ConfirmPassword)" class="error-label" />
-    </div>
-
-    <div class="form-group">
-      <label>Telefone:</label>
-      <InputNumber @bind-Value="registerModel.Telefone" class="login-field" placeholder="912345678" disabled="@isLoading" />
-      <ValidationMessage For="@(() => registerModel.Telefone)" class="error-label" />
-    </div>
-
-    <div class="form-group">
-      <label>Morada:</label>
-      <InputText @bind-Value="registerModel.Morada" class="login-field" placeholder="A tua morada completa" disabled="@isLoading" />
-      <ValidationMessage For="@(() => registerModel.Morada)" class="error-label" />
-    </div>
-
-    <div class="form-group">
-      <label>Código Postal:</label>
-      <InputText @bind-Value="registerModel.CodigoPostal" class="login-field" placeholder="1000001" disabled="@isLoading" />
-      <ValidationMessage For="@(() => registerModel.CodigoPostal)" class="error-label" />
+      <label>Morada Completa</label>
+      <InputText
+        @bind-Value="registerModel.Morada"
+        class="login-field"
+        placeholder="Morada empresarial ou residencial"
+        disabled="@isLoading" />
+      <div class="field-line"></div>
+      <ValidationMessage
+        For="@(() => registerModel.Morada)"
+        class="error-label" />
     </div>
 
     <button type="submit" class="login-button" disabled="@isLoading">
@@ -62,29 +147,32 @@
       {
         <span class="loading-spinner"></span>
       }
-      @(isLoading ? "A registar..." : "Criar Conta")
+      <span>@(isLoading ? "A criar conta..." : "Criar Conta Premium")</span>
     </button>
 
     @if (!string.IsNullOrEmpty(errorMessage))
     {
-      <div class="error-label">@errorMessage</div>
+      <div
+        class="error-label"
+        style="margin-top: 16px; text-align: center;">
+        @errorMessage
+      </div>
     }
 
-    <a href="/login" class="forgot-link">Já tens conta? Fazer login aqui</a>
-  </EditForm>
-
-  <div class="image-pane">
-    <div class="overlay-text">
-      <div class="welcome-text">Junta-te a nós!</div>
-      <div class="subtitle-text">Cria a tua conta e começa a tua jornada</div>
+    <div style="text-align: center; margin-top: 20px;">
+      <a href="/login" class="forgot-link">Já tens conta? Iniciar sessão</a>
     </div>
-  </div>
+  </EditForm>
 </div>
 
 @code {
   private RegisterModel registerModel = new RegisterModel();
   private string errorMessage;
   private bool isLoading = false;
+
+  // ↓ Propriedades para a barra de força
+  private int PasswordScore = 0;
+  private string CssForcaSenha = string.Empty;
 
   private async Task HandleRegister()
   {
@@ -93,7 +181,6 @@
 
     try
     {
-      // 1) Verifica se o código postal existe
       bool cpExiste = await AuthService.GetCodigoPostalAsync(registerModel.CodigoPostal);
       if (!cpExiste)
       {
@@ -101,7 +188,6 @@
         return;
       }
 
-      // 2) Regista primeiro o utilizador
       var dto = new RegisterRequest
       {
         Nome             = registerModel.FullName,
@@ -116,32 +202,64 @@
         return;
       }
 
-      // 3) Só depois de teres o utilizador criado, regista o cliente
       var dtoCliente = new ClientRequest
       {
-        Nome         = registerModel.FullName,
-        Email        = registerModel.Email,
-        Telefone     = registerModel.Telefone,
-        Morada       = registerModel.Morada,
-        codpostalId  = registerModel.CodigoPostal
+        Nome        = registerModel.FullName,
+        Email       = registerModel.Email,
+        Telefone    = int.Parse(registerModel.Telefone),
+        Morada      = registerModel.Morada,
+        codpostalId = registerModel.CodigoPostal
       };
       var responseCliente = await AuthService.RegisterClientAsync(dtoCliente);
       if (!responseCliente.Success)
       {
-        Console.WriteLine($"Message: {responseCliente.Message}");
-        Console.WriteLine($"Success: {responseCliente.Success}");
         errorMessage = responseCliente.Message;
-        Console.WriteLine($"Erro ao registar cliente: {errorMessage}");
         return;
       }
 
-      // 4) Se tudo correr bem, redireciona
       Navigation.NavigateTo("/login");
     }
     finally
     {
       isLoading = false;
     }
+  }
+
+  // Chamado a cada tecla para recalcular a força
+  private void AtualizarForcaSenha(ChangeEventArgs e)
+  {
+    var senha = e?.Value as string ?? string.Empty;
+    var score = CalcularPontuacaoSenha(senha);
+
+    PasswordScore = score; // de 0 a 5
+
+    if (string.IsNullOrEmpty(senha))
+    {
+      CssForcaSenha = "";
+    }
+    else if (score < 3)
+    {
+      CssForcaSenha = "text-danger";
+    }
+    else if (score < 5)
+    {
+      CssForcaSenha = "text-warning";
+    }
+    else
+    {
+      CssForcaSenha = "text-success";
+    }
+  }
+
+  private int CalcularPontuacaoSenha(string senha)
+  {
+    int pontuacao = 0;
+    if (senha.Length >= 8)                pontuacao++;
+    if (senha.Any(char.IsLower) && senha.Any(char.IsUpper)) pontuacao++;
+    if (senha.Any(char.IsDigit))          pontuacao++;
+    if (senha.Any(ch => !char.IsLetterOrDigit(ch)))        pontuacao++;
+    if (senha.Length >= 12)               pontuacao++;
+    return pontuacao; // valor entre 0 e 5
   }
 
   public class RegisterModel
@@ -159,13 +277,14 @@
     public string ConfirmPassword { get; set; }
 
     [Required(ErrorMessage = "O telefone é obrigatório")]
-    [RegularExpression("^[0-9]+$", ErrorMessage = "O telefone deve conter apenas números")]
     [Range(100000000, 999999999, ErrorMessage = "O telefone deve ter exatamente 9 dígitos")]
-    public int Telefone { get; set; }
+    public string Telefone { get; set; }
 
     [Required(ErrorMessage = "A morada é obrigatória")]
     public string Morada { get; set; }
 
+    [RegularExpression("^[0-9]+$", ErrorMessage = "O Código Postal deve conter apenas números")]
+    [Range(1000000, 9999999, ErrorMessage = "O Código Postal deve ter exatamente 7 dígitos")]
     [Required(ErrorMessage = "O código postal é obrigatório")]
     public string CodigoPostal { get; set; }
   }
