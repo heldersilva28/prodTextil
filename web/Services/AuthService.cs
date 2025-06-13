@@ -40,6 +40,16 @@ public class AuthService
         return await resp.Content.ReadFromJsonAsync<AuthResponse>();
     }
 
+    public async Task<int> GetClientIdByEmailAsync(string email)
+    {
+        var response = await _http.GetAsync($"clientes/clientes/id?email={Uri.EscapeDataString(email)}");
+        if (response.IsSuccessStatusCode)
+        {
+            return await response.Content.ReadFromJsonAsync<int>();
+        }
+        return 0; // or throw exception based on your error handling strategy
+    }
+
     public async Task<bool> ExistemUtilizadoresAsync()
     {
         return await _http.GetFromJsonAsync<bool>("auth/existem-utilizadores");

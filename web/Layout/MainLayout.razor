@@ -1,5 +1,6 @@
 @inherits LayoutComponentBase
 @inject NavigationManager Navigation
+@inject IJSRuntime JSRuntime
 
 <div class="page">
     <div class="sidebar">
@@ -42,6 +43,15 @@
                 </li>
             </ul>
         </nav>
+
+        <div class="sidebar-footer">
+            <button class="logout-btn" @onclick="Logout">
+                <svg viewBox="0 0 24 24" fill="currentColor" class="logout-icon">
+                    <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.59L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/>
+                </svg>
+                <span class="logout-text">Sair</span>
+            </button>
+        </div>
     </div>
 
     <div class="main-content">
@@ -51,10 +61,101 @@
     </div>
 </div>
 
+<style>
+    .sidebar {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+    }
+
+    .sidebar-nav {
+        flex: 1;
+    }
+
+    .sidebar-footer {
+        padding: 1rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        margin-top: auto;
+    }
+
+    .logout-btn {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.875rem 1rem;
+        background: transparent;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 12px;
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 0.875rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+
+    .logout-btn:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: #ff6b6b;
+        border-color: rgba(255, 107, 107, 0.3);
+        transform: translateX(5px);
+    }
+
+    .logout-icon {
+        width: 18px;
+        height: 18px;
+        transition: transform 0.3s ease;
+    }
+
+    .logout-btn:hover .logout-icon {
+        transform: translateX(2px);
+    }
+
+    .logout-text {
+        font-weight: 600;
+    }
+
+    /* Responsive adjustments */
+    @@media (max-width: 768px) {
+        .sidebar-footer {
+            padding: 0.75rem;
+        }
+        
+        .logout-btn {
+            padding: 0.75rem;
+            font-size: 0.8rem;
+        }
+        
+        .logout-icon {
+            width: 16px;
+            height: 16px;
+        }
+    }
+</style>
+
 @code {
     private string GetActiveClass(string path)
     {
         var currentPath = new Uri(Navigation.Uri).AbsolutePath;
         return currentPath.StartsWith(path, StringComparison.OrdinalIgnoreCase) ? "active" : "";
+    }
+
+    private async Task Logout()
+    {
+        try
+        {
+            // Clear the clientId from localStorage
+            await JSRuntime.InvokeVoidAsync("localStorage.removeItem", "clientId");
+            
+            // Redirect to login page
+            Navigation.NavigateTo("/", forceLoad: true);
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Erro ao fazer logout: {ex}");
+            // Force redirect even if localStorage clear fails
+            Navigation.NavigateTo("/", forceLoad: true);
+        }
     }
 }

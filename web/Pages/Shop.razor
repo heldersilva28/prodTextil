@@ -42,7 +42,7 @@
         <!-- Premium Toolbar -->
         <div class="shop-toolbar">
             <div class="results-info">
-                <i class="bi bi-grid-3x3-gap me-2"></i>
+                @* <i class="bi bi-grid-3x3-gap me-2"></i> *@
                 <strong>@FilteredProducts.Count()</strong> produtos encontrados
                 @if (!string.IsNullOrWhiteSpace(Search))
                 {
@@ -80,7 +80,23 @@
                             </div>
                             <div class="detail-item">
                                 <span class="detail-label">Preço Unitário s/IVA</span>
-                                <span class="detail-value price-value">€@product.Price.ToString("F2")</span>
+                                <div class="price-container">
+                                    @{
+                                        var currentQuantity = Quantities[product.Id];
+                                        var discountedPrice = CalculateDiscountedPrice(product.Price, currentQuantity);
+                                        var hasDiscount = discountedPrice < product.Price;
+                                    }
+                                    @if (hasDiscount)
+                                    {
+                                        <span class="detail-value price-original">€@product.Price.ToString("F2")</span>
+                                        <span class="detail-value price-discounted">€@discountedPrice.ToString("F2")</span>
+                                        @* <span class="discount-badge">-€@((product.Price - discountedPrice).ToString("F2"))</span> *@
+                                    }
+                                    else
+                                    {
+                                        <span class="detail-value price-value">€@product.Price.ToString("F2")</span>
+                                    }
+                                </div>
                             </div>
                             <div class="detail-item">
                                 <span class="detail-label">Disponibilidade</span>
@@ -177,10 +193,23 @@
                                     <i class="bi bi-box me-1"></i>
                                     Quantidade: @item.Quantity un.
                                 </div>
+                                
                             </div>
                             <div class="item-price">
-                                <div class="item-unit-price">€@item.Product.Price.ToString("F2") /un.</div>
-                                <div class="item-total-price">€@((item.Product.Price * item.Quantity).ToString("F2"))</div>
+                                @{
+                                    var itemDiscountedPrice = CalculateDiscountedPrice(item.Product.Price, item.Quantity);
+                                    var itemHasDiscount = itemDiscountedPrice < item.Product.Price;
+                                }
+                                @if (itemHasDiscount)
+                                {
+                                    <div class="item-unit-price original">€@item.Product.Price.ToString("F2") /un.</div>
+                                    <div class="item-unit-price discounted">€@itemDiscountedPrice.ToString("F2") /un.</div>
+                                }
+                                else
+                                {
+                                    <div class="item-unit-price">€@item.Product.Price.ToString("F2") /un.</div>
+                                }
+                                <div class="item-total-price">€@((itemDiscountedPrice * item.Quantity).ToString("F2"))</div>
                             </div>
                             <button class="remove-item" @onclick="() => RemoveFromCart(item.Product)">
                                 <i class="bi bi-trash3"></i>
@@ -235,12 +264,12 @@
 
     private List<Product> Products { get; } = new()
     {
-        new Product(1, "TS-1001", "T-Shirt Básica", "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=400", 65, 4.20m, 50),
-        new Product(2, "HD-2001", "Hoodie Corporate", "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=400", 80, 12.80m, 25),
-        new Product(3, "PK-3001", "Polo Empresarial", "https://images.unsplash.com/photo-1586790170083-2f9ceadc732d?q=80&w=400", 55, 6.75m, 100),
-        new Product(4, "SW-4001", "Sweatshirt Professional", "https://images.unsplash.com/photo-1434389677669-e08b4cac3105?q=80&w=400", 70, 15.50m, 30),
-        new Product(5, "JK-5001", "Jacket Corporate", "https://images.unsplash.com/photo-1551698618-1dfe5d97d256?q=80&w=400", 90, 25.90m, 20),
-        new Product(6, "TS-1002", "T-Shirt Tech Performance", "https://images.unsplash.com/photo-1503341455253-b2e723bb3dbb?q=80&w=400", 85, 8.45m, 75)
+        new Product(1, "TS-1001", "T-Shirt Básica", "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=400", 65, 4.20m, 500),
+        new Product(2, "HD-2001", "Hoodie Corporate", "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=400", 80, 12.80m, 250),
+        new Product(3, "PK-3001", "Polo Empresarial", "https://images.unsplash.com/photo-1586790170083-2f9ceadc732d?q=80&w=400", 55, 6.75m, 400),
+        new Product(4, "SW-4001", "Sweatshirt Professional", "https://images.unsplash.com/photo-1434389677669-e08b4cac3105?q=80&w=400", 70, 15.50m, 300),
+        new Product(5, "JK-5001", "Jacket Corporate", "https://images.unsplash.com/photo-1551698618-1dfe5d97d256?q=80&w=400", 90, 25.90m, 200),
+        new Product(6, "TS-1002", "T-Shirt Tech Performance", "https://images.unsplash.com/photo-1503341455253-b2e723bb3dbb?q=80&w=400", 85, 8.45m, 450)
     };
 
     // -------------------------------------------------- ESTADO
@@ -263,7 +292,7 @@
         : Products.Where(p => p.Name.Contains(Search, StringComparison.OrdinalIgnoreCase) ||
                                p.Sku.Contains(Search, StringComparison.OrdinalIgnoreCase));
 
-    private decimal CartSubtotal => CartItems.Sum(ci => ci.Product.Price * ci.Quantity);
+    private decimal CartSubtotal => CartItems.Sum(ci => CalculateDiscountedPrice(ci.Product.Price, ci.Quantity) * ci.Quantity);
     private decimal CartTax => CartSubtotal * 0.23m;
     private decimal CartTotal => CartSubtotal + CartTax;
 
@@ -281,16 +310,16 @@
         };
     }
 
-    private void IncrementQuantity(Product product)
+    public void IncrementQuantity(Product product)
     {
         if (Quantities.ContainsKey(product.Id))
-            Quantities[product.Id] += product.MinOrderQuantity;
+            Quantities[product.Id] += 50;
     }
 
-    private void DecrementQuantity(Product product)
+    public void DecrementQuantity(Product product)
     {
         if (Quantities.ContainsKey(product.Id) && Quantities[product.Id] > product.MinOrderQuantity)
-            Quantities[product.Id] = Math.Max(product.MinOrderQuantity, Quantities[product.Id] - product.MinOrderQuantity);
+            Quantities[product.Id] = Math.Max(product.MinOrderQuantity, Quantities[product.Id] - 50);
     }
 
     private void ValidateQuantity(Product product)
@@ -410,5 +439,32 @@
         await ToggleCart(); // Usar o método async para fechar com animação
         
         // Aqui poderia mostrar uma mensagem de sucesso ou redirecionar
+    }
+
+    private decimal CalculateDiscountedPrice(decimal originalPrice, int quantity)
+    {
+        // Volume discount tiers with maximum 2€ discount
+        decimal discountPercentage = quantity switch
+        {
+            >= 1499 => 0.20m,  // 20% discount (max 2€)
+            >= 999 => 0.15m,  // 15% discount
+            >= 749 => 0.12m,  // 12% discount
+            >= 599 => 0.10m,  // 10% discount
+            >= 499 => 0.08m,  // 8% discount
+            >= 399 => 0.06m,   // 6% discount
+            >= 349 => 0.04m,    // 2% discount
+            >= 299 => 0.02m,   // 2% discount
+            _ => 0m           // No discount
+        };
+
+        var discount = originalPrice * discountPercentage;
+        
+        // Cap the discount at 2€
+        discount = Math.Min(discount, 2.00m);
+        
+        var discountedPrice = originalPrice - discount;
+        
+        // Ensure price doesn't go below a reasonable minimum
+        return Math.Max(discountedPrice, originalPrice * 0.5m);
     }
 }

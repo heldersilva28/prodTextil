@@ -112,4 +112,7 @@ public class ClienteService {
         return dto;
     }
 
+    public int getIdClienteByEmail(String email) {
+        return clienteRepo.findIdByEmail(email);
+    }
 }

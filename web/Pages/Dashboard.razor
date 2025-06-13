@@ -3,6 +3,7 @@
 @using web.Models
 @using System.Text.Json
 @inject HttpClient Http
+@inject IJSRuntime JSRuntime
 
 <PageTitle>Dashboard</PageTitle>
 
@@ -243,11 +244,11 @@
         --success-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
         --warning-gradient: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
         --danger-gradient: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
-        --glass-bg: rgba(255, 255, 255, 0.25);
-        --glass-border: rgba(255, 255, 255, 0.18);
+        --glass-bg: rgba(255, 255, 255, 0.95);
+        --glass-border: rgba(255, 255, 255, 0.5);
         --backdrop-blur: blur(20px);
-        --shadow-soft: 0 8px 32px rgba(31, 38, 135, 0.37);
-        --shadow-hover: 0 15px 35px rgba(31, 38, 135, 0.4);
+        --shadow-soft: 0 8px 32px rgba(0, 0, 0, 0.1);
+        --shadow-hover: 0 15px 35px rgba(0, 0, 0, 0.15);
         --transition-smooth: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
         --border-radius: 24px;
         --spacing-xs: 0.5rem;
@@ -329,11 +330,11 @@
     }
 
     .glass-morphism {
-        background: var(--glass-bg);
+        background: rgba(255, 255, 255, 0.95);
         backdrop-filter: var(--backdrop-blur);
         -webkit-backdrop-filter: var(--backdrop-blur);
-        border: 1px solid var(--glass-border);
-        box-shadow: var(--shadow-soft);
+        border: 1px solid rgba(255, 255, 255, 0.5);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
         border-radius: var(--border-radius);
     }
 
@@ -350,10 +351,10 @@
         margin-bottom: var(--spacing-xl);
         position: relative;
         padding: var(--spacing-lg);
-        background: rgba(255, 255, 255, 0.15);
+        background: rgba(255, 255, 255, 0.85);
         backdrop-filter: blur(20px);
         border-radius: var(--border-radius);
-        border: 1px solid rgba(255, 255, 255, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.8);
         overflow: hidden;
     }
 
@@ -366,7 +367,7 @@
         display: inline-flex;
         align-items: center;
         gap: var(--spacing-xs);
-        background: rgba(255, 255, 255, 0.25);
+        background: rgb(46 59 80);
         backdrop-filter: blur(10px);
         padding: 8px 16px;
         border-radius: 20px;
@@ -382,7 +383,7 @@
     .dashboard-title {
         font-size: clamp(2.5rem, 5vw, 3.5rem);
         font-weight: 900;
-        background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+        background: rgb(46 59 80);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
@@ -393,7 +394,7 @@
 
     .dashboard-subtitle {
         font-size: 1.25rem;
-        color: rgba(255, 255, 255, 0.9);
+        color: rgb(46 59 80);
         font-weight: 500;
         margin: 0;
         line-height: 1.5;
@@ -405,7 +406,7 @@
         left: 0;
         right: 0;
         height: 4px;
-        background: var(--primary-gradient);
+        background: rgb(46 59 80);
     }
 
     /* Premium Loading State */
@@ -413,6 +414,8 @@
         padding: var(--spacing-xl);
         margin: var(--spacing-lg) 0;
         text-align: center;
+        background: rgba(255, 255, 255, 0.95);
+        color: #333;
     }
 
     .loading-animation {
@@ -473,20 +476,20 @@
     .loading-title {
         font-size: 1.75rem;
         font-weight: 700;
-        color: white;
+        color: #333;
         margin: 0 0 var(--spacing-xs);
     }
 
     .loading-subtitle {
         font-size: 1.125rem;
-        color: rgba(255, 255, 255, 0.8);
+        color: rgba(0, 0, 0, 0.6);
         margin: 0 0 var(--spacing-md);
     }
 
     .loading-progress {
         width: 100%;
         height: 4px;
-        background: rgba(255, 255, 255, 0.2);
+        background: rgba(0, 0, 0, 0.1);
         border-radius: 2px;
         overflow: hidden;
     }
@@ -509,6 +512,8 @@
         padding: var(--spacing-xl);
         margin: var(--spacing-lg) 0;
         text-align: center;
+        background: rgba(255, 255, 255, 0.95);
+        color: #333;
     }
 
     .error-animation {
@@ -542,13 +547,13 @@
     .error-title {
         font-size: 1.75rem;
         font-weight: 700;
-        color: white;
+        color: #333;
         margin: 0 0 var(--spacing-xs);
     }
 
     .error-message {
         font-size: 1.125rem;
-        color: rgba(255, 255, 255, 0.8);
+        color: rgba(0, 0, 0, 0.6);
         margin: 0 0 var(--spacing-lg);
     }
 
@@ -598,12 +603,12 @@
         font-weight: 800;
         color: white;
         margin: 0 0 var(--spacing-xs);
-        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        text-shadow: none;
     }
 
     .section-subtitle {
         font-size: 1.125rem;
-        color: rgba(255, 255, 255, 0.8);
+        color: white;
         margin: 0;
     }
 
@@ -614,9 +619,9 @@
     }
 
     .premium-card {
-        background: rgba(255, 255, 255, 0.25);
+        background: rgba(255, 255, 255, 0.85);
         backdrop-filter: blur(20px);
-        border: 1px solid rgba(255, 255, 255, 0.18);
+        border: 1px solid rgba(255, 255, 255, 0.8);
         border-radius: var(--border-radius);
         padding: var(--spacing-lg);
         position: relative;
@@ -624,6 +629,7 @@
         transition: var(--transition-smooth);
         animation: slideInUp 0.6s ease-out;
         animation-fill-mode: backwards;
+        @* box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1); *@
     }
 
     .premium-card:nth-child(1) { animation-delay: 0.1s; }
@@ -643,8 +649,8 @@
 
     .premium-card:hover {
         transform: translateY(-8px);
-        box-shadow: var(--shadow-hover);
-        background: rgba(255, 255, 255, 0.35);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        background: rgba(255, 255, 255, 1);
     }
 
     .card-background {
@@ -670,7 +676,7 @@
     }
 
     .premium-card:hover .card-background {
-        opacity: 0.1;
+        opacity: 0.05;
     }
 
     .stat-header {
@@ -726,10 +732,10 @@
         justify-content: center;
         width: 40px;
         height: 40px;
-        background: rgba(255, 255, 255, 0.2);
+        background: rgba(0, 0, 0, 0.05);
         border-radius: 50%;
         font-size: 1.25rem;
-        color: white;
+        color: #666;
     }
 
     .stat-content {
@@ -746,8 +752,8 @@
     .stat-number {
         font-size: 3rem;
         font-weight: 900;
-        color: white;
-        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        color: #333;
+        text-shadow: none;
         line-height: 1;
         counter-reset: number var(--value, 0);
     }
@@ -775,7 +781,7 @@
 
     .stat-label {
         font-size: 1rem;
-        color: rgba(255, 255, 255, 0.9);
+        color: rgba(0, 0, 0, 0.7);
         font-weight: 600;
         text-transform: uppercase;
         letter-spacing: 1px;
@@ -789,7 +795,7 @@
     .progress-track {
         width: 100%;
         height: 6px;
-        background: rgba(255, 255, 255, 0.2);
+        background: rgba(0, 0, 0, 0.1);
         border-radius: 3px;
         overflow: hidden;
     }
@@ -829,6 +835,8 @@
         animation: slideInUp 0.8s ease-out;
         animation-delay: 0.4s;
         animation-fill-mode: backwards;
+        background: rgba(255, 255, 255, 0.85);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
     }
 
     .chart-header {
@@ -843,14 +851,14 @@
     .chart-title {
         font-size: 1.75rem;
         font-weight: 800;
-        color: white;
+        color: #333;
         margin: 0;
-        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        text-shadow: none;
     }
 
     .chart-subtitle {
         font-size: 1rem;
-        color: rgba(255, 255, 255, 0.8);
+        color: rgba(0, 0, 0, 0.6);
         margin: 4px 0 0 0;
     }
 
@@ -885,7 +893,7 @@
     .grid-dash {
         width: 100%;
         height: 1px;
-        background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.2) 20%, rgba(255, 255, 255, 0.2) 80%, transparent 100%);
+        background: linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 0.1) 20%, rgba(0, 0, 0, 0.1) 80%, transparent 100%);
     }
 
     .monthly-chart {
@@ -928,7 +936,7 @@
 
     .bar {
         width: 32px;
-        background: rgba(255, 255, 255, 0.1);
+        background: rgba(0, 0, 0, 0.05);
         border-radius: 16px 16px 4px 4px;
         min-height: 8px;
         position: relative;
@@ -988,13 +996,14 @@
         top: -35px;
         left: 50%;
         transform: translateX(-50%);
-        color: white;
+        color: #333;
         font-size: 0.875rem;
         font-weight: 700;
-        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        text-shadow: none;
         z-index: 10;
         pointer-events: none;
-        background: rgba(0, 0, 0, 0.7);
+        background: rgba(0, 0, 0, 0.8);
+        color: white;
         padding: 4px 8px;
         border-radius: 6px;
         opacity: 0;
@@ -1020,7 +1029,7 @@
 
     .month-label {
         font-size: 0.875rem;
-        color: rgba(255, 255, 255, 0.9);
+        color: rgba(0, 0, 0, 0.7);
         font-weight: 700;
         text-transform: uppercase;
         letter-spacing: 1px;
@@ -1029,7 +1038,7 @@
     .month-indicator {
         width: 6px;
         height: 6px;
-        background: white;
+        background: #666;
         border-radius: 50%;
         opacity: 0.6;
         transition: var(--transition-smooth);
@@ -1038,6 +1047,7 @@
     .month-column:hover .month-indicator {
         opacity: 1;
         transform: scale(1.5);
+        background: #333;
     }
 
     .chart-tooltip {
@@ -1138,6 +1148,23 @@
         await LoadStatistics();
     }
 
+    private async Task<int> GetClientIdFromLocalStorage()
+    {
+        try
+        {
+            var clientIdString = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "clientId");
+            if (int.TryParse(clientIdString, out int clientId))
+            {
+                return clientId;
+            }
+        }
+        catch (Exception)
+        {
+            // Handle error silently
+        }
+        return 0; // Default value if not found or error
+    }
+
     private async Task LoadStatistics()
     {
         try
@@ -1146,7 +1173,14 @@
             this.errorMessage = null;
             StateHasChanged();
 
-            var response = await Http.GetAsync("encomendas-clientes/2/estatisticas");
+            var clientId = await GetClientIdFromLocalStorage();
+            if (clientId == 0)
+            {
+                errorMessage = "ID do cliente não encontrado. Faça login novamente.";
+                return;
+            }
+
+            var response = await Http.GetAsync($"encomendas-clientes/{clientId}/estatisticas");
             
             if (response.IsSuccessStatusCode)
             {

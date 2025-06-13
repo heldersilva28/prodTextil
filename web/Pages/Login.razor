@@ -6,6 +6,7 @@
 @using web.Services
 @inject AuthService AuthService
 @inject NavigationManager Navigation
+@inject IJSRuntime JSRuntime
 
 <div class="login-root">
   <div class="image-pane">
@@ -76,7 +77,11 @@
       var response = await AuthService.LoginAsync(dto);
       if (response.Success)
       {
-        Navigation.NavigateTo("/orders");
+        // Get client ID and store in local storage
+        var clientId = await AuthService.GetClientIdByEmailAsync(loginModel.Email);
+        await JSRuntime.InvokeVoidAsync("localStorage.setItem", "clientId", clientId.ToString());
+        
+        Navigation.NavigateTo("/dashboard");
       }
       else
       {

@@ -86,8 +86,13 @@ public class ClienteController {
         return ResponseEntity.noContent().build();
     }
 
-        @GetMapping("/estatisticas")
-        public ResponseEntity<ClientesStatsDTO> obterEstatisticas() {
-            return ResponseEntity.ok(clienteService.obterEstatisticasClientes());
-        }
+    @GetMapping("/estatisticas")
+    public ResponseEntity<ClientesStatsDTO> obterEstatisticas() {
+        return ResponseEntity.ok(clienteService.obterEstatisticasClientes());
+    }
+
+    @GetMapping("/clientes/id")
+    public int getIdClienteByEmail(@RequestParam String email) {
+        return clienteService.getIdClienteByEmail(email);
+    }
 }

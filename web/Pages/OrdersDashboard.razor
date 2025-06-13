@@ -3,6 +3,7 @@
 @using System.Net.Http.Json
 @using web.Models
 @inject HttpClient Http
+@inject IJSRuntime JSRuntime
 
 <div class="orders-dashboard-premium">
     <div class="container-fluid">
@@ -310,17 +311,55 @@
     {
         try
         {
-            // Substitui pela tua rota real de API
-            orders = await Http.GetFromJsonAsync<List<OrderDto>>("encomendas-clientes/2/encomendas");
-            InitializeMonthFilter();
-            ApplyMonthFilter();
+            var clientId = await GetClientIdFromLocalStorage();
+            if (clientId.HasValue)
+            {
+                try
+                {
+                    orders = await Http.GetFromJsonAsync<List<OrderDto>>($"encomendas-clientes/{clientId}/encomendas");
+                    orders ??= new List<OrderDto>(); // Ensure orders is never null
+                }
+                catch (HttpRequestException httpEx) when (httpEx.Message.Contains("500") || httpEx.Message.Contains("404"))
+                {
+                    // Handle case where client has no orders or server returns error for empty results
+                    Console.WriteLine($"Cliente {clientId} não tem encomendas ou erro do servidor: {httpEx.Message}");
+                    orders = new List<OrderDto>();
+                }
+                
+                InitializeMonthFilter();
+                ApplyMonthFilter();
+            }
+            else
+            {
+                // Handle case where client ID is not found
+                Console.WriteLine("ID do cliente não encontrado no localStorage");
+                orders = new List<OrderDto>();
+                filteredOrders = new List<OrderDto>();
+            }
         }
         catch (Exception ex)
         {
-            Console.Error.WriteLine($"Erro ao carregar encomendas: {ex}");
+            Console.Error.WriteLine($"Erro geral ao carregar encomendas: {ex}");
             orders = new List<OrderDto>();
             filteredOrders = new List<OrderDto>();
         }
+    }
+
+    private async Task<int?> GetClientIdFromLocalStorage()
+    {
+        try
+        {
+            var clientIdString = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "clientId");
+            if (!string.IsNullOrEmpty(clientIdString) && int.TryParse(clientIdString, out int clientId))
+            {
+                return clientId;
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Erro ao obter ID do cliente do localStorage: {ex}");
+        }
+        return null;
     }
 
     private void InitializeMonthFilter()
@@ -380,7 +419,43 @@
     private async Task ClearMonthFilter()
     {
         selectedMonth = "";
-        ApplyMonthFilter();
+        
+        // Retry loading orders when "Ver Todas" is clicked
+        orders = null; // Set to null to trigger loading state
+        StateHasChanged();
+        
+        try
+        {
+            var clientId = await GetClientIdFromLocalStorage();
+            if (clientId.HasValue)
+            {
+                try
+                {
+                    orders = await Http.GetFromJsonAsync<List<OrderDto>>($"encomendas-clientes/{clientId}/encomendas");
+                    orders ??= new List<OrderDto>();
+                }
+                catch (HttpRequestException httpEx) when (httpEx.Message.Contains("500") || httpEx.Message.Contains("404"))
+                {
+                    Console.WriteLine($"Cliente {clientId} não tem encomendas ou erro do servidor: {httpEx.Message}");
+                    orders = new List<OrderDto>();
+                }
+            }
+            else
+            {
+                Console.WriteLine("ID do cliente não encontrado no localStorage");
+                orders = new List<OrderDto>();
+            }
+            
+            InitializeMonthFilter();
+            ApplyMonthFilter();
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Erro ao recarregar encomendas: {ex}");
+            orders = new List<OrderDto>();
+            filteredOrders = new List<OrderDto>();
+        }
+        
         StateHasChanged();
     }
 
@@ -574,7 +649,7 @@
         display: inline-flex;
         align-items: center;
         gap: var(--spacing-xs);
-        background: rgba(255, 255, 255, 0.2);
+        background: rgb(46 59 80);
         backdrop-filter: blur(10px);
         padding: var(--spacing-xs) var(--spacing-sm);
         border-radius: 50px;
@@ -590,7 +665,7 @@
     .display-title {
         font-size: clamp(2.5rem, 5vw, 4rem);
         font-weight: 800;
-        background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+        background: rgb(46 59 80);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
@@ -601,7 +676,7 @@
 
     .subtitle {
         font-size: 1.25rem;
-        color: rgba(255, 255, 255, 0.8);
+        color: rgb(46 59 80);
         font-weight: 400;
         margin: 0;
         line-height: 1.5;
@@ -920,6 +995,7 @@
         position: relative;
         height: 100%;
         display: flex;
+        opacity: 0.90;
         flex-direction: column;
     }
 
@@ -1152,9 +1228,9 @@
     }
 
     .premium-modal {
-        background: var(--glass-bg);
+        background: #f8fcff;
         backdrop-filter: var(--backdrop-blur);
-        border: 1px solid var(--glass-border);
+        border: 1px solid rgba(255, 255, 255, 0.3);
         border-radius: var(--border-radius);
         max-width: 800px;
         width: 100%;
@@ -1165,17 +1241,18 @@
 
     .modal-header-premium {
         padding: var(--spacing-lg);
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
         display: flex;
         justify-content: space-between;
         align-items: flex-start;
+        background: #f8fcff;
     }
 
     .modal-badge {
         display: inline-flex;
         align-items: center;
         gap: var(--spacing-xs);
-        background: rgba(255, 255, 255, 0.2);
+        background: var(--primary-gradient);
         padding: 4px 12px;
         border-radius: 50px;
         font-size: 0.75rem;
@@ -1189,12 +1266,12 @@
     .modal-title {
         font-size: 1.75rem;
         font-weight: 800;
-        color: white;
+        color: #000000;
         margin: 0 0 var(--spacing-xs);
     }
 
     .modal-subtitle {
-        color: rgba(255, 255, 255, 0.8);
+        color: rgba(0, 0, 0, 0.7);
         margin: 0;
     }
 
@@ -1208,13 +1285,14 @@
         justify-content: center;
         cursor: pointer;
         transition: var(--transition-smooth);
-        color: white;
+        color: #000000;
         font-size: 1.2rem;
+        background: rgba(0, 0, 0, 0.1);
     }
 
     .close-btn:hover {
         transform: scale(1.1);
-        background: rgba(255, 255, 255, 0.2);
+        background: rgba(0, 0, 0, 0.2);
     }
 
     .modal-content-premium {
@@ -1222,12 +1300,13 @@
         display: flex;
         flex-direction: column;
         gap: var(--spacing-lg);
+        background: #f8fcff;
     }
 
     .section-title {
         font-size: 1.25rem;
         font-weight: 700;
-        color: white;
+        color: #000000;
         margin-bottom: var(--spacing-md);
         display: flex;
         align-items: center;
@@ -1246,6 +1325,8 @@
     .summary-section,
     .products-section {
         padding: var(--spacing-lg);
+        background: rgba(255, 255, 255, 0.8);
+        border: 1px solid rgba(0, 0, 0, 0.1);
     }
 
     .status-header {
@@ -1279,7 +1360,8 @@
     }
 
     .summary-card {
-        background: rgba(255, 255, 255, 0.1);
+        background: rgba(255, 255, 255, 0.9);
+        border: 1px solid rgba(0, 0, 0, 0.1);
         padding: var(--spacing-md);
         border-radius: 16px;
         display: flex;
@@ -1289,8 +1371,9 @@
     }
 
     .summary-card:hover {
-        background: rgba(255, 255, 255, 0.15);
+        background: rgba(255, 255, 255, 1);
         transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     }
 
     .summary-icon {
@@ -1313,13 +1396,13 @@
     .summary-number {
         font-size: 1.5rem;
         font-weight: 800;
-        color: white;
+        color: #000000;
         line-height: 1;
     }
 
     .summary-text {
         font-size: 0.75rem;
-        color: rgba(255, 255, 255, 0.7);
+        color: rgba(0, 0, 0, 0.7);
         font-weight: 600;
         text-transform: uppercase;
         letter-spacing: 1px;
@@ -1327,7 +1410,8 @@
 
     /* Products Table */
     .products-table {
-        background: rgba(255, 255, 255, 0.05);
+        background: rgba(255, 255, 255, 0.9);
+        border: 1px solid rgba(0, 0, 0, 0.1);
         border-radius: 16px;
         overflow: hidden;
     }
@@ -1337,9 +1421,9 @@
         grid-template-columns: 2fr 1fr 1.2fr 1.2fr;
         gap: var(--spacing-md);
         padding: var(--spacing-md);
-        background: rgba(255, 255, 255, 0.1);
+        background: rgba(0, 0, 0, 0.05);
         font-weight: 700;
-        color: white;
+        color: #000000;
         font-size: 0.875rem;
         text-transform: uppercase;
         letter-spacing: 1px;
@@ -1355,12 +1439,12 @@
         grid-template-columns: 2fr 1fr 1.2fr 1.2fr;
         gap: var(--spacing-md);
         padding: var(--spacing-md);
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
         transition: var(--transition-smooth);
     }
 
     .table-row:hover {
-        background: rgba(255, 255, 255, 0.05);
+        background: rgba(0, 0, 0, 0.05);
     }
 
     .table-row:last-child {
@@ -1387,7 +1471,7 @@
 
     .product-name-modal {
         font-weight: 600;
-        color: white;
+        color: #000000;
     }
 
     .qty-badge {
@@ -1402,14 +1486,14 @@
     .table-cell {
         display: flex;
         align-items: center;
-        color: rgba(255, 255, 255, 0.9);
+        color: rgba(0, 0, 0, 0.8);
         font-weight: 500;
     }
 
     .table-footer {
         padding: var(--spacing-md);
-        background: rgba(255, 255, 255, 0.1);
-        border-top: 2px solid rgba(255, 255, 255, 0.2);
+        background: rgba(0, 0, 0, 0.05);
+        border-top: 2px solid rgba(0, 0, 0, 0.1);
     }
 
     .total-row {
@@ -1421,7 +1505,7 @@
     .total-label {
         font-size: 1.1rem;
         font-weight: 700;
-        color: white;
+        color: #000000;
         text-transform: uppercase;
         letter-spacing: 1px;
     }
@@ -1429,7 +1513,7 @@
     .total-amount {
         font-size: 1.5rem;
         font-weight: 800;
-        color: #ffffff;
+        color: #000000;
     }
 
     /* Responsive Design */

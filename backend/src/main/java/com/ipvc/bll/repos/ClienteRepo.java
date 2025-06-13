@@ -19,6 +19,9 @@ public interface ClienteRepo extends JpaRepository<Cliente, Integer> {
     // Buscar cliente por nome exato
     Optional<Cliente> findByNome(String nome);
 
+    @Query("SELECT C.id FROM Cliente C WHERE C.email = :email")
+    int findIdByEmail(String email);
+
     // Buscar clientes pelo código postal correto
     List<Cliente>findAllByCodigoPostal_Codigo(String codigoPostal);
 
@@ -32,3 +35,4 @@ public interface ClienteRepo extends JpaRepository<Cliente, Integer> {
             "GROUP BY c.id, c.nome ORDER BY COUNT(e) DESC")
     List<Object[]> topClientesPorEncomendas();
 }
+
