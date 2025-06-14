@@ -265,10 +265,10 @@
     private List<Product> Products { get; } = new()
     {
         new Product(1, "TS-1001", "T-Shirt Básica", "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=400", 65, 4.20m, 500),
-        new Product(2, "HD-2001", "Hoodie Corporate", "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=400", 80, 12.80m, 250),
-        new Product(3, "PK-3001", "Polo Empresarial", "https://images.unsplash.com/photo-1586790170083-2f9ceadc732d?q=80&w=400", 55, 6.75m, 400),
-        new Product(4, "SW-4001", "Sweatshirt Professional", "https://images.unsplash.com/photo-1434389677669-e08b4cac3105?q=80&w=400", 70, 15.50m, 300),
-        new Product(5, "JK-5001", "Jacket Corporate", "https://images.unsplash.com/photo-1551698618-1dfe5d97d256?q=80&w=400", 90, 25.90m, 200),
+        new Product(2, "HD-2001", "Hoodie Corporate", "https://shorturl.at/MTu9G", 80, 12.80m, 250),
+        new Product(3, "PK-3001", "Polo Empresarial", "https://shorturl.at/Leoe0", 55, 6.75m, 400),
+        new Product(4, "SW-4001", "Sweatshirt Professional", "https://shorturl.at/V1Wgt", 70, 15.50m, 300),
+        new Product(5, "JK-5001", "Jacket Corporate", "https://shorturl.at/BkaxI", 90, 25.90m, 200),
         new Product(6, "TS-1002", "T-Shirt Tech Performance", "https://images.unsplash.com/photo-1503341455253-b2e723bb3dbb?q=80&w=400", 85, 8.45m, 450)
     };
 
@@ -452,7 +452,7 @@
             >= 599 => 0.10m,  // 10% discount
             >= 499 => 0.08m,  // 8% discount
             >= 399 => 0.06m,   // 6% discount
-            >= 349 => 0.04m,    // 2% discount
+            >= 349 => 0.04m,    // 4% discount
             >= 299 => 0.02m,   // 2% discount
             _ => 0m           // No discount
         };
