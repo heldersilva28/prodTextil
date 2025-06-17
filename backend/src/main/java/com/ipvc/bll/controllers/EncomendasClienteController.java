@@ -36,10 +36,17 @@ public class EncomendasClienteController {
         return encomenda.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+//    @PostMapping
+//    @Operation(summary = "Criar uma nova encomenda", description = "Registra uma nova encomenda no sistema")
+//    public ResponseEntity<EncomendaClienteResponseDTO> createEncomenda(@RequestBody EncomendaClienteCreateDTO encomendaDTO) {
+//        EncomendaClienteResponseDTO novaEncomenda = encomendasClienteService.saveEncomenda(encomendaDTO);
+//        return ResponseEntity.ok(novaEncomenda);
+//    }
+
     @PostMapping
     @Operation(summary = "Criar uma nova encomenda", description = "Registra uma nova encomenda no sistema")
-    public ResponseEntity<EncomendaClienteResponseDTO> createEncomenda(@RequestBody EncomendaClienteCreateDTO encomendaDTO) {
-        EncomendaClienteResponseDTO novaEncomenda = encomendasClienteService.saveEncomenda(encomendaDTO);
+    public ResponseEntity<EncomendaClienteResponseDTO> createEncomenda(@RequestBody EncomendaClienteCreateFullDTO encomendaDTO) {
+        EncomendaClienteResponseDTO novaEncomenda = encomendasClienteService.saveEncomendaFull(encomendaDTO);
         return ResponseEntity.ok(novaEncomenda);
     }
 
@@ -67,6 +74,12 @@ public class EncomendasClienteController {
     @Operation(summary = "Estatísticas de encomendas de um cliente", description = "Retorna estatísticas específicas sobre as encomendas de um cliente pelo ID")
     public ResponseEntity<EncomendasClientesStatsDTO> obterEstatisticasPorCliente(@PathVariable Integer id) {
         return ResponseEntity.ok(encomendasClienteService.obterEstatisticasCliente(id));
+    }
+
+    @GetMapping("/funcionario/{id}")
+    @Operation(summary = "Encomendas de associadas a funcionario", description = "Retorna encomendas específicas associadas a um funcionario pelo ID")
+    public ResponseEntity<List<EncomendaClienteResponseDTO>> getEncomendasByFuncionarioId(@PathVariable Integer id) {
+        return ResponseEntity.ok(encomendasClienteService.getEncomendasByFuncionarioId(id));
     }
 
     @GetMapping("/{id}/encomendas")

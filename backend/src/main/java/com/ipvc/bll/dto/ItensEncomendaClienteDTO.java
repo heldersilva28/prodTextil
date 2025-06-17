@@ -13,6 +13,12 @@ public class ItensEncomendaClienteDTO {
             BigDecimal precoUnitario // Preço unitário do produto
     ) implements Serializable {}
 
+    public record ItensEncomendaClienteCreateFullDTO(
+            String produto,        // Refere-se ao nome ou código do produto
+            Integer quantidade,    // Quantidade do produto na encomenda
+            BigDecimal precoUnitario // Preço unitário do produto
+    ) implements Serializable {}
+
     // DTO para Atualizar Item de Encomenda Cliente
     public record ItensEncomendaClienteUpdateDTO(
             String produto,        // Produto a ser atualizado

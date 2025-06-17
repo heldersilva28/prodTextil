@@ -19,6 +19,14 @@ public class EncomendasClienteDTO {
             BigDecimal valorTotal
     ) implements Serializable {}
 
+    public record EncomendaClienteCreateFullDTO(
+            Integer clienteId,
+            LocalDate dataEncomenda,
+            Integer estadoId,
+            BigDecimal valorTotal,
+            List<ItensEncomendaClienteDTO.ItensEncomendaClienteCreateFullDTO> itensEncomenda
+    ) implements Serializable {}
+
     // DTO para Atualizar Encomenda de Cliente
     public record EncomendaClienteUpdateDTO(
             LocalDate dataEncomenda,

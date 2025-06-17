@@ -1,5 +1,9 @@
 @page "/shop"
 @using System.Globalization
+@using System.Text.Json
+@using System.Text
+@inject HttpClient Http
+@inject IJSRuntime JSRuntime
 
 <link href="css/shop.css" rel="stylesheet" />
 
@@ -434,11 +438,58 @@
 
     private async Task CreateOrder()
     {
-        // Implementar lógica de criação de pedido
-        CartItems.Clear();
-        await ToggleCart(); // Usar o método async para fechar com animação
-        
-        // Aqui poderia mostrar uma mensagem de sucesso ou redirecionar
+        try
+        {
+            // Get client ID from localStorage
+            var clienteIdString = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "clientId");
+            if (string.IsNullOrEmpty(clienteIdString) || !int.TryParse(clienteIdString, out var clienteId))
+            {
+                // Handle error - client not logged in
+                await JSRuntime.InvokeVoidAsync("alert", "Erro: Cliente não identificado. Faça login novamente.");
+                return;
+            }
+
+            // Build order payload
+            var orderData = new
+            {
+                clienteId = clienteId,
+                dataEncomenda = DateTime.Now.ToString("yyyy-MM-dd"),
+                estadoId = 1,
+                valorTotal = CartTotal,
+                itensEncomenda = CartItems.Select(item => new
+                {
+                    produto = item.Product.Sku,
+                    quantidade = item.Quantity,
+                    precoUnitario = CalculateDiscountedPrice(item.Product.Price, item.Quantity)
+                }).ToArray()
+            };
+
+            // Send POST request
+            var json = JsonSerializer.Serialize(orderData);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            
+            var response = await Http.PostAsync("encomendas-clientes", content);
+            
+            if (response.IsSuccessStatusCode)
+            {
+                // Order created successfully
+                CartItems.Clear();
+                await ToggleCart();
+                
+                await JSRuntime.InvokeVoidAsync("alert", "Encomenda criada com sucesso!");
+            }
+            else
+            {
+                // Handle error response
+                var errorContent = await response.Content.ReadAsStringAsync();
+                await JSRuntime.InvokeVoidAsync("alert", $"Erro ao criar encomenda: {response.StatusCode}");
+            }
+        }
+        catch (Exception ex)
+        {
+            // Handle any exceptions
+            await JSRuntime.InvokeVoidAsync("alert", $"Erro inesperado: {ex.Message}");
+        }
     }
 
     private decimal CalculateDiscountedPrice(decimal originalPrice, int quantity)

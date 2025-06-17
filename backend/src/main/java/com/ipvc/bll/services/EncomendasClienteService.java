@@ -2,11 +2,9 @@ package com.ipvc.bll.services;
 
 import com.ipvc.bll.dto.*;
 import com.ipvc.bll.dto.EncomendasClienteDTO.*;
+import com.ipvc.bll.dto.TarefasProducaoDTO.*;
 import com.ipvc.bll.models.*;
-import com.ipvc.bll.repos.EncomendaClienteRepo;
-import com.ipvc.bll.repos.ClienteRepo;
-import com.ipvc.bll.repos.EstadosEncomendaRepo;
-import com.ipvc.bll.repos.EtapasProducaoRepo;
+import com.ipvc.bll.repos.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,15 +21,19 @@ public class EncomendasClienteService {
     private final ClienteRepo clienteRepo;
     private final EstadosEncomendaRepo estadosEncomendaRepo;
     private final EncomendaClienteRepo encomendaClienteRepo;
+    private final TarefasProducaoRepo tarefasProducaoRepo;
+    private final ItemEncomendaClienteRepo itensEncomendaClienteRepo; // Repositório para itens de encomenda
 
     @Autowired
     private EtapasProducaoRepo etapasProducaoRepo; // Repositório para etapas de produção
 
-    public EncomendasClienteService(EncomendaClienteRepo encomendasClienteRepo, ClienteRepo clienteRepo, EstadosEncomendaRepo estadosEncomendaRepo, EncomendaClienteRepo encomendaClienteRepo) {
+    public EncomendasClienteService(EncomendaClienteRepo encomendasClienteRepo, ClienteRepo clienteRepo, EstadosEncomendaRepo estadosEncomendaRepo, EncomendaClienteRepo encomendaClienteRepo, TarefasProducaoRepo tarefasProducaoRepo, ItemEncomendaClienteRepo itensEncomendaClienteRepo) {
         this.encomendasClienteRepo = encomendasClienteRepo;
         this.clienteRepo = clienteRepo;
         this.estadosEncomendaRepo = estadosEncomendaRepo;
         this.encomendaClienteRepo = encomendaClienteRepo;
+        this.tarefasProducaoRepo = tarefasProducaoRepo;
+        this.itensEncomendaClienteRepo = itensEncomendaClienteRepo;
     }
 
     public List<EncomendaClienteResponseDTO> getAllEncomendas() {
@@ -40,6 +42,16 @@ public class EncomendasClienteService {
 
     public Optional<EncomendaClienteResponseDTO> getEncomendaById(Integer id) {
         return encomendasClienteRepo.findById(id).map(this::convertToDTO);
+    }
+
+    public List<EncomendaClienteResponseDTO> getEncomendasByFuncionarioId(Integer funcionarioId) {
+        List<TarefasProducao> tarefas = tarefasProducaoRepo.findAll();
+        List<EncomendasCliente> encomendas = tarefas.stream()
+                .filter(t -> t.getFuncionario().getId().equals(funcionarioId))
+                .map(TarefasProducao::getEncomenda)
+                .distinct()
+                .collect(Collectors.toList());
+        return encomendas.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
     public EncomendaClienteResponseDTO saveEncomenda(EncomendaClienteCreateDTO encomendaDTO) {
@@ -56,6 +68,34 @@ public class EncomendasClienteService {
         encomenda.setValorTotal(encomendaDTO.valorTotal());
 
         return convertToDTO(encomendasClienteRepo.save(encomenda));
+    }
+
+    public EncomendaClienteResponseDTO saveEncomendaFull(EncomendaClienteCreateFullDTO encomendaDTO) {
+        Cliente cliente = clienteRepo.findById(encomendaDTO.clienteId())
+                .orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
+
+        EstadosEncomenda estado = estadosEncomendaRepo.findById(encomendaDTO.estadoId())
+                .orElseThrow(() -> new RuntimeException("Estado de encomenda não encontrado"));
+
+        EncomendasCliente encomenda = new EncomendasCliente();
+        encomenda.setCliente(cliente);
+        encomenda.setDataEncomenda(encomendaDTO.dataEncomenda());
+        encomenda.setEstado(estado);
+        encomenda.setValorTotal(encomendaDTO.valorTotal());
+
+        EncomendasCliente encomendaSalva = encomendasClienteRepo.save(encomenda);
+
+        // Adicionar itens de encomenda
+        for (ItensEncomendaClienteDTO.ItensEncomendaClienteCreateFullDTO item : encomendaDTO.itensEncomenda()) {
+            ItensEncomendaCliente novoItem = new ItensEncomendaCliente();
+            novoItem.setProduto(item.produto());
+            novoItem.setQuantidade(item.quantidade());
+            novoItem.setPrecoUnitario(item.precoUnitario());
+            novoItem.setEncomenda(encomendaSalva);
+            itensEncomendaClienteRepo.save(novoItem);
+        }
+
+        return convertToDTO(encomendaSalva);
     }
 
     public Optional<EncomendaClienteResponseDTO> updateEncomenda(Integer id, EncomendaClienteUpdateDTO encomendaDTO) {
