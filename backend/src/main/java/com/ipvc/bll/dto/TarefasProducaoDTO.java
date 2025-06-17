@@ -37,7 +37,7 @@ public class TarefasProducaoDTO {
     public record TarefasProducaoResponseFullDTO(
             Integer id,
             Integer encomendaId,
-            Integer tipoEventoId,
+            Integer descricao,
             String descricaoNome,
             Integer funcionarioId,
             String funcionarioNome,

@@ -27,4 +27,12 @@ public class EtapasProducaoDTO {
             Instant dataInicio,
             Instant dataFim
     ) implements Serializable {}
+
+    public record EtapaProducaoResponseDTO2(
+            Integer id,
+            Integer tarefaId,
+            String descricao,
+            Instant dataInicio,
+            Instant dataFim
+    ) implements Serializable {}
 }

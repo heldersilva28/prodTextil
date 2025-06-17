@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<BorderPane prefHeight="700.0" prefWidth="1000.0" stylesheets="@../styles/tarefas-producao.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ipvc.desktop.controllers.TarefasProducaoController">
+    <top>
+        <VBox spacing="20.0" styleClass="header-container">
+            <padding>
+                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+            </padding>
+            <children>
+                <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="page-title" text="Tarefas e Etapas de Produção">
+                    <font>
+                        <Font name="System Bold" size="24.0" />
+                    </font>
+                </Text>
+
+                <HBox alignment="CENTER_LEFT" spacing="15.0" styleClass="funcionario-select-container">
+                    <Label text="Selecione o funcionário:" styleClass="funcionario-label" />
+                    <ComboBox fx:id="funcionarioComboBox" prefWidth="300.0" promptText="Selecionar funcionário..." onAction="#onFuncionarioSelected" styleClass="funcionario-combo" />
+                </HBox>
+            </children>
+        </VBox>
+    </top>
+
+    <center>
+        <ScrollPane fitToWidth="true" vbarPolicy="AS_NEEDED" hbarPolicy="NEVER">
+            <content>
+                <VBox spacing="20.0">
+                    <padding>
+                        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                    </padding>
+                    <children>
+                        <VBox fx:id="encomendaInfoContainer" visible="false" styleClass="encomenda-info-container">
+                            <HBox alignment="CENTER_LEFT" spacing="15.0" styleClass="encomenda-info-header">
+                                <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="section-title" text="Encomendas associadas">
+                                    <font>
+                                        <Font name="System Bold" size="18.0" />
+                                    </font>
+                                </Text>
+                                <Region HBox.hgrow="ALWAYS" />
+                                <Button fx:id="btnNovaTarefa" mnemonicParsing="false" onAction="#onNovaTarefaClicked" styleClass="btn-new-task" text="Nova Tarefa" />
+                            </HBox>
+                            <TableView fx:id="encomendasTableView" maxHeight="200">
+                                <columns>
+                                    <TableColumn fx:id="colId" prefWidth="75.0" text="ID" />
+                                    <TableColumn fx:id="colCliente" prefWidth="200.0" text="Cliente" />
+                                    <TableColumn fx:id="colDataEncomenda" prefWidth="150.0" text="Data Encomenda" />
+                                    <TableColumn fx:id="colPrecoTotal" prefWidth="120.0" text="Valor Total" />
+                                    <TableColumn fx:id="colEstado" prefWidth="120.0" text="Estado" />
+                                    <TableColumn fx:id="colAcoes" prefWidth="150.0" text="Ações" />
+                                </columns>
+                            </TableView>
+                        </VBox>
+
+                        <VBox fx:id="tarefasContainer" visible="false" styleClass="tarefas-container">
+                            <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="section-title" text="Tarefas e Etapas">
+                                <font>
+                                    <Font name="System Bold" size="18.0" />
+                                </font>
+                            </Text>
+                            <TableView fx:id="tarefasTableView" maxHeight="200">
+                                <columns>
+                                    <TableColumn fx:id="colTarefaId" prefWidth="75.0" text="ID" />
+                                    <TableColumn fx:id="colEncomendaId" prefWidth="110.0" text="Encomenda" />
+                                    <TableColumn fx:id="colDescricao" prefWidth="200.0" text="Descrição" />
+                                    <TableColumn fx:id="colDataInicio" prefWidth="130.0" text="Data de Início" />
+                                    <TableColumn fx:id="colDataFim" prefWidth="130.0" text="Data de Conclusão" />
+                                    <TableColumn fx:id="colStatus" prefWidth="120.0" text="Status" />
+                                    <TableColumn fx:id="colTarefaAcoes" prefWidth="150.0" text="Ações" />
+                                </columns>
+                            </TableView>
+                        </VBox>
+
+                        <VBox fx:id="etapasContainer" visible="false" styleClass="etapas-container">
+                            <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="section-title" text="Detalhes da Etapa">
+                                <font>
+                                    <Font name="System Bold" size="18.0" />
+                                </font>
+                            </Text>
+                            <TableView fx:id="etapasTableView" maxHeight="200">
+                                <columns>
+                                    <TableColumn fx:id="colEtapaId" prefWidth="75.0" text="ID" />
+                                    <TableColumn fx:id="colTarefaRef" prefWidth="100.0" text="Tarefa" />
+                                    <TableColumn fx:id="colEtapaDescricao" prefWidth="200.0" text="Descrição" />
+                                    <TableColumn fx:id="colEtapaDataInicio" prefWidth="130.0" text="Data de Início" />
+                                    <TableColumn fx:id="colEtapaDataFim" prefWidth="130.0" text="Data de Conclusão" />
+                                    <TableColumn fx:id="colEtapaAcoes" prefWidth="150.0" text="Ações" />
+                                </columns>
+                            </TableView>
+                        </VBox>
+                    </children>
+                </VBox>
+            </content>
+        </ScrollPane>
+    </center>
+</BorderPane>

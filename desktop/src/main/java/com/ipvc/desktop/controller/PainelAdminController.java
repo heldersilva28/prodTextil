@@ -107,6 +107,14 @@ public class PainelAdminController {
                 "/com/ipvc/desktop/style/gestao-utilizadores.css"
         );
     }
+
+    @FXML
+    public void abrirTarefas() {
+        carregarConteudo(
+                "/com/ipvc/desktop/views/tarefas-producao.fxml",
+                "/com/ipvc/desktop/styles/tarefas-producao.css"
+        );
+    }
 //
 //    @FXML
 //    public void abrirHistoricoEventos() {

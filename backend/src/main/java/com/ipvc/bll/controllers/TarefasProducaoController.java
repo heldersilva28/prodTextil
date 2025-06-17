@@ -55,4 +55,18 @@ public class TarefasProducaoController {
         tarefasProducaoService.deleteTarefa(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/funcionario/{id}")
+    @Operation(summary = "Buscar tarefas por funcionário", description = "Retorna todas as tarefas de produção associadas a um funcionário específico")
+    public ResponseEntity<List<TarefasProducaoResponseDTO>> getTarefasByFuncionarioId(@PathVariable Integer id) {
+        List<TarefasProducaoResponseDTO> tarefas = tarefasProducaoService.getTarefasByFuncionarioId(id);
+        return ResponseEntity.ok(tarefas);
+    }
+
+    @GetMapping("/encomendas/{id}")
+    @Operation(summary = "Buscar tarefas por encomenda", description = "Retorna todas as tarefas de produção associadas a uma encomenda específica")
+    public ResponseEntity<List<TarefasProducaoResponseFullDTO>> getTarefasByEncomendaId(@PathVariable Integer id) {
+        List<TarefasProducaoResponseFullDTO> tarefas = tarefasProducaoService.getTarefasByEncomendaId(id);
+        return ResponseEntity.ok(tarefas);
+    }
 }

@@ -9,4 +9,6 @@ import java.util.List;
 @Repository
 public interface EtapasProducaoRepo extends JpaRepository<EtapasProducao, Integer> {
     List<EtapasProducao> findByTarefa_EncomendaId(Integer encomendaId);
+
+    List<EtapasProducao> findByTarefa_Id(Integer tarefaId);
 }

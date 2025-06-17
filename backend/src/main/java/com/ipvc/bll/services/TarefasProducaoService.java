@@ -1,5 +1,6 @@
 package com.ipvc.bll.services;
 
+import com.ipvc.bll.dto.EncomendasClienteDTO;
 import com.ipvc.bll.dto.TarefasProducaoDTO.*;
 import com.ipvc.bll.models.TarefasProducao;
 import com.ipvc.bll.models.EncomendasCliente;
@@ -80,12 +81,40 @@ public class TarefasProducaoService {
         tarefasProducaoRepo.deleteById(id);
     }
 
+    public List<TarefasProducaoResponseDTO> getTarefasByFuncionarioId(Integer funcionarioId) {
+        return tarefasProducaoRepo.findByFuncionario_Id(funcionarioId)
+                .stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    public List<TarefasProducaoResponseFullDTO> getTarefasByEncomendaId(Integer encomendaId) {
+        return tarefasProducaoRepo.findByEncomenda_Id(encomendaId)
+                .stream()
+                .map(this::convertToDTO2)
+                .collect(Collectors.toList());
+    }
+
     private TarefasProducaoResponseDTO convertToDTO(TarefasProducao tarefa) {
         return new TarefasProducaoResponseDTO(
                 tarefa.getId(),
                 tarefa.getEncomenda().getId(),
                 tarefa.getTipoEvento().getId(),
                 tarefa.getFuncionario().getId(),
+                tarefa.getDataInicio(),
+                tarefa.getDataFim(),
+                tarefa.getEstado()
+        );
+    }
+
+    private TarefasProducaoResponseFullDTO convertToDTO2(TarefasProducao tarefa) {
+        return new TarefasProducaoResponseFullDTO(
+                tarefa.getId(),
+                tarefa.getEncomenda().getId(),
+                tarefa.getTipoEvento().getId(),
+                tarefa.getTipoEvento().getNome(),
+                tarefa.getFuncionario().getId(),
+                tarefa.getFuncionario().getNome(),
                 tarefa.getDataInicio(),
                 tarefa.getDataFim(),
                 tarefa.getEstado()

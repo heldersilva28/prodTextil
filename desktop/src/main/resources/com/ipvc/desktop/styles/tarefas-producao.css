@@ -1,0 +1,204 @@
+.header-container {
+    -fx-background-color: #f8f9fa;
+    -fx-border-color: #dee2e6;
+    -fx-border-width: 0 0 1 0;
+}
+
+.page-title {
+    -fx-fill: #212529;
+    -fx-font-weight: bold;
+    -fx-font-size: 24px;
+}
+
+.section-title {
+    -fx-fill: #343a40;
+    -fx-font-weight: bold;
+    -fx-font-size: 18px;
+}
+
+.funcionario-select-container {
+    -fx-padding: 10px;
+    -fx-background-color: white;
+    -fx-background-radius: 5px;
+    -fx-border-color: #e9ecef;
+    -fx-border-radius: 5px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 4, 0, 0, 2);
+}
+
+.funcionario-label {
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+}
+
+.funcionario-combo {
+    -fx-background-color: white;
+    -fx-border-color: #ced4da;
+    -fx-border-radius: 4px;
+}
+
+.funcionario-combo:focused {
+    -fx-border-color: #80bdff;
+    -fx-effect: dropshadow(gaussian, rgba(0, 123, 255, 0.25), 0, 0, 0, 0);
+}
+
+.btn-refresh {
+    -fx-background-color: #17a2b8;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 4px;
+    -fx-cursor: hand;
+}
+
+.btn-refresh:hover {
+    -fx-background-color: #138496;
+}
+
+.encomenda-info-container, .tarefas-container, .etapas-container {
+    -fx-background-color: white;
+    -fx-background-radius: 5px;
+    -fx-border-color: #e9ecef;
+    -fx-border-radius: 5px;
+    -fx-padding: 15px;
+    -fx-spacing: 10px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 4, 0, 0, 2);
+}
+
+.encomenda-info-header {
+    -fx-padding: 0 0 10px 0;
+}
+
+.btn-new-task {
+    -fx-background-color: #28a745;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 4px;
+    -fx-cursor: hand;
+}
+
+.btn-new-task:hover {
+    -fx-background-color: #218838;
+}
+
+.table-view {
+    -fx-background-color: transparent;
+    -fx-border-color: #dee2e6;
+    -fx-border-radius: 4px;
+}
+
+.table-view .column-header {
+    -fx-background-color: #f8f9fa;
+    -fx-border-color: #dee2e6;
+    -fx-border-width: 0 0 1 0;
+    -fx-padding: 8px;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: transparent;
+}
+
+.table-view .column-header .label {
+    -fx-font-weight: bold;
+    -fx-text-fill: #495057;
+}
+
+.table-row-cell {
+    -fx-background-color: white;
+    -fx-border-color: transparent;
+    -fx-padding: 5px;
+}
+
+.table-row-cell:odd {
+    -fx-background-color: #f8f9fa;
+}
+
+.table-row-cell:selected {
+    -fx-background-color: #b3d7ff;
+    -fx-text-fill: black;
+}
+
+.footer {
+    -fx-background-color: #f8f9fa;
+    -fx-border-color: #dee2e6;
+    -fx-border-width: 1 0 0 0;
+}
+
+.btn-voltar {
+    -fx-background-color: #6c757d;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 4px;
+    -fx-cursor: hand;
+}
+
+.btn-voltar:hover {
+    -fx-background-color: #5a6268;
+}
+
+.btn-action {
+    -fx-background-color: #007bff;
+    -fx-text-fill: white;
+    -fx-background-radius: 3px;
+    -fx-cursor: hand;
+    -fx-font-size: 12px;
+    -fx-padding: 3px 8px;
+}
+
+.btn-action:hover {
+    -fx-background-color: #0069d9;
+}
+
+.btn-edit {
+    -fx-background-color: #ffc107;
+    -fx-text-fill: #212529;
+}
+
+.btn-edit:hover {
+    -fx-background-color: #e0a800;
+}
+
+.btn-complete {
+    -fx-background-color: #28a745;
+    -fx-text-fill: white;
+}
+
+.btn-complete:hover {
+    -fx-background-color: #218838;
+}
+
+.btn-delete {
+    -fx-background-color: #dc3545;
+    -fx-text-fill: white;
+}
+
+.btn-delete:hover {
+    -fx-background-color: #c82333;
+}
+
+.status-pendente {
+    -fx-text-fill: #fd7e14;
+    -fx-font-weight: bold;
+}
+
+.status-em-progresso {
+    -fx-text-fill: #007bff;
+    -fx-font-weight: bold;
+}
+
+.status-concluido {
+    -fx-text-fill: #28a745;
+    -fx-font-weight: bold;
+}
+
+.dialog-pane {
+    -fx-background-color: white;
+}
+
+.dialog-pane .button-bar .button {
+    -fx-background-color: #007bff;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.dialog-pane .button-bar .button:hover {
+    -fx-background-color: #0069d9;
+}

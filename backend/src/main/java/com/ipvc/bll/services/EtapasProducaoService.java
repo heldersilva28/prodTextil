@@ -65,11 +65,27 @@ public class EtapasProducaoService {
         etapasProducaoRepo.deleteById(id);
     }
 
+    public List<EtapaProducaoResponseDTO2> getEtapasByTarefaId(Integer tarefaId) {
+        return etapasProducaoRepo.findByTarefa_Id(tarefaId).stream()
+                .map(this::convertToDTO2)
+                .collect(Collectors.toList());
+    }
+
     private EtapaProducaoResponseDTO convertToDTO(EtapasProducao etapa) {
         return new EtapaProducaoResponseDTO(
                 etapa.getId(),
                 etapa.getTarefa().getId(),
                 etapa.getTipoEtapa().getId(),
+                etapa.getDataInicio(),
+                etapa.getDataFim()
+        );
+    }
+
+    private EtapaProducaoResponseDTO2 convertToDTO2(EtapasProducao etapa) {
+        return new EtapaProducaoResponseDTO2(
+                etapa.getId(),
+                etapa.getTarefa().getId(),
+                etapa.getTipoEtapa().getDescricao(),
                 etapa.getDataInicio(),
                 etapa.getDataFim()
         );

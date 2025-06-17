@@ -9,4 +9,5 @@ import java.util.List;
 public interface TarefasProducaoRepo extends JpaRepository<TarefasProducao, Integer> {
     List<TarefasProducao> findByFuncionario_Id(Integer funcionarioId);
     List<TarefasProducao> findByEstadoIgnoreCase(String estado);
+    List<TarefasProducao> findByEncomenda_Id(Integer encomendaId);
 }

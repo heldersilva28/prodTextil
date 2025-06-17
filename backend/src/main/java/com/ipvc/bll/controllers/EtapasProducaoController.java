@@ -34,6 +34,13 @@ public class EtapasProducaoController {
         return etapa.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @GetMapping("/tarefas/{tarefaId}")
+    @Operation(summary = "Listar etapas de produção por tarefa", description = "Retorna todas as etapas de produção associadas a uma tarefa específica")
+    public ResponseEntity<List<EtapaProducaoResponseDTO2>> getEtapasByTarefa(@PathVariable Integer tarefaId) {
+        List<EtapaProducaoResponseDTO2> etapas = etapasProducaoService.getEtapasByTarefaId(tarefaId);
+        return ResponseEntity.ok(etapas);
+    }
+
     @PostMapping
     @Operation(summary = "Criar uma nova etapa de produção", description = "Registra uma nova etapa de produção no sistema")
     public ResponseEntity<EtapaProducaoResponseDTO> createEtapa(@RequestBody EtapaProducaoCreateDTO etapaDTO) {
