@@ -147,6 +147,8 @@
         {
             // Clear the clientId from localStorage
             await JSRuntime.InvokeVoidAsync("localStorage.removeItem", "clientId");
+            // Clear the auth_token from sessionStorage
+            await JSRuntime.InvokeVoidAsync("sessionStorage.removeItem", "auth_token");
             
             // Redirect to login page
             Navigation.NavigateTo("/", forceLoad: true);

@@ -3,6 +3,7 @@
 @using web.Models
 @using System.Text.Json
 @inject HttpClient Http
+@inject NavigationManager Navigation
 @inject IJSRuntime JSRuntime
 
 <PageTitle>Dashboard</PageTitle>
@@ -1146,8 +1147,26 @@
     protected override async Task OnInitializedAsync()
     {
         await LoadStatistics();
+        await LoadAuthToken();
     }
 
+
+    private async Task LoadAuthToken()
+    {
+        try
+        {
+            var token = await JSRuntime.InvokeAsync<string>("sessionStorage.getItem", "auth_token");
+            if (string.IsNullOrEmpty(token))
+            {
+                errorMessage = "Token de autenticação não encontrado. Faça login novamente.";
+                Navigation.NavigateTo("/login");
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Erro ao carregar o token: {ex.Message}";
+        }
+    }
     private async Task<int> GetClientIdFromLocalStorage()
     {
         try

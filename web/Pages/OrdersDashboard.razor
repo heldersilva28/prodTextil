@@ -5,6 +5,8 @@
 @inject HttpClient Http
 @inject IJSRuntime JSRuntime
 
+@inject NavigationManager Navigation
+
 <div class="orders-dashboard-premium">
     <div class="container-fluid">
         <div class="floating-shape shape-1"></div>
@@ -309,6 +311,7 @@
 
     protected override async Task OnInitializedAsync()
     {
+        await LoadAuthToken();
         try
         {
             var clientId = await GetClientIdFromLocalStorage();
@@ -345,6 +348,22 @@
         }
     }
 
+    private async Task LoadAuthToken()
+    {
+        try
+        {
+            var token = await JSRuntime.InvokeAsync<string>("sessionStorage.getItem", "auth_token");
+            if (string.IsNullOrEmpty(token))
+            {
+                Console.WriteLine("Token de autenticação não encontrado. Faça login novamente.");
+                Navigation.NavigateTo("/login");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Erro ao carregar o token: {ex.Message}");
+        }
+    }
     private async Task<int?> GetClientIdFromLocalStorage()
     {
         try

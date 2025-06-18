@@ -4,6 +4,7 @@
 @using System.Text
 @inject HttpClient Http
 @inject IJSRuntime JSRuntime
+@inject NavigationManager Navigation
 
 <link href="css/shop.css" rel="stylesheet" />
 
@@ -284,10 +285,28 @@
     private bool CartVisible { get; set; }
     private bool CartClosing { get; set; }
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
+        
         // Inicializa todas as quantidades com o MOQ de cada produto
         Quantities = Products.ToDictionary(p => p.Id, p => p.MinOrderQuantity);
+        await LoadAuthToken();
+    }
+    private async Task LoadAuthToken()
+    {
+        try
+        {
+            var token = await JSRuntime.InvokeAsync<string>("sessionStorage.getItem", "auth_token");
+            if (string.IsNullOrEmpty(token))
+            {
+                Console.WriteLine("Token de autenticação não encontrado. Faça login novamente.");
+                Navigation.NavigateTo("/login");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Erro ao carregar o token: {ex.Message}");
+        }
     }
 
     // -------------------------------------------------- PROPRIEDADES CALCULADAS
