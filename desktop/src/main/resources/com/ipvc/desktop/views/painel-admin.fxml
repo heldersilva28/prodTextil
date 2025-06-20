@@ -33,11 +33,11 @@
             <Button text="Gestão de Utilizadores" styleClass="menu-item" onAction="#abrirGestaoUtilizadores" maxWidth="Infinity"/>
             <Button text="Gestão de Funcionários" styleClass="menu-item" onAction="#abrirGestaoFuncionarios" maxWidth="Infinity"/>
             <Button text="Gestão de Clientes" styleClass="menu-item" onAction="#abrirGestaoClientes" maxWidth="Infinity"/>
-            <Button text="Gestão de Fornecedores" styleClass="menu-item" maxWidth="Infinity"/>
+            <Button text="Gestão de Fornecedores" styleClass="menu-item" onAction="#abrirGestaoEncomendasFornecedores" maxWidth="Infinity"/>
             <Button text="Gestão de Materiais" styleClass="menu-item" onAction="#abrirGestaoMateriais" maxWidth="Infinity"/>
             <Button text="Etapas/Tarefas" styleClass="menu-item" onAction="#abrirTarefas" maxWidth="Infinity"/>
-            <Button text="Pagamentos a Fornecedores" styleClass="menu-item" maxWidth="Infinity"/>
-            <Button text="Recebimentos de clientes" styleClass="menu-item" maxWidth="Infinity"/>
+            <Button text="Pagamentos a Fornecedores" styleClass="menu-item" onAction="#pagamentos" maxWidth="Infinity"/>
+            <Button text="Recebimentos de clientes" styleClass="menu-item" onAction="#recebimentos" maxWidth="Infinity"/>
         </VBox>
 
 

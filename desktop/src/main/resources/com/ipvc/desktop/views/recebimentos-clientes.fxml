@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.geometry.Pos?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.ipvc.desktop.controller.RecebimentosClientesController"
+            prefWidth="1000" prefHeight="600"
+            styleClass="recebimentos-root"
+            fx:id="border">
+
+    <!-- Topo com título e botões de ação -->
+    <top>
+        <VBox spacing="10" styleClass="top-bar">
+            <HBox alignment="CENTER_LEFT" spacing="5">
+                <Label text="Recebimentos de Clientes" styleClass="title"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button fx:id="btnRegistarPagamento" text="💰 Registar Pagamento" onAction="#abrirModalPagamento" styleClass="payment-button"/>
+            </HBox>
+        </VBox>
+    </top>
+
+    <!-- Tabela de Encomendas -->
+    <center>
+        <VBox spacing="10">
+            <TableView fx:id="tabelaEncomendas" styleClass="custom-table" prefHeight="500">
+                <columns>
+                    <TableColumn fx:id="colId" text="ID" prefWidth="60"/>
+                    <TableColumn fx:id="colCliente" text="Cliente" prefWidth="200"/>
+                    <TableColumn fx:id="colData" text="Data Encomenda" prefWidth="150"/>
+                    <TableColumn fx:id="colValorTotal" text="Valor Total (€)" prefWidth="150"/>
+                </columns>
+            </TableView>
+        </VBox>
+    </center>
+</BorderPane>

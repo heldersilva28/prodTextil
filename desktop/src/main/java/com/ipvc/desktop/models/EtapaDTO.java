@@ -1,21 +1,23 @@
 package com.ipvc.desktop.models;
 
-import java.time.LocalDate;
+import java.time.Instant;
 
 public class EtapaDTO {
     private Integer id;
     private Integer tarefaId;
+    private Integer tipoEtapaId; // Adicionado o id do tipo de etapa
     private String descricao;
-    private LocalDate dataInicio;
-    private LocalDate dataFim;
+    private Instant dataInicio;
+    private Instant dataFim;
 
     public EtapaDTO() {
     }
 
-    public EtapaDTO(Integer id, Integer tarefaId, String descricao,
-                  LocalDate dataInicio, LocalDate dataFim) {
+    public EtapaDTO(Integer id, Integer tarefaId, Integer tipoEtapaId, String descricao,
+                  Instant dataInicio, Instant dataFim) {
         this.id = id;
         this.tarefaId = tarefaId;
+        this.tipoEtapaId = tipoEtapaId;
         this.descricao = descricao;
         this.dataInicio = dataInicio;
         this.dataFim = dataFim;
@@ -37,6 +39,14 @@ public class EtapaDTO {
         this.tarefaId = tarefaId;
     }
 
+    public Integer getTipoEtapaId() {
+        return tipoEtapaId;
+    }
+
+    public void setTipoEtapaId(Integer tipoEtapaId) {
+        this.tipoEtapaId = tipoEtapaId;
+    }
+
     public String getDescricao() {
         return descricao;
     }
@@ -45,19 +55,19 @@ public class EtapaDTO {
         this.descricao = descricao;
     }
 
-    public LocalDate getDataInicio() {
+    public Instant getDataInicio() {
         return dataInicio;
     }
 
-    public void setDataInicio(LocalDate dataInicio) {
+    public void setDataInicio(Instant dataInicio) {
         this.dataInicio = dataInicio;
     }
 
-    public LocalDate getDataFim() {
+    public Instant getDataFim() {
         return dataFim;
     }
 
-    public void setDataFim(LocalDate dataFim) {
+    public void setDataFim(Instant dataFim) {
         this.dataFim = dataFim;
     }
 

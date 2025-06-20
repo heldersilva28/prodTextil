@@ -1,5 +1,6 @@
 package com.ipvc.desktop.models;
 
+import java.time.Instant;
 import java.time.LocalDate;
 
 public class TarefaDTO {
@@ -9,16 +10,16 @@ public class TarefaDTO {
     private String descricaoNome;
     private Integer funcionarioId;
     private String funcionarioNome;
-    private LocalDate dataInicio;
-    private LocalDate dataFim;
+    private Instant dataInicio;
+    private Instant dataFim;
     private String estado;
 
     public TarefaDTO() {
     }
 
     public TarefaDTO(Integer id, Integer encomendaId, Integer descricao, String descricaoNome,
-                     Integer funcionarioId, String funcionarioNome, LocalDate dataInicio,
-                     LocalDate dataFim, String estado) {
+                     Integer funcionarioId, String funcionarioNome, Instant dataInicio,
+                     Instant dataFim, String estado) {
         this.id = id;
         this.encomendaId = encomendaId;
         this.descricao = descricao;
@@ -78,19 +79,19 @@ public class TarefaDTO {
         this.funcionarioNome = funcionarioNome;
     }
 
-    public LocalDate getDataInicio() {
+    public Instant getDataInicio() {
         return dataInicio;
     }
 
-    public void setDataInicio(LocalDate dataInicio) {
+    public void setDataInicio(Instant dataInicio) {
         this.dataInicio = dataInicio;
     }
 
-    public LocalDate getDataFim() {
+    public Instant getDataFim() {
         return dataFim;
     }
 
-    public void setDataFim(LocalDate dataFim) {
+    public void setDataFim(Instant dataFim) {
         this.dataFim = dataFim;
     }
 

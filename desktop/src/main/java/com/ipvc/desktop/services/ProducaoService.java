@@ -3,6 +3,8 @@ package com.ipvc.desktop.services;
 import com.ipvc.desktop.models.EncomendaCliente;
 import com.ipvc.desktop.models.EtapaDTO;
 import com.ipvc.desktop.models.TarefaDTO;
+import com.ipvc.desktop.models.TipoEvento;
+import com.ipvc.desktop.models.TipoEtapa;
 import com.ipvc.desktop.utils.HttpUtils;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -32,7 +34,20 @@ public class ProducaoService {
     }
 
     public TarefaDTO criarTarefa(TarefaDTO tarefa) throws IOException, InterruptedException {
-        HttpResponse<String> response = HttpUtils.post(BASE_URL + "/tarefas", objectMapper.writeValueAsString(tarefa));
+        // Corrigir o endpoint para /api/tarefas-producao conforme esperado pelo backend
+        // e ajustar o formato dos dados enviados com o campo descricao como inteiro
+        String requestBody = String.format(
+            "{\"encomendaId\": %d, \"descricao\": %s, \"funcionarioId\": %d, \"dataInicio\": \"%s\", \"estado\": \"%s\"}",
+            tarefa.getEncomendaId(),
+            tarefa.getDescricao(), // Descricao como inteiro, sem aspas
+            tarefa.getFuncionarioId(),
+            tarefa.getDataInicio().toString(),
+            tarefa.getEstado()
+        );
+
+        System.out.println("Enviando para API: " + requestBody);
+
+        HttpResponse<String> response = HttpUtils.post(BASE_URL + "/tarefas-producao", requestBody);
 
         if (response.statusCode() == 201 || response.statusCode() == 200) {
             return objectMapper.readValue(response.body(), TarefaDTO.class);
@@ -42,7 +57,19 @@ public class ProducaoService {
     }
 
     public TarefaDTO atualizarTarefa(TarefaDTO tarefa) throws IOException, InterruptedException {
-        HttpResponse<String> response = HttpUtils.put(BASE_URL + "/tarefas/" + tarefa.getId(), objectMapper.writeValueAsString(tarefa));
+        // Formata o corpo da requisição para corresponder ao formato esperado pelo endpoint
+        String requestBody = String.format(
+            "{\"descricao\": %d, \"funcionarioId\": %d, \"dataInicio\": \"%s\", \"dataFim\": %s, \"estado\": \"%s\"}",
+            tarefa.getDescricao(),
+            tarefa.getFuncionarioId(),
+            tarefa.getDataInicio().toString(),
+            tarefa.getDataFim() != null ? "\"" + tarefa.getDataFim().toString() + "\"" : "null",
+            tarefa.getEstado()
+        );
+
+        System.out.println("Atualizando tarefa: " + requestBody);
+
+        HttpResponse<String> response = HttpUtils.put(BASE_URL + "/tarefas-producao/" + tarefa.getId(), requestBody);
 
         if (response.statusCode() == 200) {
             return objectMapper.readValue(response.body(), TarefaDTO.class);
@@ -94,7 +121,18 @@ public class ProducaoService {
     }
 
     public EtapaDTO criarEtapa(EtapaDTO etapa) throws IOException, InterruptedException {
-        HttpResponse<String> response = HttpUtils.post(BASE_URL + "/etapas", objectMapper.writeValueAsString(etapa));
+        // Formata o corpo da requisição para seguir o formato esperado pela API
+        String requestBody = String.format(
+            "{\"tarefaId\": %d, \"tipoEtapaId\": %d, \"dataInicio\": \"%s\", \"dataFim\": %s}",
+            etapa.getTarefaId(),
+            etapa.getTipoEtapaId(),
+            etapa.getDataInicio().toString(),
+            etapa.getDataFim() != null ? "\"" + etapa.getDataFim().toString() + "\"" : "null"
+        );
+
+        System.out.println("Enviando para API: " + requestBody);
+
+        HttpResponse<String> response = HttpUtils.post(BASE_URL + "/etapas-producao", requestBody);
 
         if (response.statusCode() == 201 || response.statusCode() == 200) {
             return objectMapper.readValue(response.body(), EtapaDTO.class);
@@ -104,7 +142,17 @@ public class ProducaoService {
     }
 
     public EtapaDTO atualizarEtapa(EtapaDTO etapa) throws IOException, InterruptedException {
-        HttpResponse<String> response = HttpUtils.put(BASE_URL + "/etapas/" + etapa.getId(), objectMapper.writeValueAsString(etapa));
+        // Incluindo tipoEtapaId para preservar a descrição
+        String requestBody = String.format(
+            "{\"tipoEtapaId\": %d, \"dataInicio\": \"%s\", \"dataFim\": %s}",
+            etapa.getTipoEtapaId(),
+            etapa.getDataInicio().toString(),
+            etapa.getDataFim() != null ? "\"" + etapa.getDataFim().toString() + "\"" : "null"
+        );
+
+        System.out.println("Atualizando etapa: " + requestBody);
+
+        HttpResponse<String> response = HttpUtils.put(BASE_URL + "/etapas-producao/" + etapa.getId(), requestBody);
 
         if (response.statusCode() == 200) {
             return objectMapper.readValue(response.body(), EtapaDTO.class);
@@ -123,4 +171,57 @@ public class ProducaoService {
             return Collections.emptyList();
         }
     }
+
+    /**
+     * Obtém a lista de encomendas de clientes que ainda não possuem tarefas associadas.
+     *
+     * @return Lista de encomendas sem tarefas
+     * @throws IOException Em caso de falha na comunicação com o servidor
+     * @throws InterruptedException Se a operação for interrompida
+     */
+    public List<EncomendaCliente> getEncomendasSemTarefas() throws IOException, InterruptedException {
+        HttpResponse<String> response = HttpUtils.get(BASE_URL + "/encomendas-clientes/encomendas-sem-tarefas");
+
+        if (response.statusCode() == 200) {
+            return objectMapper.readValue(response.body(), new TypeReference<List<EncomendaCliente>>() {});
+        } else {
+            return Collections.emptyList();
+        }
+    }
+
+    /**
+     * Obtém a lista de tipos de eventos disponíveis no sistema.
+     *
+     * @return Lista de tipos de eventos
+     * @throws IOException Em caso de falha na comunicaç��o com o servidor
+     * @throws InterruptedException Se a operação for interrompida
+     */
+    public List<TipoEvento> getTiposEventos() throws IOException, InterruptedException {
+        HttpResponse<String> response = HttpUtils.get(BASE_URL + "/tipos-eventos");
+
+        if (response.statusCode() == 200) {
+            return objectMapper.readValue(response.body(), new TypeReference<List<TipoEvento>>() {});
+        } else {
+            return Collections.emptyList();
+        }
+    }
+
+    /**
+     * Obtém a lista de tipos de etapas disponíveis no sistema.
+     *
+     * @return Lista de tipos de etapas
+     * @throws IOException Em caso de falha na comunicação com o servidor
+     * @throws InterruptedException Se a operação for interrompida
+     */
+    public List<TipoEtapa> getTiposEtapas() throws IOException, InterruptedException {
+        HttpResponse<String> response = HttpUtils.get(BASE_URL + "/tipos-etapas");
+
+        if (response.statusCode() == 200) {
+            return objectMapper.readValue(response.body(), new TypeReference<List<TipoEtapa>>() {});
+        } else {
+            return Collections.emptyList();
+        }
+    }
 }
+
+

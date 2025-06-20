@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.geometry.Pos?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.ipvc.desktop.controller.RegistarPagamentoClienteController"
+      prefWidth="500" prefHeight="350"
+      styleClass="modal-pagamento"
+      spacing="20">
+
+    <!-- Título do Modal -->
+    <Label text="Registar Pagamento" styleClass="modal-title"/>
+
+    <!-- Formulário de Pagamento -->
+    <GridPane hgap="10" vgap="15">
+        <padding>
+            <Insets top="20" right="20" bottom="20" left="20"/>
+        </padding>
+
+        <!-- Linha 1: Detalhes da Encomenda -->
+        <Label text="Encomenda:" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+        <Label fx:id="lblReferenciaEncomenda" text="Ref. #000" styleClass="info-label" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+        <Label text="Cliente:" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+        <Label fx:id="lblNomeCliente" text="Nome do Cliente" styleClass="info-label" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
+        <Label text="Valor Total:" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+        <Label fx:id="lblValorTotal" text="0.00" styleClass="info-label" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+
+        <!-- Linha 2: Método de Pagamento -->
+        <Label text="Método de Pagamento:" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+        <ComboBox fx:id="cbMetodoPagamento" promptText="Selecione um método" prefWidth="200" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+
+        <!-- Linha 4: Data de Pagamento -->
+        <Label text="Data de Pagamento:" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="5"/>
+        <DatePicker fx:id="dataPagamento" prefWidth="200" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
+    </GridPane>
+
+    <!-- Botões de Ação -->
+    <HBox alignment="CENTER" spacing="20">
+        <Button fx:id="btnCancelar" text="Cancelar" styleClass="cancel-button" onAction="#cancelarPagamento"/>
+        <Button fx:id="btnRegistar" text="Registar Pagamento" styleClass="confirm-button" onAction="#registarPagamento"/>
+    </HBox>
+</VBox>

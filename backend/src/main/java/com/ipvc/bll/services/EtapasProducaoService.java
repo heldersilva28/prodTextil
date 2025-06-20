@@ -1,6 +1,9 @@
 package com.ipvc.bll.services;
 
+import com.ipvc.bll.dto.EncomendasClienteDTO;
 import com.ipvc.bll.dto.EtapasProducaoDTO.*;
+import com.ipvc.bll.dto.TarefasProducaoDTO;
+import com.ipvc.bll.models.EncomendasCliente;
 import com.ipvc.bll.models.EtapasProducao;
 import com.ipvc.bll.models.TarefasProducao;
 import com.ipvc.bll.models.TiposEtapasProducao;
@@ -19,11 +22,15 @@ public class EtapasProducaoService {
     private final EtapasProducaoRepo etapasProducaoRepo;
     private final TarefasProducaoRepo tarefasProducaoRepo;
     private final TiposEtapasProducaoRepo tiposEtapasProducaoRepo;
+    EncomendasClienteService encomendasClienteService;
+    TarefasProducaoService tarefasProducaoService;
 
-    public EtapasProducaoService(EtapasProducaoRepo etapasProducaoRepo, TarefasProducaoRepo tarefasProducaoRepo, TiposEtapasProducaoRepo tiposEtapasProducaoRepo) {
+    public EtapasProducaoService(EtapasProducaoRepo etapasProducaoRepo, TarefasProducaoRepo tarefasProducaoRepo, TiposEtapasProducaoRepo tiposEtapasProducaoRepo, EncomendasClienteService encomendasClienteService, TarefasProducaoService tarefasProducaoService) {
         this.etapasProducaoRepo = etapasProducaoRepo;
         this.tarefasProducaoRepo = tarefasProducaoRepo;
         this.tiposEtapasProducaoRepo = tiposEtapasProducaoRepo;
+        this.encomendasClienteService = encomendasClienteService;
+        this.tarefasProducaoService = tarefasProducaoService;
     }
 
     public List<EtapaProducaoResponseDTO> getAllEtapas() {
@@ -57,6 +64,27 @@ public class EtapasProducaoService {
         return etapasProducaoRepo.findById(id).map(etapa -> {
             etapa.setDataInicio(etapaDTO.dataInicio());
             etapa.setDataFim(etapaDTO.dataFim());
+            Optional<TiposEtapasProducao> tipo = tiposEtapasProducaoRepo.findById(3);
+            TiposEtapasProducao tipoEtapa = tipo.get();
+            if(etapa.getTipoEtapa() == tipoEtapa){
+                TarefasProducao tarefa = etapa.getTarefa();
+                int idEncomenda = tarefa.getEncomenda().getId();
+                EncomendasCliente encomenda = tarefa.getEncomenda();
+                EncomendasClienteDTO.EncomendaClienteUpdateDTO encomendaDto = new EncomendasClienteDTO.EncomendaClienteUpdateDTO(
+                        encomenda.getDataEncomenda(),2,
+                        encomenda.getValorTotal()
+                );
+                TarefasProducaoDTO.TarefasProducaoUpdateDTO tarefaDto = new TarefasProducaoDTO.TarefasProducaoUpdateDTO(
+                        tarefa.getTipoEvento().getId(),
+                        tarefa.getFuncionario().getId(),
+                        tarefa.getDataInicio(),
+                        etapa.getDataFim(),
+                        "CONCLUIDO"
+                );
+                encomendasClienteService.updateEncomenda(idEncomenda,encomendaDto);
+                tarefasProducaoService.updateTarefa(etapa.getTarefa().getId(),tarefaDto);
+
+            }
             return convertToDTO(etapasProducaoRepo.save(etapa));
         });
     }

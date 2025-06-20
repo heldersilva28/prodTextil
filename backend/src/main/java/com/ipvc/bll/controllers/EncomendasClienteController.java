@@ -36,6 +36,25 @@ public class EncomendasClienteController {
         return encomenda.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @GetMapping("/encomendas-sem-tarefas")
+    @Operation(summary = "Listar encomendas sem tarefas", description = "Retorna uma lista de encomendas que não possuem tarefas associadas")
+    public ResponseEntity<List<EncomendaClienteResponseDTO>> getEncomendasSemTarefas() {
+        List<EncomendaClienteResponseDTO> encomendas = encomendasClienteService.encomendaSemTarefas();
+        if (encomendas.isEmpty()) {
+            return ResponseEntity.ok(Collections.emptyList());
+        }
+        return ResponseEntity.ok(encomendas);
+    }
+    @GetMapping("/encomendas-sem-pagamento")
+    @Operation(summary = "Listar encomendas sem tarefas", description = "Retorna uma lista de encomendas que não possuem tarefas associadas")
+    public ResponseEntity<List<EncomendaClienteResponseDTO>> getEncomendasSemPagamento() {
+        List<EncomendaClienteResponseDTO> encomendas = encomendasClienteService.encomendaSemPagamento();
+        if (encomendas.isEmpty()) {
+            return ResponseEntity.ok(Collections.emptyList());
+        }
+        return ResponseEntity.ok(encomendas);
+    }
+
 //    @PostMapping
 //    @Operation(summary = "Criar uma nova encomenda", description = "Registra uma nova encomenda no sistema")
 //    public ResponseEntity<EncomendaClienteResponseDTO> createEncomenda(@RequestBody EncomendaClienteCreateDTO encomendaDTO) {

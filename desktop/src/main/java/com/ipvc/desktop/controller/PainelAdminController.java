@@ -115,6 +115,21 @@ public class PainelAdminController {
                 "/com/ipvc/desktop/styles/tarefas-producao.css"
         );
     }
+
+    @FXML
+    public void recebimentos() {
+        carregarConteudo(
+                "/com/ipvc/desktop/views/recebimentos-clientes.fxml",
+                "/com/ipvc/desktop/style/recebimentos-clientes.css"
+        );
+    }
+    @FXML
+    public void pagamentos() {
+        carregarConteudo(
+                "/com/ipvc/desktop/views/pagamentos-fornecedores.fxml",
+                "/com/ipvc/desktop/style/recebimentos-clientes.css"
+        );
+    }
 //
 //    @FXML
 //    public void abrirHistoricoEventos() {

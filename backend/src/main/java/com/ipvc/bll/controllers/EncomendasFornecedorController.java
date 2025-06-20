@@ -1,6 +1,8 @@
 package com.ipvc.bll.controllers;
 
+import com.ipvc.bll.dto.EncomendasClienteDTO;
 import com.ipvc.bll.dto.EncomendasClientesStatsDTO;
+import com.ipvc.bll.dto.EncomendasFornecedorDTO;
 import com.ipvc.bll.dto.EncomendasFornecedorDTO.*;
 import com.ipvc.bll.services.EncomendasFornecedorService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -34,6 +36,16 @@ public class EncomendasFornecedorController {
     public ResponseEntity<EncomendaFornecedorResponseDTO> getEncomendaById(@PathVariable Integer id) {
         Optional<EncomendaFornecedorResponseDTO> encomenda = encomendasFornecedorService.getEncomendaById(id);
         return encomenda.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/encomendas-sem-pagamento")
+    @Operation(summary = "Listar encomendas sem tarefas", description = "Retorna uma lista de encomendas que não possuem tarefas associadas")
+    public ResponseEntity<List<EncomendasFornecedorDTO.EncomendaFornecedorResponseDTO>> getEncomendasSemPagamento() {
+        List<EncomendasFornecedorDTO.EncomendaFornecedorResponseDTO> encomendas = encomendasFornecedorService.encomendaSemPagamento();
+        if (encomendas.isEmpty()) {
+            return ResponseEntity.ok(Collections.emptyList());
+        }
+        return ResponseEntity.ok(encomendas);
     }
 
     @PostMapping

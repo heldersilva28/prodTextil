@@ -1,11 +1,11 @@
 package com.ipvc.bll.services;
 
+import com.ipvc.bll.dto.EncomendasClienteDTO;
 import com.ipvc.bll.dto.EncomendasClientesStatsDTO;
+import com.ipvc.bll.dto.EncomendasFornecedorDTO;
 import com.ipvc.bll.dto.EncomendasFornecedorDTO.*;
 import com.ipvc.bll.dto.ItensEncomendaFornecedorDTO;
-import com.ipvc.bll.models.EncomendasFornecedor;
-import com.ipvc.bll.models.Fornecedor;
-import com.ipvc.bll.models.EstadosEncomenda;
+import com.ipvc.bll.models.*;
 import com.ipvc.bll.repos.EncomendaFornecedorRepo;
 import com.ipvc.bll.repos.FornecedorRepo;
 import com.ipvc.bll.repos.EstadosEncomendaRepo;
@@ -52,6 +52,22 @@ public class EncomendasFornecedorService {
         encomenda.setValorTotal(encomendaDTO.valorTotal());
 
         return convertToDTO(encomendasFornecedorRepo.save(encomenda));
+    }
+
+    public List<EncomendasFornecedorDTO.EncomendaFornecedorResponseDTO> encomendaSemPagamento() {
+        List<EncomendasFornecedor> encomendas = encomendasFornecedorRepo.findAll();
+        List<EncomendasFornecedorDTO.EncomendaFornecedorResponseDTO> encomendasDTO = new ArrayList<>();
+        List<PagamentosFornecedor> pagamentos = encomendas.stream()
+                .flatMap(encomenda -> encomenda.getPagamentosFornecedores().stream())
+                .collect(Collectors.toList());
+        for(EncomendasFornecedor encomenda : encomendas) {
+            boolean temPagamento = pagamentos.stream()
+                    .anyMatch(pagamento -> pagamento.getEncomenda().getId().equals(encomenda.getId()));
+            if (!temPagamento) {
+                encomendasDTO.add(convertToDTO(encomenda));
+            }
+        }
+        return encomendasDTO;
     }
 
     public Optional<EncomendaFornecedorResponseDTO> updateEncomenda(Integer id, EncomendaFornecedorUpdateDTO encomendaDTO) {

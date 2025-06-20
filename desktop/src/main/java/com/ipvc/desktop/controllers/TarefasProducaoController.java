@@ -5,6 +5,8 @@ import com.ipvc.desktop.models.EstadoEncomenda;
 import com.ipvc.desktop.models.EtapaDTO;
 import com.ipvc.desktop.models.FuncionarioProducaoDTO;
 import com.ipvc.desktop.models.TarefaDTO;
+import com.ipvc.desktop.models.TipoEtapa;
+import com.ipvc.desktop.models.TipoEvento;
 import com.ipvc.desktop.services.ProducaoService;
 import com.ipvc.desktop.services.UtilizadorService;
 import com.ipvc.desktop.utils.DialogUtils;
@@ -15,6 +17,8 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -22,6 +26,7 @@ import javafx.util.StringConverter;
 
 import java.math.BigDecimal;
 import java.net.URL;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -30,6 +35,7 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.time.ZoneId;
 
 public class TarefasProducaoController implements Initializable {
 
@@ -85,10 +91,10 @@ public class TarefasProducaoController implements Initializable {
     private TableColumn<TarefaDTO, String> colDescricao;
 
     @FXML
-    private TableColumn<TarefaDTO, LocalDate> colDataInicio;
+    private TableColumn<TarefaDTO, Instant> colDataInicio;
 
     @FXML
-    private TableColumn<TarefaDTO, LocalDate> colDataFim;
+    private TableColumn<TarefaDTO, Instant> colDataFim;
 
     @FXML
     private TableColumn<TarefaDTO, String> colStatus;
@@ -112,10 +118,10 @@ public class TarefasProducaoController implements Initializable {
     private TableColumn<EtapaDTO, String> colEtapaDescricao;
 
     @FXML
-    private TableColumn<EtapaDTO, LocalDate> colEtapaDataInicio;
+    private TableColumn<EtapaDTO, Instant> colEtapaDataInicio;
 
     @FXML
-    private TableColumn<EtapaDTO, LocalDate> colEtapaDataFim;
+    private TableColumn<EtapaDTO, Instant> colEtapaDataFim;
 
 
     @FXML
@@ -220,20 +226,11 @@ public class TarefasProducaoController implements Initializable {
 
     private void configureEncomendasAcoesColumn() {
         colAcoes.setCellFactory(param -> new TableCell<>() {
-            private final Button btnVerTarefas = new Button("Ver Tarefas");
             private final Button btnNovaTarefa = new Button("Nova Tarefa");
-            private final HBox pane = new HBox(5, btnVerTarefas, btnNovaTarefa);
+            private final HBox pane = new HBox(5, btnNovaTarefa);
 
             {
-                btnVerTarefas.getStyleClass().add("btn-action");
                 btnNovaTarefa.getStyleClass().addAll("btn-action", "btn-edit");
-
-                btnVerTarefas.setOnAction(event -> {
-                    EncomendaCliente encomenda = getTableView().getItems().get(getIndex());
-                    loadTarefasData(encomenda.getId());
-                    encomendaSelecionada = encomenda;
-                    tarefasContainer.setVisible(true);
-                });
 
                 btnNovaTarefa.setOnAction(event -> {
                     EncomendaCliente encomenda = getTableView().getItems().get(getIndex());
@@ -259,24 +256,28 @@ public class TarefasProducaoController implements Initializable {
 
         colDataInicio.setCellFactory(col -> new TableCell<>() {
             @Override
-            protected void updateItem(LocalDate item, boolean empty) {
+            protected void updateItem(Instant item, boolean empty) {
                 super.updateItem(item, empty);
                 if (empty || item == null) {
                     setText(null);
                 } else {
-                    setText(dateFormatter.format(item));
+                    // Convertendo Instant para LocalDate antes de formatar
+                    LocalDate localDate = item.atZone(ZoneId.systemDefault()).toLocalDate();
+                    setText(dateFormatter.format(localDate));
                 }
             }
         });
 
         colDataFim.setCellFactory(col -> new TableCell<>() {
             @Override
-            protected void updateItem(LocalDate item, boolean empty) {
+            protected void updateItem(Instant item, boolean empty) {
                 super.updateItem(item, empty);
                 if (empty || item == null) {
                     setText("-");
                 } else {
-                    setText(dateFormatter.format(item));
+                    // Convertendo Instant para LocalDate antes de formatar
+                    LocalDate localDate = item.atZone(ZoneId.systemDefault()).toLocalDate();
+                    setText(dateFormatter.format(localDate));
                 }
             }
         });
@@ -312,18 +313,11 @@ public class TarefasProducaoController implements Initializable {
 
     private void configureTarefasAcoesColumn() {
         colTarefaAcoes.setCellFactory(param -> new TableCell<>() {
-            private final Button btnEditar = new Button("Editar");
             private final Button btnEtapa = new Button("Nova Etapa");
-            private final HBox pane = new HBox(5, btnEditar, btnEtapa);
+            private final HBox pane = new HBox(5, btnEtapa);
 
             {
-                btnEditar.getStyleClass().addAll("btn-action", "btn-edit");
                 btnEtapa.getStyleClass().add("btn-action");
-
-                btnEditar.setOnAction(event -> {
-                    TarefaDTO tarefa = getTableView().getItems().get(getIndex());
-                    editarTarefa(tarefa);
-                });
 
                 btnEtapa.setOnAction(event -> {
                     TarefaDTO tarefa = getTableView().getItems().get(getIndex());
@@ -339,6 +333,9 @@ public class TarefasProducaoController implements Initializable {
                     setGraphic(null);
                     return;
                 }
+
+                TarefaDTO tarefa = getTableView().getItems().get(getIndex());
+
                 setGraphic(pane);
             }
         });
@@ -353,24 +350,26 @@ public class TarefasProducaoController implements Initializable {
 
         colEtapaDataInicio.setCellFactory(col -> new TableCell<>() {
             @Override
-            protected void updateItem(LocalDate item, boolean empty) {
+            protected void updateItem(Instant item, boolean empty) {
                 super.updateItem(item, empty);
                 if (empty || item == null) {
                     setText(null);
                 } else {
-                    setText(dateFormatter.format(item));
+                    LocalDate localDate = item.atZone(ZoneId.systemDefault()).toLocalDate();
+                    setText(dateFormatter.format(localDate));
                 }
             }
         });
 
         colEtapaDataFim.setCellFactory(col -> new TableCell<>() {
             @Override
-            protected void updateItem(LocalDate item, boolean empty) {
+            protected void updateItem(Instant item, boolean empty) {
                 super.updateItem(item, empty);
                 if (empty || item == null) {
                     setText("-");
                 } else {
-                    setText(dateFormatter.format(item));
+                    LocalDate localDate = item.atZone(ZoneId.systemDefault()).toLocalDate();
+                    setText(dateFormatter.format(localDate));
                 }
             }
         });
@@ -383,15 +382,15 @@ public class TarefasProducaoController implements Initializable {
 
     private void configureEtapasAcoesColumn() {
         colEtapaAcoes.setCellFactory(param -> new TableCell<>() {
-            private final Button btnEditar = new Button("Editar");
-            private final HBox pane = new HBox(5, btnEditar);
+            private final Button btnConcluir = new Button("Concluir");
+            private final HBox pane = new HBox(5, btnConcluir);
 
             {
-                btnEditar.getStyleClass().addAll("btn-action", "btn-edit");
+                btnConcluir.getStyleClass().addAll("btn-action", "btn-success");
 
-                btnEditar.setOnAction(event -> {
+                btnConcluir.setOnAction(event -> {
                     EtapaDTO etapa = getTableView().getItems().get(getIndex());
-                    editarEtapa(etapa);
+                    concluirEtapa(etapa);
                 });
             }
 
@@ -405,6 +404,10 @@ public class TarefasProducaoController implements Initializable {
                 }
 
                 EtapaDTO etapa = getTableView().getItems().get(getIndex());
+
+                // Desabilita o botão de concluir se a etapa já estiver concluída
+                btnConcluir.setDisable(etapa.getDataFim() != null);
+
                 setGraphic(pane);
             }
         });
@@ -501,7 +504,7 @@ public class TarefasProducaoController implements Initializable {
     }
 
     /**
-     * Carrega as informações das encomendas relacionadas às tarefas
+     * Carrega as informaç��es das encomendas relacionadas às tarefas
      * @param tarefas Lista de tarefas do funcionário
      */
     private void loadEncomendaDataFromTarefas(List<TarefaDTO> tarefas) {
@@ -566,6 +569,141 @@ public class TarefasProducaoController implements Initializable {
         }
     }
 
+    @FXML
+    private void onNovaEncomendaClicked(ActionEvent event) {
+        if (funcionarioComboBox.getValue() == null) {
+            DialogUtils.showWarningDialog("Atenção", "Selecione um funcionário",
+                    "Por favor, selecione um funcionário antes de criar uma nova tarefa.");
+            return;
+        }
+
+        try {
+            // Buscar encomendas sem tarefas do backend
+            List<EncomendaCliente> encomendasSemTarefas = producaoService.getEncomendasSemTarefas();
+
+            if (encomendasSemTarefas.isEmpty()) {
+                DialogUtils.showInformationDialog("Informação", "Sem encomendas disponíveis",
+                        "Não existem encomendas sem tarefas de produção associadas.");
+                return;
+            }
+
+            // Criar diálogo personalizado
+            Dialog<EncomendaCliente> dialog = new Dialog<>();
+            dialog.setTitle("Nova Tarefa");
+            dialog.setHeaderText("Selecione uma encomenda para criar uma nova tarefa");
+
+            // Configurar botões
+            ButtonType criarTarefaButtonType = new ButtonType("Criar Tarefa", ButtonBar.ButtonData.OK_DONE);
+            dialog.getDialogPane().getButtonTypes().addAll(criarTarefaButtonType, ButtonType.CANCEL);
+
+            // Criar tabela para mostrar as encomendas
+            TableView<EncomendaCliente> tabelaEncomendas = new TableView<>();
+            tabelaEncomendas.setPrefHeight(300);
+            tabelaEncomendas.setPrefWidth(600);
+            tabelaEncomendas.getStyleClass().add("tabela-encomendas");
+
+            // Configurar colunas da tabela (mesmo estilo da gestão de clientes)
+            TableColumn<EncomendaCliente, Integer> colId = new TableColumn<>("ID");
+            colId.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getId()));
+            colId.setPrefWidth(50);
+
+            TableColumn<EncomendaCliente, String> colCliente = new TableColumn<>("Cliente");
+            colCliente.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getClienteNome()));
+            colCliente.setPrefWidth(150);
+
+            TableColumn<EncomendaCliente, LocalDate> colData = new TableColumn<>("Data");
+            colData.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getDataEncomenda()));
+            colData.setCellFactory(col -> new TableCell<>() {
+                @Override
+                protected void updateItem(LocalDate item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty || item == null) {
+                        setText(null);
+                    } else {
+                        setText(dateFormatter.format(item));
+                    }
+                }
+            });
+            colData.setPrefWidth(100);
+
+            TableColumn<EncomendaCliente, String> colEstado = new TableColumn<>("Estado");
+            colEstado.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getEstadoNome()));
+            colEstado.setPrefWidth(100);
+
+            TableColumn<EncomendaCliente, BigDecimal> colValor = new TableColumn<>("Valor Total");
+            colValor.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getValorTotal()));
+            colValor.setCellFactory(col -> new TableCell<>() {
+                @Override
+                protected void updateItem(BigDecimal item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty || item == null) {
+                        setText(null);
+                    } else {
+                        setText(String.format("%.2f€", item));
+                    }
+                }
+            });
+            colValor.setPrefWidth(100);
+
+            // Adicionar colunas à tabela
+            tabelaEncomendas.getColumns().addAll(colId, colCliente, colData, colEstado, colValor);
+
+            // Definir os dados na tabela
+            tabelaEncomendas.setItems(FXCollections.observableArrayList(encomendasSemTarefas));
+
+            // Adicionar a tabela ao conteúdo do diálogo
+            VBox content = new VBox(10, tabelaEncomendas);
+            content.setPadding(new Insets(20));
+            dialog.getDialogPane().setContent(content);
+
+            // Desabilitar o botão de criar tarefa até que uma encomenda seja selecionada
+            Node criarButton = dialog.getDialogPane().lookupButton(criarTarefaButtonType);
+            criarButton.setDisable(true);
+
+            // Habilitar botão quando uma encomenda é selecionada
+            tabelaEncomendas.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+                criarButton.setDisable(newVal == null);
+            });
+
+            // Configurar o conversor de resultado
+            dialog.setResultConverter(dialogButton -> {
+                if (dialogButton == criarTarefaButtonType) {
+                    return tabelaEncomendas.getSelectionModel().getSelectedItem();
+                }
+                return null;
+            });
+
+            // Mostrar o diálogo e processar o resultado
+            Optional<EncomendaCliente> resultado = dialog.showAndWait();
+            resultado.ifPresent(encomenda -> {
+                TarefaDTO novaTarefa = new TarefaDTO();
+                novaTarefa.setEncomendaId(encomenda.getId());
+                novaTarefa.setDescricao(7); // Descrição padrão: 7
+                novaTarefa.setFuncionarioId(funcionarioComboBox.getValue().getId());
+                novaTarefa.setDataInicio(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant());
+                novaTarefa.setEstado("Preparação"); // Estado padrão: Preparação
+
+                try {
+                    TarefaDTO tarefaCriada = producaoService.criarTarefa(novaTarefa);
+                    // Após criar a tarefa com sucesso, adiciona à lista e mostra na interface
+                    tarefasList.add(tarefaCriada);
+                    // Atualiza a exibição
+                    loadEncomendasData(funcionarioComboBox.getValue().getId());
+                    DialogUtils.showInformationDialog("Sucesso", "Tarefa criada",
+                            "A tarefa de preparação foi criada com sucesso para a encomenda #" + encomenda.getId());
+                } catch (Exception e) {
+                    DialogUtils.showErrorDialog("Erro", "Não foi possível criar a tarefa",
+                            "Ocorreu um erro ao tentar criar a tarefa: " + e.getMessage());
+                    System.out.println("Erro ao criar tarefa: " + e.getMessage());
+                }
+            });
+
+        } catch (Exception e) {
+            DialogUtils.showErrorDialog("Erro", "Não foi possível carregar as encomendas",
+                    "Ocorreu um erro ao tentar carregar as encomendas sem tarefas: " + e.getMessage());
+        }
+    }
+
     private void criarNovaTarefa(Integer encomendaId) {
         Dialog<TarefaDTO> dialog = new Dialog<>();
         dialog.setTitle("Nova Tarefa");
@@ -574,29 +712,55 @@ public class TarefasProducaoController implements Initializable {
         ButtonType buttonTypeOk = new ButtonType("Criar", ButtonBar.ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().addAll(buttonTypeOk, ButtonType.CANCEL);
 
-        TextField descricaoField = new TextField();
-        descricaoField.setPromptText("Descrição");
+        // ComboBox para selecionar o tipo de evento/tarefa
+        ComboBox<TipoEvento> tipoEventoComboBox = new ComboBox<>();
+        tipoEventoComboBox.setPromptText("Selecione o tipo de tarefa");
+
+        // ComboBox para estado
+        ComboBox<String> estadoComboBox = new ComboBox<>();
+        estadoComboBox.getItems().addAll("PENDENTE", "EM_PROGRESSO", "CONCLUIDO");
+        estadoComboBox.setValue("PENDENTE"); // Valor padrão
+
+        // Carregar os tipos de eventos da API
+        try {
+            List<TipoEvento> tiposEventos = producaoService.getTiposEventos();
+            tipoEventoComboBox.setItems(FXCollections.observableArrayList(tiposEventos));
+        } catch (Exception e) {
+            DialogUtils.showErrorDialog("Erro", "Não foi possível carregar os tipos de tarefas",
+                    "Ocorreu um erro ao tentar carregar os tipos de tarefas: " + e.getMessage());
+        }
 
         DatePicker dataInicioDatePicker = new DatePicker(LocalDate.now());
 
         dialog.getDialogPane().setContent(new VBox(10,
-            new Label("Descrição:"), descricaoField,
-            new Label("Data de Início:"), dataInicioDatePicker
+            new Label("Tipo de Tarefa:"), tipoEventoComboBox,
+            new Label("Data de Início:"), dataInicioDatePicker,
+            new Label("Estado:"), estadoComboBox
         ));
 
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == buttonTypeOk) {
-                if (descricaoField.getText().isEmpty()) {
-                    DialogUtils.showWarningDialog("Campos obrigatórios", "Preencha todos os campos",
-                            "A descrição da tarefa é obrigatória.");
+                TipoEvento tipoEvento = tipoEventoComboBox.getValue();
+                if (tipoEvento == null) {
+                    DialogUtils.showWarningDialog("Campos obrigatórios", "Selecione um tipo de tarefa",
+                            "O tipo de tarefa é obrigatório.");
                     return null;
                 }
 
                 TarefaDTO novaTarefa = new TarefaDTO();
-                novaTarefa.setDescricaoNome(descricaoField.getText());
+                novaTarefa.setDescricao(tipoEvento.getId()); // ID do tipo de evento/tarefa
+                novaTarefa.setDescricaoNome(tipoEvento.getNome()); // Nome para exibição
                 novaTarefa.setEncomendaId(encomendaId);
-                novaTarefa.setDataInicio(dataInicioDatePicker.getValue());
-                novaTarefa.setEstado("PENDENTE");
+
+                // Converte LocalDate para Instant
+                novaTarefa.setDataInicio(dataInicioDatePicker.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant());
+                novaTarefa.setEstado(estadoComboBox.getValue());
+
+                // Se o estado for CONCLUIDO, definir data de fim
+                if ("CONCLUIDO".equals(estadoComboBox.getValue())) {
+                    novaTarefa.setDataFim(Instant.now());
+                }
+
                 novaTarefa.setFuncionarioId(funcionarioComboBox.getValue().getId());
 
                 return novaTarefa;
@@ -614,6 +778,7 @@ public class TarefasProducaoController implements Initializable {
             } catch (Exception e) {
                 DialogUtils.showErrorDialog("Erro", "Não foi possível criar a tarefa",
                         "Ocorreu um erro ao tentar criar a tarefa: " + e.getMessage());
+                e.printStackTrace();
             }
         });
     }
@@ -627,7 +792,7 @@ public class TarefasProducaoController implements Initializable {
         dialog.getDialogPane().getButtonTypes().addAll(buttonTypeOk, ButtonType.CANCEL);
 
         TextField descricaoField = new TextField(tarefa.getDescricaoNome());
-        DatePicker dataInicioDatePicker = new DatePicker(tarefa.getDataInicio());
+        DatePicker dataInicioDatePicker = new DatePicker();
         ComboBox<String> statusComboBox = new ComboBox<>();
         statusComboBox.getItems().addAll("PENDENTE", "EM_PROGRESSO", "CONCLUIDO");
         statusComboBox.setValue(tarefa.getEstado());
@@ -647,11 +812,11 @@ public class TarefasProducaoController implements Initializable {
                 }
 
                 tarefa.setDescricaoNome(descricaoField.getText());
-                tarefa.setDataInicio(dataInicioDatePicker.getValue());
+                tarefa.setDataInicio(Instant.from(dataInicioDatePicker.getValue()));
                 tarefa.setEstado(statusComboBox.getValue());
 
                 if ("CONCLUIDO".equals(statusComboBox.getValue())) {
-                    tarefa.setDataFim(LocalDate.now());
+                    tarefa.setDataFim(Instant.from(LocalDate.now()));
                 }
 
                 return tarefa;
@@ -684,28 +849,43 @@ public class TarefasProducaoController implements Initializable {
         ButtonType buttonTypeOk = new ButtonType("Criar", ButtonBar.ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().addAll(buttonTypeOk, ButtonType.CANCEL);
 
-        TextField descricaoField = new TextField();
-        descricaoField.setPromptText("Descrição");
+        // ComboBox para selecionar o tipo de etapa
+        ComboBox<TipoEtapa> tipoEtapaComboBox = new ComboBox<>();
+        tipoEtapaComboBox.setPromptText("Selecione o tipo de etapa");
+
+        // Carregar os tipos de etapas da API
+        try {
+            List<TipoEtapa> tiposEtapas = producaoService.getTiposEtapas();
+            tipoEtapaComboBox.setItems(FXCollections.observableArrayList(tiposEtapas));
+        } catch (Exception e) {
+            DialogUtils.showErrorDialog("Erro", "Não foi possível carregar os tipos de etapas",
+                    "Ocorreu um erro ao tentar carregar os tipos de etapas: " + e.getMessage());
+        }
 
         DatePicker dataInicioDatePicker = new DatePicker(LocalDate.now());
 
         dialog.getDialogPane().setContent(new VBox(10,
-            new Label("Descrição:"), descricaoField,
+            new Label("Tipo de Etapa:"), tipoEtapaComboBox,
             new Label("Data de Início:"), dataInicioDatePicker
         ));
 
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == buttonTypeOk) {
-                if (descricaoField.getText().isEmpty()) {
-                    DialogUtils.showWarningDialog("Campos obrigatórios", "Preencha todos os campos",
-                            "A descrição da etapa é obrigatória.");
+                TipoEtapa tipoEtapa = tipoEtapaComboBox.getValue();
+                if (tipoEtapa == null) {
+                    DialogUtils.showWarningDialog("Campos obrigatórios", "Selecione um tipo de etapa",
+                            "O tipo de etapa é obrigatório.");
                     return null;
                 }
 
                 EtapaDTO novaEtapa = new EtapaDTO();
-                novaEtapa.setDescricao(descricaoField.getText());
                 novaEtapa.setTarefaId(tarefaId);
-                novaEtapa.setDataInicio(dataInicioDatePicker.getValue());
+                novaEtapa.setTipoEtapaId(tipoEtapa.getId());
+                novaEtapa.setDescricao(tipoEtapa.getDescricao()); // Mantém a descrição para exibição
+
+                // Converte LocalDate para Instant
+                Instant dataInicio = dataInicioDatePicker.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant();
+                novaEtapa.setDataInicio(dataInicio);
 
                 return novaEtapa;
             }
@@ -722,6 +902,7 @@ public class TarefasProducaoController implements Initializable {
             } catch (Exception e) {
                 DialogUtils.showErrorDialog("Erro", "Não foi possível criar a etapa",
                         "Ocorreu um erro ao tentar criar a etapa: " + e.getMessage());
+                e.printStackTrace();
             }
         });
     }
@@ -734,30 +915,74 @@ public class TarefasProducaoController implements Initializable {
         ButtonType buttonTypeOk = new ButtonType("Salvar", ButtonBar.ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().addAll(buttonTypeOk, ButtonType.CANCEL);
 
-        TextField descricaoField = new TextField(etapa.getDescricao());
-        DatePicker dataInicioDatePicker = new DatePicker(etapa.getDataInicio());
+        // ComboBox para selecionar o tipo de etapa
+        ComboBox<TipoEtapa> tipoEtapaComboBox = new ComboBox<>();
+        tipoEtapaComboBox.setPromptText("Selecione o tipo de etapa");
+
+        // Carregar os tipos de etapas da API
+        try {
+            List<TipoEtapa> tiposEtapas = producaoService.getTiposEtapas();
+            tipoEtapaComboBox.setItems(FXCollections.observableArrayList(tiposEtapas));
+
+            // Tenta selecionar o tipo de etapa atual
+            if (etapa.getTipoEtapaId() != null) {
+                for (TipoEtapa tipoEtapa : tiposEtapas) {
+                    if (tipoEtapa.getId().equals(etapa.getTipoEtapaId())) {
+                        tipoEtapaComboBox.setValue(tipoEtapa);
+                        break;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            DialogUtils.showErrorDialog("Erro", "Não foi possível carregar os tipos de etapas",
+                    "Ocorreu um erro ao tentar carregar os tipos de etapas: " + e.getMessage());
+        }
+
+        // Converte Instant para LocalDate para o DatePicker
+        LocalDate dataInicio = null;
+        if (etapa.getDataInicio() != null) {
+            dataInicio = etapa.getDataInicio().atZone(ZoneId.systemDefault()).toLocalDate();
+        }
+        DatePicker dataInicioDatePicker = new DatePicker(dataInicio != null ? dataInicio : LocalDate.now());
+
+        // ComboBox para status
         ComboBox<String> statusComboBox = new ComboBox<>();
         statusComboBox.getItems().addAll("PENDENTE", "EM_PROGRESSO", "CONCLUIDO");
 
+        // Define o status com base na presença de dataFim
+        if (etapa.getDataFim() != null) {
+            statusComboBox.setValue("CONCLUIDO");
+        } else {
+            statusComboBox.setValue("EM_PROGRESSO");
+        }
+
         dialog.getDialogPane().setContent(new VBox(10,
-            new Label("Descrição:"), descricaoField,
+            new Label("Tipo de Etapa:"), tipoEtapaComboBox,
             new Label("Data de Início:"), dataInicioDatePicker,
             new Label("Status:"), statusComboBox
         ));
 
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == buttonTypeOk) {
-                if (descricaoField.getText().isEmpty()) {
-                    DialogUtils.showWarningDialog("Campos obrigatórios", "Preencha todos os campos",
-                            "A descrição da etapa é obrigatória.");
+                TipoEtapa tipoEtapa = tipoEtapaComboBox.getValue();
+                if (tipoEtapa == null) {
+                    DialogUtils.showWarningDialog("Campos obrigatórios", "Selecione um tipo de etapa",
+                            "O tipo de etapa é obrigatório.");
                     return null;
                 }
 
-                etapa.setDescricao(descricaoField.getText());
-                etapa.setDataInicio(dataInicioDatePicker.getValue());
+                // Mantém o ID original
+                etapa.setTipoEtapaId(tipoEtapa.getId());
+                etapa.setDescricao(tipoEtapa.getDescricao()); // Atualiza a descrição para exibição
 
+                // Converte LocalDate para Instant
+                etapa.setDataInicio(dataInicioDatePicker.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant());
+
+                // Define a data de conclusão se o status for CONCLUIDO
                 if ("CONCLUIDO".equals(statusComboBox.getValue())) {
-                    etapa.setDataFim(LocalDate.now());
+                    etapa.setDataFim(Instant.now());
+                } else {
+                    etapa.setDataFim(null);
                 }
 
                 return etapa;
@@ -778,6 +1003,7 @@ public class TarefasProducaoController implements Initializable {
             } catch (Exception e) {
                 DialogUtils.showErrorDialog("Erro", "Não foi possível atualizar a etapa",
                         "Ocorreu um erro ao tentar atualizar a etapa: " + e.getMessage());
+                e.printStackTrace();
             }
         });
     }
@@ -789,7 +1015,7 @@ public class TarefasProducaoController implements Initializable {
 
         if (confirm) {
             try {
-                etapa.setDataFim(LocalDate.now());
+                etapa.setDataFim(Instant.now()); // Usando Instant.now() diretamente
 
                 EtapaDTO etapaAtualizadaResposta = producaoService.atualizarEtapa(etapa);
                 int index = etapasList.indexOf(etapa);
@@ -802,6 +1028,45 @@ public class TarefasProducaoController implements Initializable {
             } catch (Exception e) {
                 DialogUtils.showErrorDialog("Erro", "Não foi possível concluir a etapa",
                         "Ocorreu um erro ao tentar concluir a etapa: " + e.getMessage());
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void concluirTarefa(TarefaDTO tarefa) {
+        boolean confirm = DialogUtils.showConfirmationDialog(
+            "Concluir Tarefa",
+            "Tem certeza que deseja concluir esta tarefa?",
+            "Esta ação irá marcar a data de conclusão como o momento atual e não poderá ser desfeita."
+        );
+
+        if (confirm) {
+            try {
+                // Mantém os dados originais da tarefa e atualiza apenas a data de fim e o estado
+                tarefa.setDataFim(Instant.now()); // Define como o instante atual
+                tarefa.setEstado("CONCLUIDO");
+
+                // Chama a API para atualizar a tarefa
+                TarefaDTO tarefaAtualizadaResposta = producaoService.atualizarTarefa(tarefa);
+
+                // Atualiza a tarefa na lista
+                int index = tarefasList.indexOf(tarefa);
+                if (index >= 0) {
+                    tarefasList.set(index, tarefaAtualizadaResposta);
+                }
+
+                DialogUtils.showInformationDialog(
+                    "Sucesso",
+                    "Tarefa concluída",
+                    "A tarefa #" + tarefa.getId() + " foi marcada como concluída com sucesso."
+                );
+            } catch (Exception e) {
+                DialogUtils.showErrorDialog(
+                    "Erro",
+                    "Não foi possível concluir a tarefa",
+                    "Ocorreu um erro ao tentar concluir a tarefa: " + e.getMessage()
+                );
+                e.printStackTrace();
             }
         }
     }

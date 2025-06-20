@@ -111,6 +111,33 @@ public class EncomendasClienteService {
         });
     }
 
+    public List<EncomendaClienteResponseDTO> encomendaSemTarefas() {
+        List<EncomendasCliente> encomendas = encomendasClienteRepo.findAll();
+        List<EncomendaClienteResponseDTO> encomendasDTO = new ArrayList<>();
+        for (EncomendasCliente encomenda : encomendas) {
+            if (encomenda.getTarefasProducaos().isEmpty()) {
+                encomendasDTO.add(convertToDTO(encomenda));
+            }
+        }
+        return encomendasDTO;
+    }
+
+    public List<EncomendaClienteResponseDTO> encomendaSemPagamento() {
+        List<EncomendasCliente> encomendas = encomendasClienteRepo.findAll();
+        List<EncomendaClienteResponseDTO> encomendasDTO = new ArrayList<>();
+        List<RecebimentosCliente> recebimentos = encomendas.stream()
+                .flatMap(encomenda -> encomenda.getRecebimentosClientes().stream())
+                .collect(Collectors.toList());
+        for(EncomendasCliente encomenda : encomendas) {
+            boolean temPagamento = recebimentos.stream()
+                    .anyMatch(recebimento -> recebimento.getEncomenda().getId().equals(encomenda.getId()));
+            if (!temPagamento) {
+                encomendasDTO.add(convertToDTO(encomenda));
+            }
+        }
+        return encomendasDTO;
+    }
+
     public void deleteEncomenda(Integer id) {
         encomendasClienteRepo.deleteById(id);
     }

@@ -62,3 +62,4 @@ public class EncomendaCliente {
         return dataEncomenda != null ? dataEncomenda.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) : "";
     }
 }
+

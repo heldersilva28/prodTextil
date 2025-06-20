@@ -22,6 +22,11 @@
                 <HBox alignment="CENTER_LEFT" spacing="15.0" styleClass="funcionario-select-container">
                     <Label text="Selecione o funcionário:" styleClass="funcionario-label" />
                     <ComboBox fx:id="funcionarioComboBox" prefWidth="300.0" promptText="Selecionar funcionário..." onAction="#onFuncionarioSelected" styleClass="funcionario-combo" />
+                    <Button fx:id="btnNovaEncomenda" onAction="#onNovaEncomendaClicked" styleClass="btn-order" text="Criar Tarefa para Nova Encomenda" mnemonicParsing="false">
+                        <font>
+                            <Font name="System Bold" size="14.0" />
+                        </font>
+                    </Button>
                 </HBox>
             </children>
         </VBox>
@@ -43,7 +48,6 @@
                                     </font>
                                 </Text>
                                 <Region HBox.hgrow="ALWAYS" />
-                                <Button fx:id="btnNovaTarefa" mnemonicParsing="false" onAction="#onNovaTarefaClicked" styleClass="btn-new-task" text="Nova Tarefa" />
                             </HBox>
                             <TableView fx:id="encomendasTableView" maxHeight="200">
                                 <columns>
