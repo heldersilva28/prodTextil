@@ -113,10 +113,8 @@
 graph TB
     A[Frontend Web - Blazor] --> D[API Gateway]
     B[Desktop App - JavaFX] --> D
-    C[Mobile App - Future] --> D
     D --> E[Spring Boot API]
     E --> F[PostgreSQL Database]
-    E --> G[Redis Cache - Future]
     E --> H[File Storage]
 ```
 
