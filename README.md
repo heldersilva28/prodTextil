@@ -210,15 +210,6 @@ prodTextil/
 | **Jackson** | 2.15.3 | Serialização JSON |
 | **HttpClient** | - | Comunicação HTTP |
 
-### 🛠️ **Ferramentas**
-- **Git** - Controlo de versões
-- **VS Code** - Editor de código
-- **IntelliJ IDEA** - IDE Java
-- **Postman** - Testes de API
-- **DBeaver** - Gestão de BD
-
----
-
 
 ### 🌐 **Frontend Web**
 
