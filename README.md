@@ -11,7 +11,7 @@
 
 **Sistema empresarial completo para gestão de produção têxtil com arquitetura multi-plataforma**
 
-[Funcionalidades](#-funcionalidades) • [Arquitetura](#-arquitetura)
+[Funcionalidades](#-funcionalidades) • [Arquitetura](#️-arquitetura)
 
 </div>
 
